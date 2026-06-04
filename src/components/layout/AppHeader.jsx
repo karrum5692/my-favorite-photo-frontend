@@ -18,7 +18,10 @@ export default function AppHeader() {
       <div className="w-full h-full flex items-center justify-between relative px-4 md:px-10 xl:px-20 2xl:px-32">
         <button
           className="block md:hidden p-1 z-10"
-          onClick={() => console.log('메뉴 열기')}
+          aria-label="메뉴 열기"
+          onClick={() => {
+            /* TODO: Implement menu toggle */
+          }}
         >
           <Image
             src={menuIcon}
@@ -79,7 +82,9 @@ function LoggedInMenu({ user }) {
       <span className="text-gray-400 hidden md:inline">|</span>
       <button
         className="text-sm text-gray-200 hover:text-white transition-colors"
-        onClick={() => console.log('로그아웃')}
+        onClick={() => {
+          /* TODO: Implement logout */
+        }}
       >
         로그아웃
       </button>
