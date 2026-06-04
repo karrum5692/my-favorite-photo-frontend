@@ -1,0 +1,95 @@
+# .coderabbit.yaml (Frontend - Next.js)
+
+language: 'ko'
+
+reviews:
+  profile: 'assertive'
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  path_instructions:
+    # ─── 공통 JS ───────────────────────────────────────────
+    - path: '**/*.js'
+      instructions: |
+        - `console.log` 등 디버그용 로그가 남아있는지 확인해주세요.
+        - 불필요한 주석이나 dead code가 없는지 확인해주세요.
+        - 변수/함수명이 역할을 명확히 표현하는지 검토해주세요.
+        - ESLint/Prettier 규칙을 위반하는 코드가 없는지 확인해주세요.
+
+    # ─── Next.js App Router ────────────────────────────────
+    - path: '**/app/**/*.js'
+      instructions: |
+        - 서버 컴포넌트와 클라이언트 컴포넌트('use client')가 적절히 구분되어 있는지 확인해주세요.
+        - 클라이언트 컴포넌트에서 민감한 환경변수(NEXT_PUBLIC_ 외)가 노출되지 않는지 확인해주세요.
+        - 동적 라우트 파라미터(params, searchParams) 처리가 올바른지 검토해주세요.
+        - 레이아웃(layout.js)에 불필요한 로직이 포함되어 있지 않은지 확인해주세요.
+
+    # ─── 컴포넌트 ──────────────────────────────────────────
+    - path: '**/components/**/*.js'
+      instructions: |
+        - Props에 JSDoc 또는 주석으로 타입/설명이 명시되어 있는지 확인해주세요.
+        - 컴포넌트가 단일 책임 원칙을 지키고 있는지 검토해주세요.
+        - 불필요한 리렌더링 가능성을 확인해주세요 (useCallback, useMemo 누락 등).
+        - useEffect 의존성 배열이 올바른지 검토해주세요.
+        - 접근성(a11y) 이슈를 확인해주세요 (alt, aria-label 등).
+
+    # ─── React Query ───────────────────────────────────────
+    - path: '**/hooks/**/*.js'
+      instructions: |
+        - React Query 훅의 queryKey가 일관된 네이밍 규칙을 따르는지 확인해주세요.
+        - 에러 상태(isError)와 로딩 상태(isLoading)가 UI에서 처리되고 있는지 확인해주세요.
+        - useMutation 후 필요한 쿼리 invalidation이 누락되지 않았는지 확인해주세요.
+        - 커스텀 훅이 단일 책임을 지키고 있는지 검토해주세요.
+
+    # ─── 스타일 (TailwindCSS) ──────────────────────────────
+    - path: '**/styles/**'
+      instructions: |
+        - 하드코딩된 색상/폰트값이 Tailwind 토큰 대신 사용되고 있지 않은지 확인해주세요.
+        - 반응형 처리가 누락된 UI 요소가 없는지 검토해주세요.
+
+  path_filters:
+    - '!**/node_modules/**'
+    - '!**/.next/**'
+    - '!**/dist/**'
+    - '!**/build/**'
+    - '!**/*.lock'
+    - '!**/public/**'
+    - '!**/__snapshots__/**'
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - 'dev'
+
+chat:
+  auto_reply: true
+
+finishing_touches:
+  docstrings:
+    enabled: true
+
+custom_instructions: |
+  모든 리뷰 코멘트는 반드시 한국어로 작성해주세요.
+
+  [커밋 메시지]
+  커밋 타입이 아래 컨벤션을 따르는지 확인해주세요:
+  - feat: 새로운 기능 추가
+  - fix: 버그 수정
+  - style: 코드 포맷팅, 세미콜론 등 스타일 변경 (논리 변경 없음)
+  - refactor: 리팩토링 (기능 변화 없음)
+  - design: CSS 등 사용자 UI 디자인 변경
+  - comment: 주석 추가 및 변경
+  - remove: 파일 삭제만 수행한 경우
+
+  [코드 품질]
+  - `console.log` 등 디버그 로그가 제거되었는지 확인해주세요.
+  - 불필요한 주석이 제거되었는지 확인해주세요.
+  - 로컬 빌드/테스트 성공 여부를 PR 체크리스트에서 확인해주세요.
+
+  [shadcn/ui]
+  - shadcn/ui 컴포넌트를 직접 수정했다면 업스트림 업데이트 시 충돌 가능성을 코멘트해주세요.
+  - shadcn 컴포넌트 커스터마이징은 className prop을 통해 하는지 확인해주세요.
