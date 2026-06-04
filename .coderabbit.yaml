@@ -73,6 +73,8 @@ finishing_touches:
     enabled: true
 
 custom_instructions: |
+  모든 리뷰 코멘트는 반드시 한국어로 작성해주세요.
+
   [커밋 메시지]
   커밋 타입이 아래 컨벤션을 따르는지 확인해주세요:
   - feat: 새로운 기능 추가
