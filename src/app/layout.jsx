@@ -1,6 +1,7 @@
 import { Noto_Sans_KR } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
+import AppHeader from '@/components/layout/AppHeader';
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
@@ -25,7 +26,13 @@ export default function RootLayout({ children }) {
       lang="ko"
       className={`${notoSansKR.variable} ${baskinsRobbins.variable}`}
     >
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body className="bg-black antialiased">
+        <div className="min-h-screen flex flex-col">
+          <AppHeader />
+
+          <main className="flex-1 w-full">{children}</main>
+        </div>
+      </body>
     </html>
   );
 }
