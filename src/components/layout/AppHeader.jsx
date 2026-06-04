@@ -59,7 +59,7 @@ function LoggedInMenu({ user }) {
   return (
     <nav className="flex items-center gap-4">
       <span className="text-sm text-white font-bold hidden sm:inline">
-        {user ? `${user.point.toLocaleString()} P` : '0P'}
+        {user.point.toLocaleString()} P
       </span>
       <Link href="/profile">
         <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
