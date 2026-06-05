@@ -16,6 +16,18 @@
   --color-purple: #a77eff;
   --color-pink: #ff2a6a;
   --color-main: #efff04;
+
+  /* Gradation colors */
+  --color-feature-module: rgba(40, 60, 20, 0.3);
+  --color-feature-random-box: rgba(40, 50, 0, 0.2);
+
+  /* Background colors */
+  --background-image-hero-pattern: radial-gradient(
+    ellipse 100% 70% at 50% 0%,
+    #42195a 0%,
+    #1e0a30 45%,
+    #0f0f0f 80%
+  );
 }
 
 @layer base {
@@ -27,4 +39,8 @@
   * {
     box-sizing: border-box;
   }
+}
+
+@utility bg-feature-base {
+  background-color: #0f0f0f;
 }

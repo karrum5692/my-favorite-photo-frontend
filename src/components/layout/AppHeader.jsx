@@ -15,7 +15,7 @@ export default function AppHeader() {
 
   return (
     <header className="w-full bg-black border-b border-gray-500 h-20">
-      <div className="w-full h-full flex items-center justify-between relative px-4 md:px-10 xl:px-20 2xl:px-32">
+      <div className="w-full h-full flex items-center justify-between relative px-4 md:px-10 xl:px-20 min-[1920px]:px-32">
         <button
           className="block md:hidden p-1 z-10"
           aria-label="메뉴 열기"
@@ -31,16 +31,17 @@ export default function AppHeader() {
             priority
           />
         </button>
+
         <Link
           href="/"
           className="flex items-center absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 z-10"
         >
-          <div className="relative w-[84px] h-[15px] md:w-[111px] md:h-[20px] xl:w-[139px] xl:h-[25px]">
+          <div className="relative w-[84px] h-[15px] min-[744px]:w-[111px] min-[744px]:h-[20px] min-[1920px]:w-[139px] min-[1920px]:h-[25px]">
             <Image
               src="/images/logo.png"
               alt="최애의 포토"
               fill
-              sizes="(max-width: 768px) 84px, (max-width: 1280px) 111px, 139px"
+              sizes="(max-width: 743px) 84px, (max-width: 1919px) 111px, 139px"
               priority
               className="object-contain"
             />
@@ -59,7 +60,7 @@ function LoggedInMenu({ user }) {
   return (
     <nav className="flex items-center gap-4">
       <span className="text-sm text-white font-bold hidden sm:inline">
-        {user.point.toLocaleString()} P
+        {user?.point ? user.point.toLocaleString() : 0} P
       </span>
       <Link href="/profile">
         <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
