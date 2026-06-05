@@ -36,12 +36,12 @@ export default function AppHeader() {
           href="/"
           className="flex items-center absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 z-10"
         >
-          <div className="relative w-[84px] h-[15px] md:w-[111px] md:h-[20px] min-[1920px]:w-[139px] min-[1920px]:h-[25px]">
+          <div className="relative w-[84px] h-[15px] min-[744px]:w-[111px] min-[744px]:h-[20px] min-[1920px]:w-[139px] min-[1920px]:h-[25px]">
             <Image
               src="/images/logo.png"
               alt="최애의 포토"
               fill
-              sizes="(max-width: 744px) 84px, (max-width: 1920px) 111px, 139px"
+              sizes="(max-width: 743px) 84px, (max-width: 1919px) 111px, 139px"
               priority
               className="object-contain"
             />

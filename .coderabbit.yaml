@@ -49,6 +49,7 @@ reviews:
       instructions: |
         - 하드코딩된 색상/폰트값이 Tailwind 토큰 대신 사용되고 있지 않은지 확인해주세요.
         - 반응형 처리가 누락된 UI 요소가 없는지 검토해주세요.
+        - 이 프로젝트에서는 Stylelint를 사용하지 않으니 관련 피드백은 생략해주세요.
 
   path_filters:
     - '!**/node_modules/**'

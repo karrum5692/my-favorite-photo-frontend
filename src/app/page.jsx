@@ -37,7 +37,6 @@ export default function LandingPage() {
               width={375}
               height={300}
               className="w-full h-auto"
-              priority
             />
           </div>
 
@@ -48,7 +47,6 @@ export default function LandingPage() {
               width={744}
               height={400}
               className="w-full h-auto"
-              priority
             />
           </div>
 
@@ -183,7 +181,6 @@ function FeatureSection({ heading, description, imgName, bgAccent }) {
               alt={currentAlt}
               width={375}
               height={300}
-              priority
               className="w-full h-auto"
             />
           </div>
@@ -194,7 +191,6 @@ function FeatureSection({ heading, description, imgName, bgAccent }) {
               alt={currentAlt}
               width={744}
               height={400}
-              priority
               className="w-full h-auto"
             />
           </div>
