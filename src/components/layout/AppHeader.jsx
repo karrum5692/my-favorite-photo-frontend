@@ -15,9 +15,6 @@ export default function AppHeader() {
 
   return (
     <header className="w-full bg-black border-b border-gray-500 h-20">
-      {/* 반응형 패딩 수정: 
-        모바일(~744px) -> 태블릿(744px~) -> PC(1280px~) -> 대형PC(1920px~) 
-      */}
       <div className="w-full h-full flex items-center justify-between relative px-4 md:px-10 xl:px-20 min-[1920px]:px-32">
         <button
           className="block md:hidden p-1 z-10"
@@ -39,16 +36,11 @@ export default function AppHeader() {
           href="/"
           className="flex items-center absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 z-10"
         >
-          {/* 로고 크기 분기 수정:
-            새로운 해상도 기준에 맞춰 xl(1280px) 대신 2xl(1536px) 또는 min-[1920px]으로 넓혀 조절 가능합니다.
-            여기서는 기존 흐름을 유지하되 크기 변화 시점을 넓혔습니다.
-          */}
           <div className="relative w-[84px] h-[15px] md:w-[111px] md:h-[20px] min-[1920px]:w-[139px] min-[1920px]:h-[25px]">
             <Image
               src="/images/logo.png"
               alt="최애의 포토"
               fill
-              // 변경된 브레이크포인트(744px, 1920px) 적용
               sizes="(max-width: 744px) 84px, (max-width: 1920px) 111px, 139px"
               priority
               className="object-contain"
@@ -67,7 +59,6 @@ export default function AppHeader() {
 function LoggedInMenu({ user }) {
   return (
     <nav className="flex items-center gap-4">
-      {/* user가 null일 때를 대비해 ?를 붙여 안전하게 처리했습니다 */}
       <span className="text-sm text-white font-bold hidden sm:inline">
         {user?.point ? user.point.toLocaleString() : 0} P
       </span>
