@@ -4,13 +4,7 @@ import Image from 'next/image';
 export default function LandingPage() {
   return (
     <main className="bg-black overflow-x-hidden">
-      <section
-        className="relative"
-        style={{
-          background:
-            'radial-gradient(ellipse 100% 70% at 50% 0%, #42195a 0%, #1e0a30 45%, #0f0f0f 80%)',
-        }}
-      >
+      <section className="relative bg-hero-pattern">
         <div className="text-center pt-16 pb-8 px-4 md:pt-20 lg:pt-24">
           <div className="hidden md:flex justify-center mb-4">
             <Image
@@ -35,21 +29,40 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        <picture>
-          <source
-            media="(min-width: 1024px)"
-            srcSet="/images/landing/pc/hero.png"
-          />
-          <source
-            media="(min-width: 744px)"
-            srcSet="/images/landing/tablet/hero.png"
-          />
-          <img
-            src="/images/landing/mobile/hero.png"
-            alt="마켓플레이스 미리보기"
-            className="w-full"
-          />
-        </picture>
+        <div className="w-full">
+          <div className="block md:hidden">
+            <Image
+              src="/images/landing/mobile/hero.png"
+              alt="미리보기"
+              width={375}
+              height={300}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+
+          <div className="hidden md:block lg:hidden">
+            <Image
+              src="/images/landing/tablet/hero.png"
+              alt="미리보기"
+              width={744}
+              height={400}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+
+          <div className="hidden lg:block">
+            <Image
+              src="/images/landing/pc/hero.png"
+              alt="미리보기"
+              width={1920}
+              height={600}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+        </div>
       </section>
 
       <FeatureSection
@@ -60,7 +73,7 @@ export default function LandingPage() {
         }
         description="내 포토카드를 포인트로 팔고, 원하는 포토카드를 포인트로 안전하게 교환하세요"
         imgName="point"
-        bgAccent="rgba(40, 60, 20, 0.3)"
+        bgAccent="var(--color-feature-module)"
       />
 
       <FeatureSection
@@ -72,7 +85,7 @@ export default function LandingPage() {
         }
         description="교환 제안부터 판매 완료까지, 실시간 알림으로 놓치지 마세요"
         imgName="notification"
-        bgAccent="rgba(0, 40, 50, 0.3)"
+        bgAccent="var(--color-feature-module)"
       />
 
       <FeatureSection
@@ -84,18 +97,40 @@ export default function LandingPage() {
         }
         description={`한 시간마다 주어지는 랜덤 상자를 열고,\n포인트를 획득하세요`}
         imgName="random-box"
-        bgAccent="rgba(40, 50, 0, 0.2)"
+        bgAccent="var(--color-feature-random-box)"
       />
 
       <section className="bg-black text-center py-20 px-4">
-        <div className="mb-8 flex justify-center">
-          <Image
-            src="/images/image-sample1.png"
-            alt="포토카드"
-            width={100}
-            height={100}
-            className="rotate-[-8deg] rounded-sm w-[100px] h-auto"
-          />
+        <div className="mb-12 flex justify-center">
+          <div className="block md:hidden">
+            <Image
+              src="/images/landing/mobile/Rectangle.png"
+              alt="포토카드"
+              width={78}
+              height={114}
+              className="rounded-sm w-auto h-auto"
+            />
+          </div>
+
+          <div className="hidden md:block lg:hidden">
+            <Image
+              src="/images/landing/tablet/Rectangle.png"
+              alt="포토카드"
+              width={104}
+              height={151}
+              className="rounded-sm w-auto h-auto"
+            />
+          </div>
+
+          <div className="hidden lg:block">
+            <Image
+              src="/images/landing/pc/Rectangle.png"
+              alt="포토카드"
+              width={104}
+              height={151}
+              className="rounded-sm w-auto h-auto"
+            />
+          </div>
         </div>
 
         <h2 className="text-white font-bold text-2xl md:text-3xl mb-8">
@@ -114,11 +149,16 @@ export default function LandingPage() {
 }
 
 function FeatureSection({ heading, description, imgName, bgAccent }) {
+  const altTexts = {
+    point: '포인트로 안전하게 거래하는 화면',
+    notification: '실시간 알림을 받는 화면',
+    'random-box': '랜덤 상자에서 포인트를 획득하는 화면',
+  };
+
+  const currentAlt = altTexts[imgName] || description;
+
   return (
-    <section
-      className="relative py-20 px-4 md:px-10 lg:px-[250px] overflow-hidden"
-      style={{ backgroundColor: '#0f0f0f' }}
-    >
+    <section className="relative py-20 px-4 md:px-10 lg:px-[250px] overflow-hidden bg-feature-base">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -136,22 +176,39 @@ function FeatureSection({ heading, description, imgName, bgAccent }) {
           </p>
         </div>
 
-        <div className="w-full lg:w-[62%]">
-          <picture>
-            <source
-              media="(min-width: 1024px)"
-              srcSet={`/images/landing/pc/${imgName}.png`}
-            />
-            <source
-              media="(min-width: 744px)"
-              srcSet={`/images/landing/tablet/${imgName}.png`}
-            />
-            <img
+        <div className="w-full">
+          <div className="block md:hidden">
+            <Image
               src={`/images/landing/mobile/${imgName}.png`}
-              alt={imgName}
-              className="w-full"
+              alt={currentAlt}
+              width={375}
+              height={300}
+              priority
+              className="w-full h-auto"
             />
-          </picture>
+          </div>
+
+          <div className="hidden md:block lg:hidden">
+            <Image
+              src={`/images/landing/tablet/${imgName}.png`}
+              alt={currentAlt}
+              width={744}
+              height={400}
+              priority
+              className="w-full h-auto"
+            />
+          </div>
+
+          <div className="hidden lg:block">
+            <Image
+              src={`/images/landing/pc/${imgName}.png`}
+              alt={currentAlt}
+              width={1920}
+              height={600}
+              priority
+              className="w-full h-auto"
+            />
+          </div>
         </div>
       </div>
     </section>
