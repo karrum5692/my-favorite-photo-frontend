@@ -104,13 +104,13 @@ export default function SignUpPage() {
               >
                 <Image
                   src={
-                    showConfirmPassword
+                    showPassword
                       ? '/images/open_eye.png'
                       : '/images/close_eye.png'
                   }
                   width={20}
                   height={20}
-                  alt={showConfirmPassword ? 'open_eye' : 'close_eye'}
+                  alt={showPassword ? 'open_eye' : 'close_eye'}
                 />
               </button>
             </div>

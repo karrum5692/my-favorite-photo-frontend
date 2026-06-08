@@ -80,16 +80,15 @@ export default function LoginPage() {
                 className="absolute right-4 text-neutral-500 hover:text-neutral-300 transition-colors"
                 aria-label="비밀번호 보기 토글"
               >
-                {/* 눈 모양 아이콘 (SVG) */}
                 <Image
                   src={
-                    showConfirmPassword
+                    showPassword
                       ? '/images/open_eye.png'
                       : '/images/close_eye.png'
                   }
                   width={20}
                   height={20}
-                  alt={showConfirmPassword ? 'open_eye' : 'close_eye'}
+                  alt={showPassword ? 'open_eye' : 'close_eye'}
                 />
               </button>
             </div>

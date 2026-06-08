@@ -51,8 +51,6 @@ export async function signupAction(data) {
   }
 
   try {
-    setLoading(true);
-
     const response = await fetch(`${BACKEND_URL}/auth/signup`, {
       method: 'POST',
       headers: {
