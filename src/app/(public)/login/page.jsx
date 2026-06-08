@@ -4,7 +4,10 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { loginAction } from '../../../features/auth/api/authApi';
+import {
+  loginAction,
+  googleLoginAction,
+} from '../../../features/auth/api/authApi';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -106,6 +109,7 @@ export default function LoginPage() {
           {/* Google 로그인 버튼 */}
           <button
             type="button"
+            onClick={googleLoginAction}
             className="w-full py-4 bg-white text-black font-bold rounded text-base flex justify-center items-center gap-2.5 hover:bg-neutral-100 transition-colors"
           >
             <Image

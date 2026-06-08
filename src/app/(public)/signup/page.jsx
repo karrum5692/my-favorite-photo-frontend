@@ -4,7 +4,10 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { signupAction } from '../../../features/auth/api/authApi.js';
+import {
+  signupAction,
+  googleLoginAction,
+} from '../../../features/auth/api/authApi.js';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -159,6 +162,7 @@ export default function SignUpPage() {
           {/* Google 로그인 버튼 */}
           <button
             type="button"
+            onClick={googleLoginAction}
             className="w-full py-4 bg-white text-black font-bold rounded text-base flex justify-center items-center gap-2.5 hover:bg-neutral-100 transition-colors"
           >
             <Image

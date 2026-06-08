@@ -1,6 +1,10 @@
 'use client';
 
-const BACKEND_URL = 'http://localhost:4000'; // 본인의 Node.js 서버 주소
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+if (!BACKEND_URL) {
+  throw new Error('NEXT_PUBLIC_BACKEND_URL 환경변수가 필요합니다.');
+}
 
 // 1. 회원가입 Action
 export async function signupAction(data) {
@@ -114,11 +118,7 @@ export async function loginAction(data) {
   }
 }
 
-// ⭐ 3. 구글 소셜 로그인 Action (추가된 부분)
+// 3. 구글 소셜 로그인 Action
 export function googleLoginAction() {
-  console.log('googleLoginAction 실행됨: 구글 로그인 창으로 이동합니다.');
-
-  // Passport 백엔드의 로그인 시작 라우터로 브라우저 창을 강제 이동시킵니다.
-  // 이 주소로 가야 백엔드(Passport)가 구글 로그인 화면을 띄워줍니다.
   window.location.href = `${BACKEND_URL}/auth/oauth/google`;
 }
