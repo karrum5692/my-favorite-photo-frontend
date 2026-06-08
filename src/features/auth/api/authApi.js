@@ -1,6 +1,10 @@
 'use client';
 
-const BACKEND_URL = 'http://localhost:4000'; // 본인의 Node.js 서버 주소
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+if (!BACKEND_URL) {
+  throw new Error('NEXT_PUBLIC_BACKEND_URL 환경변수가 필요합니다.');
+}
 
 // 1. 회원가입 Action
 export async function signupAction(data) {
