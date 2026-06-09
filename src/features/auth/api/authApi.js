@@ -127,7 +127,7 @@ export async function signupAction(data) {
 
       return {
         success: false,
-        message: error.message || '회원가입에 실패했습니다.',
+        message: '회원가입에 실패했습니다.',
         field: error.field,
         alert: !error.field,
       };
@@ -137,7 +137,7 @@ export async function signupAction(data) {
     return {
       success: false,
       alert: true,
-      message: error.message || '서버와 통신 중 오류가 발생했습니다.',
+      message: '서버와 통신 중 오류가 발생했습니다.',
     };
   }
 }
