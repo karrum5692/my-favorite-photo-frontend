@@ -141,13 +141,6 @@ export async function signupAction(data) {
 export async function loginAction(data) {
   const { email, password } = data;
 
-  if (!email || !password) {
-    return {
-      success: false,
-      message: '이메일과 비밀번호를 모두 입력해주세요.',
-    };
-  }
-
   if (!email) {
     return {
       success: false,
@@ -161,6 +154,13 @@ export async function loginAction(data) {
       success: false,
       field: 'password',
       message: '비밀번호를 입력해주세요.',
+    };
+  }
+
+  if (!email || !password) {
+    return {
+      success: false,
+      message: '이메일과 비밀번호를 모두 입력해주세요.',
     };
   }
 
