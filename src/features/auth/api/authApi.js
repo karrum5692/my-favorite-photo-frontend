@@ -13,7 +13,7 @@ export async function signupAction(data) {
   const trimmedEmail = email.trim();
   const trimmedNickname = nickname.trim();
 
-  if (!trimmedEmail || !trimmedNickname || !password || !passwordConfirm) {
+  if (!trimmedEmail && !trimmedNickname && !password && !passwordConfirm) {
     return {
       success: false,
       alert: true,
@@ -124,14 +124,19 @@ export async function signupAction(data) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || '회원가입에 실패했습니다.');
+
+      return {
+        success: false,
+        message: error.message || '회원가입에 실패했습니다.',
+        field: error.field,
+        alert: !error.field,
+      };
     }
     return { success: true, message: '회원가입이 완료되었습니다.' };
   } catch (error) {
-    console.error(error);
     return {
       success: false,
-      field: 'email',
+      alert: true,
       message: error.message || '서버와 통신 중 오류가 발생했습니다.',
     };
   }
@@ -140,6 +145,14 @@ export async function signupAction(data) {
 // 2. 로그인 Action
 export async function loginAction(data) {
   const { email, password } = data;
+
+  if (!email && !password) {
+    return {
+      success: false,
+      alert: true,
+      message: '이메일과 비밀번호를 모두 입력해주세요.',
+    };
+  }
 
   if (!email) {
     return {
@@ -154,13 +167,6 @@ export async function loginAction(data) {
       success: false,
       field: 'password',
       message: '비밀번호를 입력해주세요.',
-    };
-  }
-
-  if (!email || !password) {
-    return {
-      success: false,
-      message: '이메일과 비밀번호를 모두 입력해주세요.',
     };
   }
 
@@ -179,6 +185,7 @@ export async function loginAction(data) {
         success: false,
         message: result.message || '로그인에 실패했습니다.',
         field: result.field,
+        alert: !result.field,
       };
     }
 
@@ -188,8 +195,11 @@ export async function loginAction(data) {
       accessToken: result.accessToken,
     };
   } catch (error) {
-    console.error(error);
-    return { success: false, message: '서버와 통신 중 오류가 발생했습니다.' };
+    return {
+      success: false,
+      alert: true,
+      message: '서버와 통신 중 오류가 발생했습니다.',
+    };
   }
 }
 
