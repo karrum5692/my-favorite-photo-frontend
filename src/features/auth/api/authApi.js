@@ -127,9 +127,8 @@ export async function signupAction(data) {
 
       return {
         success: false,
-        message: '회원가입에 실패했습니다.',
+        message: error.message,
         field: error.field,
-        alert: !error.field,
       };
     }
     return { success: true, message: '회원가입이 완료되었습니다.' };
