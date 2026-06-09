@@ -148,6 +148,22 @@ export async function loginAction(data) {
     };
   }
 
+  if (!email) {
+    return {
+      success: false,
+      field: 'email',
+      message: '이메일을 입력해주세요.',
+    };
+  }
+
+  if (!password) {
+    return {
+      success: false,
+      field: 'password',
+      message: '비밀번호를 입력해주세요.',
+    };
+  }
+
   try {
     const response = await fetch(`${BACKEND_URL}/auth/login`, {
       method: 'POST',
