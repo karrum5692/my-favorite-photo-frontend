@@ -16,25 +16,47 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
 
   const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    setErrors({
+      email: '',
+      password: '',
+    });
+
     setLoading(true);
+
     const result = await loginAction({ email, password });
+
     setLoading(false);
 
-    if (result.success) {
-      if (result.accessToken) {
-        localStorage.setItem('accessToken', result.accessToken);
+    if (!result.success) {
+      if (result.alert) {
+        alert(result.message);
+        return;
       }
 
-      await queryClient.invalidateQueries({ queryKey: ['user'] });
-      router.push('/');
-    } else {
-      alert(result.message);
+      setErrors((prev) => ({
+        ...prev,
+        [result.field]: result.message,
+      }));
+
+      return;
     }
+
+    if (result.accessToken) {
+      localStorage.setItem('accessToken', result.accessToken);
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ['user'] });
+    router.push('/');
   }
 
   return (
@@ -58,11 +80,22 @@ export default function LoginPage() {
             <label className="block text-sm font-bold text-white">이메일</label>
             <input
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors((prev) => ({
+                  ...prev,
+                  email: '',
+                }));
+              }}
               type="text"
               placeholder="이메일을 입력해 주세요"
-              className="w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] border border-white rounded-[2px] focus:border-[#eaff00] focus:outline-none text-sm placeholder:text-[#555555]"
+              className={`w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] rounded-[2px] focus:outline-none text-sm placeholder:text-[#555555] ${
+                errors.email
+                  ? 'border border-red-500'
+                  : 'border border-white focus:border-[#eaff00]'
+              }`}
             />
+            {errors.email && <p className="text-red-500">{errors.email}</p>}
           </div>
 
           {/* 비밀번호 입력 */}
@@ -71,10 +104,20 @@ export default function LoginPage() {
             <div className="relative flex items-center">
               <input
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors((prev) => ({
+                    ...prev,
+                    password: '',
+                  }));
+                }}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="비밀번호를 입력해 주세요"
-                className="w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] border border-white rounded-[2px] focus:border-[#eaff00] focus:outline-none text-sm placeholder:text-[#555555]"
+                className={`w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] rounded-[2px] focus:outline-none text-sm placeholder:text-[#555555] ${
+                  errors.password
+                    ? 'border border-red-500'
+                    : 'border border-white focus:border-[#eaff00]'
+                }`}
               />
               <button
                 type="button"
@@ -94,6 +137,9 @@ export default function LoginPage() {
                 />
               </button>
             </div>
+            {errors.password && (
+              <p className="text-red-500">{errors.password}</p>
+            )}
           </div>
 
           {/* 로그인 버튼 */}

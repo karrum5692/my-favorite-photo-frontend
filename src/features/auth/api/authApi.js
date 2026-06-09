@@ -162,6 +162,7 @@ export async function loginAction(data) {
       return {
         success: false,
         message: result.message || '로그인에 실패했습니다.',
+        field: result.field,
       };
     }
 
