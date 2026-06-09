@@ -13,45 +13,99 @@ export async function signupAction(data) {
   const trimmedEmail = email.trim();
   const trimmedNickname = nickname.trim();
 
-  if (!trimmedEmail || !trimmedNickname || !password || !passwordConfirm) {
-    return { success: false, message: '모든 항목을 입력해주세요.' };
+  if (!trimmedEmail && !trimmedNickname && !password && !passwordConfirm) {
+    return {
+      success: false,
+      alert: true,
+      message: '모든 항목을 입력해주세요.',
+    };
   }
 
-  // 2. 이메일 형식 검사
+  if (!trimmedEmail) {
+    return {
+      success: false,
+      field: 'email',
+      message: '이메일을 입력해주세요.',
+    };
+  }
+
+  if (!trimmedNickname) {
+    return {
+      success: false,
+      field: 'nickname',
+      message: '닉네임을 입력해주세요.',
+    };
+  }
+
+  if (!password) {
+    return {
+      success: false,
+      field: 'password',
+      message: '비밀번호를 입력해주세요.',
+    };
+  }
+
+  if (!passwordConfirm) {
+    return {
+      success: false,
+      field: 'passwordConfirm',
+      message: '비밀번호 확인을 입력해주세요.',
+    };
+  }
+
+  //  이메일 공백 검사
+  if (/\s/.test(email)) {
+    return {
+      success: false,
+      message: '이메일에는 공백을 사용할 수 없습니다.',
+      field: 'email',
+    };
+  }
+
+  //  이메일 형식 검사
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return { success: false, message: '올바른 이메일 형식이 아닙니다.' };
+    return {
+      success: false,
+      message: '올바른 이메일 형식이 아닙니다.',
+      field: 'email',
+    };
   }
 
-  // 3. 이메일 공백 검사
-  if (/\s/.test(email)) {
-    return { success: false, message: '이메일에는 공백을 사용할 수 없습니다.' };
-  }
-
-  // 4. 닉네임 공백 검사
+  //  닉네임 공백 검사
   if (nickname !== trimmedNickname) {
     return {
       success: false,
       message: '닉네임 앞뒤 공백은 사용할 수 없습니다.',
+      field: 'nickname',
     };
   }
 
-  // 5. 비밀번호 공백 검사
+  //  비밀번호 공백 검사
   if (/\s/.test(password)) {
     return {
       success: false,
       message: '비밀번호에는 공백을 사용할 수 없습니다.',
+      field: 'password',
     };
   }
 
-  // 6. 비밀번호 길이 검사
+  //  비밀번호 길이 검사
   if (password.length < 8) {
-    return { success: false, message: '비밀번호는 8자 이상이어야 합니다.' };
+    return {
+      success: false,
+      message: '비밀번호는 8자 이상이어야 합니다.',
+      field: 'password',
+    };
   }
 
-  // 7. 비밀번호 확인 일치 검사
+  //  비밀번호 확인 일치 검사
   if (password !== passwordConfirm) {
-    return { success: false, message: '비밀번호가 일치하지 않습니다.' };
+    return {
+      success: false,
+      message: '비밀번호가 일치하지 않습니다.',
+      field: 'passwordConfirm',
+    };
   }
 
   try {
@@ -70,12 +124,21 @@ export async function signupAction(data) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || '회원가입에 실패했습니다.');
+
+      return {
+        success: false,
+        message: '회원가입에 실패했습니다.',
+        field: error.field,
+        alert: !error.field,
+      };
     }
     return { success: true, message: '회원가입이 완료되었습니다.' };
   } catch (error) {
-    console.error(error);
-    return { success: false, message: '서버와 통신 중 오류가 발생했습니다.' };
+    return {
+      success: false,
+      alert: true,
+      message: '서버와 통신 중 오류가 발생했습니다.',
+    };
   }
 }
 
@@ -83,10 +146,27 @@ export async function signupAction(data) {
 export async function loginAction(data) {
   const { email, password } = data;
 
-  if (!email || !password) {
+  if (!email && !password) {
     return {
       success: false,
+      alert: true,
       message: '이메일과 비밀번호를 모두 입력해주세요.',
+    };
+  }
+
+  if (!email) {
+    return {
+      success: false,
+      field: 'email',
+      message: '이메일을 입력해주세요.',
+    };
+  }
+
+  if (!password) {
+    return {
+      success: false,
+      field: 'password',
+      message: '비밀번호를 입력해주세요.',
     };
   }
 
@@ -103,7 +183,9 @@ export async function loginAction(data) {
     if (!response.ok) {
       return {
         success: false,
-        message: result.message || '로그인에 실패했습니다.',
+        message: '로그인에 실패했습니다.',
+        field: result.field,
+        alert: !result.field,
       };
     }
 
@@ -113,8 +195,11 @@ export async function loginAction(data) {
       accessToken: result.accessToken,
     };
   } catch (error) {
-    console.error(error);
-    return { success: false, message: '서버와 통신 중 오류가 발생했습니다.' };
+    return {
+      success: false,
+      alert: true,
+      message: '서버와 통신 중 오류가 발생했습니다.',
+    };
   }
 }
 

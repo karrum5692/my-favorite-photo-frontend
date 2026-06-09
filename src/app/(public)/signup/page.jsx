@@ -29,6 +29,13 @@ export default function SignUpPage() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    setErrors({
+      email: '',
+      nickname: '',
+      password: '',
+      passwordConfirm: '',
+    });
+
     setLoading(true);
 
     const formData = { email, nickname, password, passwordConfirm };
@@ -41,7 +48,12 @@ export default function SignUpPage() {
       alert(result.message);
       router.push('/login');
     } else {
-      alert(result.message);
+      if (result.alert) {
+        alert(result.message);
+        return;
+      }
+
+      setErrors((prev) => ({ ...prev, [result.field]: result.message }));
     }
   }
 
@@ -67,9 +79,16 @@ export default function SignUpPage() {
             <input
               type="text"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors((prev) => ({ ...prev, email: '' }));
+              }}
               placeholder="이메일을 입력해 주세요"
-              className="w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] border border-white rounded-[2px] focus:border-[#eaff00] focus:outline-none text-sm placeholder:text-[#555555]"
+              className={`w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] rounded-[2px] focus:outline-none text-sm placeholder:text-[#555555] ${
+                errors.email
+                  ? 'border border-red-500'
+                  : 'border border-white focus:border-[#eaff00]'
+              }`}
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -82,10 +101,20 @@ export default function SignUpPage() {
             <input
               type="text"
               value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
+              onChange={(e) => {
+                setNickname(e.target.value);
+                setErrors((prev) => ({ ...prev, nickname: '' }));
+              }}
               placeholder="닉네임을 입력해 주세요"
-              className="w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] border border-white rounded-[2px] focus:border-[#eaff00] focus:outline-none text-sm placeholder:text-[#555555]"
+              className={`w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] rounded-[2px] focus:outline-none text-sm placeholder:text-[#555555] ${
+                errors.nickname
+                  ? 'border border-red-500'
+                  : 'border border-white focus:border-[#eaff00]'
+              }`}
             />
+            {errors.nickname && (
+              <p className="text-red-500 text-sm mt-1">{errors.nickname}</p>
+            )}
           </div>
 
           {/* 비밀번호 입력 */}
@@ -94,10 +123,17 @@ export default function SignUpPage() {
             <div className="relative flex items-center">
               <input
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors((prev) => ({ ...prev, password: '' }));
+                }}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="8자 이상 입력해 주세요"
-                className="w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] border border-white rounded-[2px] focus:border-[#eaff00] focus:outline-none text-sm placeholder:text-[#555555]"
+                className={`w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] rounded-[2px] focus:outline-none text-sm placeholder:text-[#555555] ${
+                  errors.password
+                    ? 'border border-red-500'
+                    : 'border border-white focus:border-[#eaff00]'
+                }`}
               />
               <button
                 type="button"
@@ -117,6 +153,9 @@ export default function SignUpPage() {
                 />
               </button>
             </div>
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
           </div>
 
           {/* 비밀번호 확인 입력 */}
@@ -125,10 +164,17 @@ export default function SignUpPage() {
             <div className="relative flex items-center">
               <input
                 value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
+                onChange={(e) => {
+                  setPasswordConfirm(e.target.value);
+                  setErrors((prev) => ({ ...prev, passwordConfirm: '' }));
+                }}
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="비밀번호를 한번 더 입력해 주세요"
-                className="w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] border border-white rounded-[2px] focus:border-[#eaff00] focus:outline-none text-sm placeholder:text-[#555555]"
+                className={`w-full max-w-[520px] h-[60px] px-5 py-[18px] bg-[#0f0f0f] rounded-[2px] focus:outline-none text-sm placeholder:text-[#555555] ${
+                  errors.passwordConfirm
+                    ? 'border border-red-500'
+                    : 'border border-white focus:border-[#eaff00]'
+                }`}
               />
               <button
                 type="button"
@@ -148,6 +194,11 @@ export default function SignUpPage() {
                 />
               </button>
             </div>
+            {errors.passwordConfirm && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.passwordConfirm}
+              </p>
+            )}
           </div>
 
           {/* 가입하기 버튼 */}
