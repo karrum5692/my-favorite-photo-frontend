@@ -8,8 +8,10 @@ import {
   loginAction,
   googleLoginAction,
 } from '../../../features/auth/api/authApi';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function LoginPage() {
+  const queryClient = useQueryClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,11 +21,8 @@ export default function LoginPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     setLoading(true);
-
     const result = await loginAction({ email, password });
-
     setLoading(false);
 
     if (result.success) {
@@ -31,7 +30,7 @@ export default function LoginPage() {
         localStorage.setItem('accessToken', result.accessToken);
       }
 
-      alert(result.message);
+      await queryClient.invalidateQueries({ queryKey: ['user'] });
       router.push('/');
     } else {
       alert(result.message);

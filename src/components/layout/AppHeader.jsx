@@ -3,15 +3,44 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import menuIcon from '@/assets/icons/icon-menu.png';
+import alarmIcon from '@/assets/icons/icon-alarm-default.png';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+const fetchUser = async () => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) return null;
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    localStorage.removeItem('accessToken');
+    return null;
+  }
+
+  return res.json();
+};
 
 const useAuth = () => {
-  const isLoggedIn = false;
-  const user = null;
-  return { isLoggedIn, user };
+  const queryClient = useQueryClient();
+
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: fetchUser,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const logout = () => {
+    localStorage.removeItem('accessToken');
+    queryClient.removeQueries({ queryKey: ['user'] });
+  };
+
+  return { isLoggedIn: !!user, user, logout };
 };
 
 export default function AppHeader() {
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn, user, logout } = useAuth();
 
   return (
     <header className="w-full bg-black border-b border-gray-500 h-20">
@@ -49,19 +78,27 @@ export default function AppHeader() {
         </Link>
 
         <div className="z-10">
-          {isLoggedIn ? <LoggedInMenu user={user} /> : <LoggedOutMenu />}
+          {isLoggedIn ? (
+            <LoggedInMenu user={user} logout={logout} />
+          ) : (
+            <LoggedOutMenu />
+          )}
         </div>
       </div>
     </header>
   );
 }
 
-function LoggedInMenu({ user }) {
+function LoggedInMenu({ user, logout }) {
   return (
     <nav className="flex items-center gap-4">
       <span className="text-sm text-white font-bold hidden sm:inline">
         {user?.point ? user.point.toLocaleString() : 0} P
       </span>
+      <Link href="/notifications">
+        <Image src={alarmIcon} alt="알림" width={24} height={24} />
+      </Link>
+
       <Link href="/profile">
         <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
           {user?.profileImageUrl ? (
@@ -77,15 +114,14 @@ function LoggedInMenu({ user }) {
           )}
         </div>
       </Link>
+
       <span className="text-sm text-white hidden md:inline">
         {user ? user.nickname : '로그인을 다시해주세요'}
       </span>
       <span className="text-gray-400 hidden md:inline">|</span>
       <button
-        className="text-sm text-gray-200 hover:text-white transition-colors"
-        onClick={() => {
-          /* TODO: Implement logout */
-        }}
+        className="text-[14px] text-gray-400 hover:text-white transition-colors"
+        onClick={logout}
       >
         로그아웃
       </button>
