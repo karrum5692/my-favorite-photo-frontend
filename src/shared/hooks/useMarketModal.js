@@ -18,7 +18,7 @@ export default function useMarketModal(isOpen) {
       try {
         const token =
           localStorage.getItem('accessToken') || localStorage.getItem('token');
-
+        console.log('토큰:', accessToken);
         if (!token) {
           console.warn('토큰 없음');
           setCards([]);
