@@ -7,13 +7,13 @@ import Providers from './providers';
 const notoSansKR = Noto_Sans_KR({
   subsets: ['latin'],
   weight: ['300', '400', '700'],
-  variable: '--font-sans',
+  variable: '--font-noto-sans-kr',
 });
 
 const baskinsRobbins = localFont({
   src: '../../public/fonts/배스킨라빈스B.otf',
   weight: '700',
-  variable: '--font-display',
+  variable: '--font-baskins',
 });
 
 export const metadata = {
