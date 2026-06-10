@@ -231,9 +231,9 @@ export default function DetailPage() {
 
       {/* 판매자 페이지*/}
       <div className="flex flex-row">
-        <div>카드 1</div>
-        <div>카드 2</div>
-        <div>카드 3</div>
+        <div>교환 카드</div>
+        <div>교환 카드</div>
+        <div>교환 카드</div>
       </div>
     </div>
   );
