@@ -43,8 +43,6 @@ export default function useMarketModal(isOpen) {
 
         const data = await res.json();
 
-        console.log('카드 응답:', data);
-
         setCards(Array.isArray(data) ? data : []);
       } catch (e) {
         console.error('카드 로딩 실패:', e);
