@@ -33,7 +33,8 @@ const useAuth = () => {
 
   const logout = () => {
     localStorage.removeItem('accessToken');
-    queryClient.removeQueries({ queryKey: ['user'] });
+    queryClient.setQueryData(['user'], null);
+    queryClient.removeQueries({ queryKey: ['notifications'] });
   };
 
   return { isLoggedIn: !!user, user, logout };

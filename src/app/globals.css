@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+@theme inline {
+  --font-sans: var(--font-noto-sans-kr);
+  --font-display: var(--font-baskins);
+}
+
 @theme {
   /* Gray Scale */
   --color-black: #0f0f0f;
@@ -18,8 +23,9 @@
   --color-main: #efff04;
 
   /* Gradation colors */
-  --color-feature-module: rgba(40, 60, 20, 0.3);
-  --color-feature-random-box: rgba(40, 50, 0, 0.2);
+  --color-feature-module: rgba(239, 255, 4, 0.14);
+  --color-feature-notification: rgba(41, 201, 249, 0.16);
+  --color-feature-random-box: rgba(190, 255, 40, 0.12);
 
   /* Background colors */
   --background-image-hero-pattern: radial-gradient(
@@ -34,6 +40,7 @@
   body {
     background-color: var(--color-black);
     color: var(--color-white);
+    font-family: var(--font-sans);
   }
 
   * {

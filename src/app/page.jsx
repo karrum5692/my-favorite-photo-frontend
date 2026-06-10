@@ -66,36 +66,42 @@ export default function LandingPage() {
       <FeatureSection
         heading={
           <>
-            포인트로 <span className="font-bold">안전하게 거래하세요</span>
+            포인트로 <span className="font-bold text-main">안전하게 거래</span>
+            하세요
           </>
         }
-        description="내 포토카드를 포인트로 팔고, 원하는 포토카드를 포인트로 안전하게 교환하세요"
+        description={`내 포토카드를 포인트로 팔고, 원하는 포토카드를\n포인트로 안전하게 교환하세요`}
         imgName="point"
-        bgAccent="var(--color-feature-module)"
+        bgAccent="#efff04"
+        glowType="circle"
+        glowPosition="right"
       />
 
       <FeatureSection
         heading={
           <>
-            알림으로 보다 <span className="text-main font-bold">빨라진</span>{' '}
-            거래
+            알림으로 보다{' '}
+            <span className="text-blue font-bold">빨라진 거래</span>
           </>
         }
-        description="교환 제안부터 판매 완료까지, 실시간 알림으로 놓치지 마세요"
+        description={`교환 제안부터 판매 완료까지,\n실시간 알림으로 놓치지 마세요`}
         imgName="notification"
-        bgAccent="var(--color-feature-module)"
+        bgAccent="#29c9f9"
+        glowType="circle"
+        glowPosition="left"
       />
 
       <FeatureSection
         heading={
           <>
-            랜덤 상자로 <span className="text-main font-bold">포인트</span>{' '}
-            받자! 🎉
+            랜덤 상자로{' '}
+            <span className="text-main font-bold">포인트 받자! 🎉</span>
           </>
         }
         description={`한 시간마다 주어지는 랜덤 상자를 열고,\n포인트를 획득하세요`}
         imgName="random-box"
-        bgAccent="var(--color-feature-random-box)"
+        bgAccent="#efff04"
+        glowType="gradient"
       />
 
       <section className="bg-black text-center py-20 px-4">
@@ -110,17 +116,7 @@ export default function LandingPage() {
             />
           </div>
 
-          <div className="hidden md:block lg:hidden">
-            <Image
-              src="/images/landing/tablet/Rectangle.png"
-              alt="포토카드"
-              width={104}
-              height={151}
-              className="rounded-sm w-auto h-auto"
-            />
-          </div>
-
-          <div className="hidden lg:block">
+          <div className="hidden md:block">
             <Image
               src="/images/landing/pc/Rectangle.png"
               alt="포토카드"
@@ -146,26 +142,56 @@ export default function LandingPage() {
   );
 }
 
-function FeatureSection({ heading, description, imgName, bgAccent }) {
+function FeatureSection({
+  heading,
+  description,
+  imgName,
+  bgAccent,
+  glowType = 'circle',
+  glowPosition = 'center',
+}) {
   const altTexts = {
     point: '포인트로 안전하게 거래하는 화면',
     notification: '실시간 알림을 받는 화면',
     'random-box': '랜덤 상자에서 포인트를 획득하는 화면',
   };
 
-  const currentAlt = altTexts[imgName] || description;
+  const currentAlt = altTexts[imgName] || '기능 미리보기 화면';
 
   return (
-    <section className="relative py-20 px-4 md:px-10 lg:px-[250px] overflow-hidden bg-feature-base">
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse 60% 60% at 70% 50%, ${bgAccent} 0%, transparent 70%)`,
-        }}
-      />
+    <section className="relative py-20 px-4 md:px-10 lg:px-0 overflow-hidden bg-black">
+      {glowType === 'circle' ? (
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: 'min(900px, 90vw)',
+            aspectRatio: '1 / 1',
+            bottom: 'max(-450px, -45vw)',
+            left:
+              glowPosition === 'left'
+                ? '-15%'
+                : glowPosition === 'right'
+                  ? 'auto'
+                  : '50%',
+            right: glowPosition === 'right' ? '-15%' : 'auto',
+            transform: glowPosition === 'center' ? 'translateX(-50%)' : 'none',
+            background: `linear-gradient(180deg, ${bgAccent} 0%, #0f0f0f 100%)`,
+            border: `2px solid color-mix(in srgb, ${bgAccent} 60%, rgba(102, 102, 102, 0.4))`,
+            boxShadow: 'inset 0 0 50px rgba(255, 255, 255, 0.1)',
+            opacity: 0.4,
+          }}
+        />
+      ) : (
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `linear-gradient(0deg, color-mix(in srgb, ${bgAccent} 22%, transparent) 0%, transparent 65%)`,
+          }}
+        />
+      )}
 
-      <div className="relative flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-        <div className="w-full lg:w-[38%] flex-shrink-0 text-center lg:text-left">
+      <div className="relative mx-auto w-full max-w-[1100px]">
+        <div className="text-left mb-10 md:mb-14 lg:px-0 px-2">
           <h2 className="text-white font-bold leading-snug mb-4 text-2xl md:text-3xl lg:text-4xl">
             {heading}
           </h2>
@@ -174,8 +200,8 @@ function FeatureSection({ heading, description, imgName, bgAccent }) {
           </p>
         </div>
 
-        <div className="w-full">
-          <div className="block md:hidden">
+        <div className="w-full flex justify-center">
+          <div className="block md:hidden w-full">
             <Image
               src={`/images/landing/mobile/${imgName}.png`}
               alt={currentAlt}
@@ -185,7 +211,7 @@ function FeatureSection({ heading, description, imgName, bgAccent }) {
             />
           </div>
 
-          <div className="hidden md:block lg:hidden">
+          <div className="hidden md:block lg:hidden w-full">
             <Image
               src={`/images/landing/tablet/${imgName}.png`}
               alt={currentAlt}
@@ -195,13 +221,12 @@ function FeatureSection({ heading, description, imgName, bgAccent }) {
             />
           </div>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:block w-full">
             <Image
               src={`/images/landing/pc/${imgName}.png`}
               alt={currentAlt}
-              width={1920}
-              height={600}
-              priority
+              width={1100}
+              height={620}
               className="w-full h-auto"
             />
           </div>
