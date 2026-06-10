@@ -40,3 +40,7 @@
     box-sizing: border-box;
   }
 }
+
+@utility bg-feature-base {
+  background-color: #0f0f0f;
+}
