@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 import searchIcon from '@/assets/icons/icon-search.png';
 import closeIcon from '@/assets/icons/icon-close.png';
+import filterIcon from '@/assets/icons/icon-filter.png';
 
 export default function MarketModal({
   isOpen,
@@ -22,11 +23,13 @@ export default function MarketModal({
   children,
 }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   if (!isOpen) return null;
 
   const handleClose = () => {
     setActiveDropdown(null);
+    setMobileFilterOpen(false);
     onClose?.();
   };
 
@@ -52,87 +55,145 @@ export default function MarketModal({
             flex-col
             overflow-hidden
             relative
-            font-[var(--font-sans)]
           "
         >
           {/* CLOSE */}
           <button
             onClick={handleClose}
-            className="
-              absolute
-              top-4
-              right-4
-              z-50
-              w-9
-              h-9
-              cursor-pointer
-            "
+            className="absolute top-4 right-4 z-50 w-9 h-9"
           >
-            <Image
-              src={closeIcon}
-              alt="닫기"
-              width={36}
-              height={36}
-              className="w-full h-full"
-            />
+            <Image src={closeIcon} alt="닫기" width={36} height={36} />
           </button>
 
-          {/* SCROLL */}
+          {/* ================= SCROLL AREA ================= */}
           <div
             className="
               flex-1
               overflow-y-auto
+
               [&::-webkit-scrollbar]:w-[8px]
+              [&::-webkit-scrollbar-track]:bg-transparent
               [&::-webkit-scrollbar-thumb]:bg-[#5A5A5A]
               [&::-webkit-scrollbar-thumb]:rounded-[2px]
             "
           >
             <div className="mx-auto w-[345px] md:w-[704px] xl:w-[920px] py-8">
               {/* TOP TEXT */}
-              <div
-                style={{ fontFamily: 'var(--font-display)' }}
-                className="
-                  text-gray-300
-                  text-[14px]
-                  md:text-[16px]
-                  xl:text-[24px]
-                  mb-5
-                  mt-5
-                "
-              >
+              <div className="text-gray-300 text-[14px] md:text-[16px] xl:text-[24px] mb-5 mt-5">
                 {titleTop}
               </div>
 
               {/* MAIN TITLE */}
-              <h2
-                style={{ fontFamily: 'var(--font-display)' }}
-                className="
-                  text-white
-                  text-[26px]
-                  md:text-[40px]
-                  xl:text-[46px]
-                  font-bold
-                  border-b
-                  border-white
-                  pb-5
-                  mb-6
-                "
-              >
+              <h2 className="text-white text-[26px] md:text-[40px] xl:text-[46px] font-bold border-b border-white pb-5 mb-6">
                 {titleMain}
               </h2>
 
-              {/* SEARCH + FILTER */}
-              <div className="flex items-center gap-4 mb-6 flex-wrap">
-                {/* SEARCH */}
+              {/* ================= SEARCH + FILTER ================= */}
+              <div className="relative">
+                {/* ================= MOBILE ================= */}
+                <div className="md:hidden flex items-center gap-2 w-full">
+                  {/* FILTER ICON */}
+                  <button
+                    onClick={() => setMobileFilterOpen((v) => !v)}
+                    className="w-8 h-8 flex items-center justify-center"
+                  >
+                    <Image
+                      src={filterIcon}
+                      alt="filter"
+                      width={18}
+                      height={18}
+                    />
+                  </button>
+
+                  {/* SEARCH */}
+                  <div className="relative flex-1">
+                    <input
+                      value={searchValue}
+                      onChange={onSearchChange}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') onSearch?.();
+                      }}
+                      placeholder="검색"
+                      className="
+                        w-full
+                        h-[40px]
+                        px-4
+                        pr-10
+                        bg-[#0F0F0F]
+                        border border-[#DDD]
+                        text-white
+                        rounded-[2px]
+                      "
+                    />
+
+                    <button
+                      onClick={onSearch}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      <Image
+                        src={searchIcon}
+                        alt="검색"
+                        width={18}
+                        height={18}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* ================= MOBILE FILTER OVERLAY ================= */}
+                {mobileFilterOpen && (
+                  <>
+                    {/* dim background */}
+                    <div
+                      className="fixed inset-0 bg-black/40 z-40"
+                      onClick={() => setMobileFilterOpen(false)}
+                    />
+
+                    {/* floating filter panel */}
+                    <div
+                      className="
+                        absolute
+                        left-0
+                        right-0
+                        top-[60px]
+                        z-50
+                        bg-[#0F0F0F]
+                        border border-white
+                        rounded-[2px]
+                        p-3
+                        shadow-lg
+                      "
+                    >
+                      {filters.map((filter) => (
+                        <div key={filter.label} className="mb-3 last:mb-0">
+                          <div className="text-white text-sm mb-1">
+                            {filter.label}
+                          </div>
+
+                          <select
+                            value={filter.value}
+                            onChange={(e) => filter.onChange(e.target.value)}
+                            className="w-full bg-black text-white p-2 border border-gray-700 rounded"
+                          >
+                            {filter.options.map((item) => (
+                              <option key={item} value={item}>
+                                {item}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* ================= DESKTOP ================= */}
+              <div className="hidden md:flex items-center gap-4 mt-6">
                 <div className="relative w-[320px]">
                   <input
                     value={searchValue}
                     onChange={onSearchChange}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        onSearch?.();
-                      }
-                    }}
                     placeholder="검색"
                     className="
                       w-full
@@ -140,30 +201,20 @@ export default function MarketModal({
                       px-5
                       pr-10
                       bg-[#0F0F0F]
-                      border
-                      border-[#DDD]
+                      border border-[#DDD]
                       text-white
                       rounded-[2px]
-                      outline-none
-                      font-[var(--font-sans)]
                     "
                   />
 
                   <button
                     onClick={onSearch}
-                    className="
-                      absolute
-                      right-3
-                      top-1/2
-                      -translate-y-1/2
-                      cursor-pointer
-                    "
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
                   >
                     <Image src={searchIcon} alt="검색" width={20} height={20} />
                   </button>
                 </div>
 
-                {/* FILTERS */}
                 {filters.map((filter) => (
                   <FilterDropdown
                     key={filter.label}
@@ -182,7 +233,7 @@ export default function MarketModal({
               </div>
 
               {/* CONTENT */}
-              {children}
+              <div className="mt-6">{children}</div>
             </div>
           </div>
         </div>
@@ -191,40 +242,16 @@ export default function MarketModal({
   );
 }
 
-function FilterDropdown({ label, value, options, onChange, open, onToggle }) {
+/* ================= DESKTOP FILTER ================= */
+function FilterDropdown({ label, options, onChange, open, onToggle }) {
   return (
-    <div className="relative font-[var(--font-sans)]">
-      <button
-        onClick={onToggle}
-        className="
-          text-white
-          flex
-          items-center
-          gap-1
-          text-[14px]
-          md:text-[16px]
-          xl:text-[18px]
-          cursor-pointer
-        "
-      >
-        <span>{label}</span>
-        <span>{open ? '▲' : '▼'}</span>
+    <div className="relative text-white">
+      <button onClick={onToggle} className="flex items-center gap-1">
+        {label} <span>{open ? '▲' : '▼'}</span>
       </button>
 
       {open && (
-        <div
-          className="
-            absolute
-            top-full
-            mt-2
-            bg-[#0F0F0F]
-            border
-            border-white
-            rounded-[2px]
-            z-50
-            min-w-[160px]
-          "
-        >
+        <div className="absolute top-full mt-2 bg-[#0F0F0F] border border-white z-50">
           {options.map((item) => (
             <button
               key={item}
@@ -232,17 +259,7 @@ function FilterDropdown({ label, value, options, onChange, open, onToggle }) {
                 onChange(item);
                 onToggle();
               }}
-              className="
-                block
-                w-full
-                text-left
-                px-4
-                py-2
-                text-white
-                hover:bg-[#1A1A1A]
-                whitespace-nowrap
-                cursor-pointer
-              "
+              className="block px-4 py-2 hover:bg-[#1A1A1A]"
             >
               {item}
             </button>
