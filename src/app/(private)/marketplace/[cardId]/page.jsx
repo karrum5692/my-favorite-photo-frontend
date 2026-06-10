@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
@@ -11,20 +11,18 @@ import plus from './plus.png';
 import Button from '@/components/ui/Button';
 
 export default function DetailPage() {
+  // const queryClient = useQueryClient();
+
   const { cardId } = useParams();
 
-  const [card, setCard] = useState(null);
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
-
-  // const {
-  //   data: card,
-  //   isPending,
-  //   error,
-  // } = useQuery({
-  //   queryKey: ['card', id],
-  //   queryFn: () => getCard(cardId),
-  // });
+  const {
+    data: card,
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ['card', cardId],
+    queryFn: () => getCard(cardId),
+  });
 
   //판매 카드 상세 조회
   const getCard = async (cardId) => {
@@ -34,32 +32,10 @@ export default function DetailPage() {
       throw new Error('서버로부터 데이터를 가져오는데 실패하였습니다.');
     }
 
-    const card = await res.json();
+    const cards = await res.json();
 
-    return setCard(card.data);
+    return cards.data;
   };
-
-  useEffect(
-    function () {
-      const fetchCard = async () => {
-        try {
-          setIsPending(true);
-          setError(null);
-          await getCard(cardId);
-        } catch (error) {
-          setError(error.message);
-        } finally {
-          setIsPending(false);
-        }
-      };
-      fetchCard();
-    },
-    [cardId]
-  );
-
-  if (!card) {
-    return null;
-  }
 
   if (isPending) {
     return <div>로딩중입니다....</div>;
@@ -67,6 +43,10 @@ export default function DetailPage() {
 
   if (error) {
     return <div>{error}</div>;
+  }
+
+  if (!card) {
+    return null;
   }
 
   let saleColor = 'text-white';
@@ -112,6 +92,8 @@ export default function DetailPage() {
             alt={card.photoCard.template.title}
             width={960}
             height={720}
+            loading="eager"
+            priority
           />
         </div>
 
