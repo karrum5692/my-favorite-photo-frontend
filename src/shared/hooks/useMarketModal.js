@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useMemo, useState } from 'react';
 
 export default function useMarketModal(isOpen) {
@@ -14,50 +16,62 @@ export default function useMarketModal(isOpen) {
 
     const fetchCards = async () => {
       try {
+        const token =
+          localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+        if (!token) {
+          console.warn('토큰 없음');
+          setCards([]);
+          return;
+        }
+
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/me/cards`,
           {
-            credentials: 'include',
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 
+        if (!res.ok) {
+          console.error('API 실패:', res.status);
+          setCards([]);
+          return;
+        }
+
         const data = await res.json();
 
-        setCards(data.cards ?? data ?? []);
-      } catch (error) {
-        console.error(error);
+        console.log('카드 응답:', data);
+
+        setCards(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.error('카드 로딩 실패:', e);
+        setCards([]);
       }
     };
 
     fetchCards();
   }, [isOpen]);
 
-  const handleSearch = () => {
-    setSearch(searchInput);
-  };
-
-  const resetFilters = () => {
-    setSearchInput('');
-    setSearch('');
-    setSelectedGrade('전체');
-    setSelectedGenre('전체');
-  };
-
   const filteredCards = useMemo(() => {
-    let result = [...cards];
+    const safe = Array.isArray(cards) ? cards : [];
+
+    let result = [...safe];
 
     if (search.trim()) {
-      result = result.filter((card) =>
-        card.title?.toLowerCase().includes(search.toLowerCase())
+      result = result.filter((c) =>
+        c.title?.toLowerCase().includes(search.toLowerCase())
       );
     }
 
     if (selectedGrade !== '전체') {
-      result = result.filter((card) => card.grade === selectedGrade);
+      result = result.filter((c) => c.grade === selectedGrade);
     }
 
     if (selectedGenre !== '전체') {
-      result = result.filter((card) => card.genre === selectedGenre);
+      result = result.filter((c) => c.genre === selectedGenre);
     }
 
     return result;
@@ -65,17 +79,13 @@ export default function useMarketModal(isOpen) {
 
   return {
     cards: filteredCards,
-
     searchInput,
     setSearchInput,
-    handleSearch,
-
+    search,
+    setSearch,
     selectedGrade,
     setSelectedGrade,
-
     selectedGenre,
     setSelectedGenre,
-
-    resetFilters,
   };
 }
