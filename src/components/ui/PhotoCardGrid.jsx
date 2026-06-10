@@ -1,3 +1,5 @@
+'use client';
+
 import PhotoCardItem from '@/components/ui/PhotoCardItem';
 
 export default function PhotoCardGrid({ cards = [] }) {
@@ -5,7 +7,7 @@ export default function PhotoCardGrid({ cards = [] }) {
     <div
       className="
         grid grid-cols-2
-        gap-[5px]
+        gap-[10px]
         md:gap-[20px]
         lg:gap-[40px]
         justify-center

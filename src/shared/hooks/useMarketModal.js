@@ -18,7 +18,7 @@ export default function useMarketModal(isOpen) {
       try {
         const token =
           localStorage.getItem('accessToken') || localStorage.getItem('token');
-        console.log('토큰:', accessToken);
+
         if (!token) {
           console.warn('토큰 없음');
           setCards([]);
@@ -43,6 +43,8 @@ export default function useMarketModal(isOpen) {
 
         const data = await res.json();
 
+        console.log('카드 데이터', data);
+
         setCards(Array.isArray(data) ? data : []);
       } catch (e) {
         console.error('카드 로딩 실패:', e);
@@ -53,23 +55,34 @@ export default function useMarketModal(isOpen) {
     fetchCards();
   }, [isOpen]);
 
+  const handleSearch = () => {
+    setSearch(searchInput);
+  };
+
+  const resetFilters = () => {
+    setSearchInput('');
+    setSearch('');
+    setSelectedGrade('전체');
+    setSelectedGenre('전체');
+  };
+
   const filteredCards = useMemo(() => {
     const safe = Array.isArray(cards) ? cards : [];
 
     let result = [...safe];
 
     if (search.trim()) {
-      result = result.filter((c) =>
-        c.title?.toLowerCase().includes(search.toLowerCase())
+      result = result.filter((card) =>
+        card.title?.toLowerCase().includes(search.trim().toLowerCase())
       );
     }
 
     if (selectedGrade !== '전체') {
-      result = result.filter((c) => c.grade === selectedGrade);
+      result = result.filter((card) => card.grade === selectedGrade);
     }
 
     if (selectedGenre !== '전체') {
-      result = result.filter((c) => c.genre === selectedGenre);
+      result = result.filter((card) => card.genre === selectedGenre);
     }
 
     return result;
@@ -77,12 +90,19 @@ export default function useMarketModal(isOpen) {
 
   return {
     cards: filteredCards,
+
     searchInput,
     setSearchInput,
+
     search,
     setSearch,
+
+    handleSearch,
+    resetFilters,
+
     selectedGrade,
     setSelectedGrade,
+
     selectedGenre,
     setSelectedGenre,
   };

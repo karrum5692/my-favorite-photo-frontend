@@ -10,16 +10,12 @@ import filterIcon from '@/assets/icons/icon-filter.png';
 export default function MarketModal({
   isOpen,
   onClose,
-
   titleTop,
   titleMain,
-
   searchValue,
   onSearchChange,
   onSearch,
-
   filters = [],
-
   children,
 }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -57,7 +53,6 @@ export default function MarketModal({
             relative
           "
         >
-          {/* CLOSE */}
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 z-50 w-9 h-9"
@@ -65,34 +60,18 @@ export default function MarketModal({
             <Image src={closeIcon} alt="닫기" width={36} height={36} />
           </button>
 
-          {/* ================= SCROLL AREA ================= */}
-          <div
-            className="
-              flex-1
-              overflow-y-auto
-
-              [&::-webkit-scrollbar]:w-[8px]
-              [&::-webkit-scrollbar-track]:bg-transparent
-              [&::-webkit-scrollbar-thumb]:bg-[#5A5A5A]
-              [&::-webkit-scrollbar-thumb]:rounded-[2px]
-            "
-          >
+          <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#5A5A5A] [&::-webkit-scrollbar-thumb]:rounded-[2px]">
             <div className="mx-auto w-[345px] md:w-[704px] xl:w-[920px] py-8">
-              {/* TOP TEXT */}
               <div className="text-gray-300 text-[14px] md:text-[16px] xl:text-[24px] mb-5 mt-5">
                 {titleTop}
               </div>
 
-              {/* MAIN TITLE */}
               <h2 className="text-white text-[26px] md:text-[40px] xl:text-[46px] font-bold border-b border-white pb-5 mb-6">
                 {titleMain}
               </h2>
 
-              {/* ================= SEARCH + FILTER ================= */}
               <div className="relative">
-                {/* ================= MOBILE ================= */}
                 <div className="md:hidden flex items-center gap-2 w-full">
-                  {/* FILTER ICON */}
                   <button
                     onClick={() => setMobileFilterOpen((v) => !v)}
                     className="w-8 h-8 flex items-center justify-center"
@@ -105,7 +84,6 @@ export default function MarketModal({
                     />
                   </button>
 
-                  {/* SEARCH */}
                   <div className="relative flex-1">
                     <input
                       value={searchValue}
@@ -114,16 +92,7 @@ export default function MarketModal({
                         if (e.key === 'Enter') onSearch?.();
                       }}
                       placeholder="검색"
-                      className="
-                        w-full
-                        h-[40px]
-                        px-4
-                        pr-10
-                        bg-[#0F0F0F]
-                        border border-[#DDD]
-                        text-white
-                        rounded-[2px]
-                      "
+                      className="w-full h-[40px] px-4 pr-10 bg-[#0F0F0F] border border-[#DDD] text-white rounded-[2px]"
                     />
 
                     <button
@@ -140,30 +109,14 @@ export default function MarketModal({
                   </div>
                 </div>
 
-                {/* ================= MOBILE FILTER OVERLAY ================= */}
                 {mobileFilterOpen && (
                   <>
-                    {/* dim background */}
                     <div
                       className="fixed inset-0 bg-black/40 z-40"
                       onClick={() => setMobileFilterOpen(false)}
                     />
 
-                    {/* floating filter panel */}
-                    <div
-                      className="
-                        absolute
-                        left-0
-                        right-0
-                        top-[60px]
-                        z-50
-                        bg-[#0F0F0F]
-                        border border-white
-                        rounded-[2px]
-                        p-3
-                        shadow-lg
-                      "
-                    >
+                    <div className="absolute left-0 right-0 top-[60px] z-50 bg-[#0F0F0F] border border-white rounded-[2px] p-3 shadow-lg">
                       {filters.map((filter) => (
                         <div key={filter.label} className="mb-3 last:mb-0">
                           <div className="text-white text-sm mb-1">
@@ -188,23 +141,16 @@ export default function MarketModal({
                 )}
               </div>
 
-              {/* ================= DESKTOP ================= */}
               <div className="hidden md:flex items-center gap-4 mt-6">
                 <div className="relative w-[320px]">
                   <input
                     value={searchValue}
                     onChange={onSearchChange}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') onSearch?.();
+                    }}
                     placeholder="검색"
-                    className="
-                      w-full
-                      h-[45px]
-                      px-5
-                      pr-10
-                      bg-[#0F0F0F]
-                      border border-[#DDD]
-                      text-white
-                      rounded-[2px]
-                    "
+                    className="w-full h-[45px] px-5 pr-10 bg-[#0F0F0F] border border-[#DDD] text-white rounded-[2px]"
                   />
 
                   <button
@@ -232,8 +178,21 @@ export default function MarketModal({
                 ))}
               </div>
 
-              {/* CONTENT */}
-              <div className="mt-6">{children}</div>
+              <div
+                className="
+                  mt-6
+                  h-[500px]
+                  md:h-[700px]
+                  xl:h-[650px]
+                  overflow-y-auto
+                  [&::-webkit-scrollbar]:w-[8px]
+                  [&::-webkit-scrollbar-track]:bg-transparent
+                  [&::-webkit-scrollbar-thumb]:bg-[#5A5A5A]
+                  [&::-webkit-scrollbar-thumb]:rounded-[2px]
+                "
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>
@@ -242,7 +201,6 @@ export default function MarketModal({
   );
 }
 
-/* ================= DESKTOP FILTER ================= */
 function FilterDropdown({ label, options, onChange, open, onToggle }) {
   return (
     <div className="relative text-white">
