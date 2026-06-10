@@ -2,18 +2,21 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 
-import minus from './minus.png';
-import plus from './plus.png';
+import minus from '../../../../../public/images/minus.png';
+import plus from '../../../../../public/images/plus.png';
 
 import Button from '@/components/ui/Button';
+import EditModal from '@/features/marketplace/components/EditModal';
 
 export default function DetailPage() {
   // const queryClient = useQueryClient();
 
   const { cardId } = useParams();
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const {
     data: card,
@@ -26,7 +29,9 @@ export default function DetailPage() {
 
   //판매 카드 상세 조회
   const getCard = async (cardId) => {
-    const res = await fetch(`http://localhost:4000/market/cards/${cardId}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`
+    );
 
     if (!res.ok) {
       throw new Error('서버로부터 데이터를 가져오는데 실패하였습니다.');
@@ -42,7 +47,7 @@ export default function DetailPage() {
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div>{error.message}</div>;
   }
 
   if (!card) {
@@ -71,6 +76,32 @@ export default function DetailPage() {
     tradeColor = 'text-purple';
   } else {
     tradeColor = 'text-red';
+  }
+
+  async function handlePurchase(cardId) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}/purchase`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      }
+    );
+    if (!res.ok) {
+      throw new Error('서버로부터 구매하기를 실패하였습니다.');
+    }
+  }
+
+  async function handleCancel(cardId) {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
+      {
+        method: 'DELETE',
+      }
+    );
+    if (!res.ok) {
+      throw new Error('서버로부터 판매글 내리기에 실패하였습니다.');
+    }
   }
 
   return (
@@ -184,13 +215,32 @@ export default function DetailPage() {
               </div>
             </div>
           </div>
-          <Button variant="primary" height="80">
+
+          <Button variant="primary" height="80" onClick={handlePurchase}>
             포토카드 구매하기
           </Button>
+
           {/* 판매자 페이지에서는 "수정하기"로 변경 */}
+          <Button
+            variant="primary"
+            height="80"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+          >
+            수정하기
+          </Button>
+
+          {isOpen && (
+            <EditModal
+              onClose={() => {
+                setIsOpen(false);
+              }}
+            />
+          )}
 
           {/* 판매자 페이지*/}
-          <Button variant="secondary" height="80">
+          <Button variant="secondary" height="80" onClick={handleCancel}>
             취소하기
           </Button>
         </div>
@@ -202,7 +252,7 @@ export default function DetailPage() {
           </span>
           <div style={{ width: '440px' }}>
             <Button variant="primary" height="60">
-              확인하기
+              포토카드 교환하기
             </Button>
           </div>
         </div>
