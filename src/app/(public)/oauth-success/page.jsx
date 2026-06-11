@@ -12,9 +12,11 @@ export default function OAuthSuccessPage() {
 
     if (token) {
       localStorage.setItem('accessToken', token);
+      router.replace('/');
+      return;
     }
 
-    router.replace('/');
+    router.replace('/login');
   }, [router, searchParams]);
 
   return <div>로그인 처리 중...</div>;
