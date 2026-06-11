@@ -27,9 +27,11 @@ export async function getNotifications() {
 
     if (res.status === 401) {
       localStorage.removeItem('accessToken');
+
+      alert('로그인이 만료되었습니다.');
       window.location.href = '/login';
 
-      throw new Error('로그인이 만료되었습니다.');
+      return;
     }
 
     if (!res.ok) {
