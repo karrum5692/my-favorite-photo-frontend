@@ -41,7 +41,6 @@ export default function DetailPage() {
 
   const {
     data: card,
-    isSeller,
     isPending,
     error,
   } = useQuery({
@@ -49,8 +48,7 @@ export default function DetailPage() {
     queryFn: () => getCard(cardId),
   });
 
-  const [quantity, setQuantity] = useState(card.remainQuantity);
-  const [price, setPrice] = useState(card?.price);
+  const [quantity, setQuantity] = useState(1);
 
   if (isPending) {
     return <div>로딩중입니다....</div>;
@@ -92,31 +90,49 @@ export default function DetailPage() {
   const plusQunatity = (prev) => Math.min(card.quantity, prev + 1);
 
   async function handlePurchase(cardId) {
+    const token =
+      localStorage.getItem('accessToken') || localStorage.getItem('token');
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}/purchase`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           quantity,
-          price,
+          price: quantity * card.price,
         }),
       }
     );
+
     if (!res.ok) {
-      throw new Error('서버로부터 구매하기를 실패하였습니다.');
+      const { message } = await res.json();
+      alert(message);
     }
+
+    alert('구매하기 성공하였습니다.');
   }
 
   async function handleCancel(cardId) {
+    const token =
+      localStorage.getItem('accessToken') || localStorage.getItem('token');
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
       {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     if (!res.ok) {
-      throw new Error('서버로부터 판매글 내리기에 실패하였습니다.');
+      const { message } = await res.json();
+      throw new Error(message);
     }
   }
 
@@ -233,15 +249,15 @@ export default function DetailPage() {
               </span>
               <div className="flex flex-row items-center justify-between gap-[10px]">
                 <span className="flex h-[24px] items-center justify-center text-white text-[20px] font-normal">
-                  {card.remainQuantity * card.price}P
+                  {quantity * card.price}P
                 </span>
                 <span className="flex items-center justify-center h-[22px] text-gray-300 text-right text-[18px] font-normal">
-                  ({card.remainQuantity})장
+                  ({quantity})장
                 </span>
               </div>
             </div>
           </div>
-          {isSeller ? (
+          {card.isSeller ? (
             <>
               <Button
                 variant="primary"
@@ -274,7 +290,7 @@ export default function DetailPage() {
                 variant="secondary"
                 height="80"
                 className="cursor-pointer"
-                onClick={handleCancel}
+                onClick={() => handleCancel(cardId)}
               >
                 취소하기
               </Button>
@@ -284,7 +300,7 @@ export default function DetailPage() {
               variant="primary"
               height="80"
               className="cursor-pointer"
-              onClick={handlePurchase}
+              onClick={() => handlePurchase(cardId)}
             >
               포토카드 구매하기
             </Button>
@@ -305,7 +321,7 @@ export default function DetailPage() {
         <p className="border border-white"></p>
       </div>
 
-      {isSeller ? (
+      {card.isSeller ? (
         <div className="flex flex-row">
           <div>교환 카드</div>
           <div>교환 카드</div>

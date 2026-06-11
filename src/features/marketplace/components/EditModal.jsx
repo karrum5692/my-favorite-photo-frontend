@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import closeIcon from '@/assets/icons/icon-close.png';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
@@ -23,18 +24,25 @@ const EditModal = ({
   const [toggleGr, setToggleGr] = useState(false);
   const [toggleGe, setToggleGe] = useState(false);
 
+  const queryClient = useQueryClient();
+
   async function handleSubmit(e) {
     e.preventDefault();
     try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
         {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token} `,
+          },
           body: JSON.stringify({
-            quantity,
-            price,
+            quantity: Number(quantity),
+            price: Number(price),
             exchangeGrade: grade,
             exchangeGenre: genre,
             exchangeDescription: description,
@@ -42,14 +50,14 @@ const EditModal = ({
         }
       );
 
-      console.log(res);
-
       if (!res.ok) {
-        throw new Error('서버로부터 수정하기를 실패하였습니다.');
+        const { message } = await res.json();
+        throw new Error(message);
       }
 
       alert('수정하기를 완료하였습니다.');
-      handleClose;
+      handleClose();
+      queryClient.invalidateQueries({ queryKey: ['detailcard', cardId] });
     } catch (error) {
       alert(error.message);
     }
