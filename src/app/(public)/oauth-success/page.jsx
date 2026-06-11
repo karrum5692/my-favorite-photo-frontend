@@ -1,23 +1,21 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function OAuthSuccessPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
+    const token = searchParams.get('token');
 
     if (token) {
       localStorage.setItem('accessToken', token);
-      router.replace('/');
-      return;
     }
 
-    router.replace('/login');
-  }, [router]);
+    router.replace('/');
+  }, [router, searchParams]);
 
   return <div>로그인 처리 중...</div>;
 }
