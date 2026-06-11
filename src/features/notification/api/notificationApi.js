@@ -7,16 +7,44 @@ const getToken = () => {
   return null;
 };
 
-const authHeader = () => ({
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${getToken()}`,
-});
+const authHeader = () => {
+  const token = getToken();
+
+  return {
+    'Content-Type': 'application/json',
+    ...(token && {
+      Authorization: `Bearer ${token}`,
+    }),
+  };
+};
 
 // 알림 목록 조회
 export async function getNotifications() {
-  const res = await fetch(`${BASE_URL}/notifications`, {
-    headers: authHeader(),
-  });
-  if (!res.ok) throw new Error('알림 조회 실패');
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/notifications`, {
+      headers: authHeader(),
+    });
+
+    if (res.status === 401) {
+      localStorage.removeItem('accessToken');
+      window.location.href = '/login';
+
+      throw new Error('로그인이 만료되었습니다.');
+    }
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+
+      throw new Error(
+        errorData.message || `알림 조회 실패 (${res.status}: ${res.statusText})`
+      );
+    }
+
+    return res.json();
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error('네트워크 연결 오류');
+    }
+    throw error;
+  }
 }
