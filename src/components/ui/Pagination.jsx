@@ -27,7 +27,7 @@ export default function Pagination({ totalPages }) {
     params.set('page', pageNumber.toString());
 
     // 현재 경로 기준으로 이동
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
 
     // 이동 후 입력 상태 초기화
     setIsInputMode(false);
