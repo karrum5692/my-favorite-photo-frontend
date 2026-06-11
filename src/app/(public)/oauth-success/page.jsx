@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 export default function OAuthSuccessPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -16,8 +15,8 @@ export default function OAuthSuccessPage() {
       return;
     }
 
-    router.replace('/login');
-  }, [router, searchParams]);
+    window.location.replace('/login');
+  }, [searchParams]);
 
   return <div>로그인 처리 중...</div>;
 }
