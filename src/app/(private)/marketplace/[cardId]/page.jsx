@@ -1,36 +1,33 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import Image from 'next/image';
 
-import minus from '../../../../../public/images/minus.png';
-import plus from '../../../../../public/images/plus.png';
+import minus from '@/assets/icons/icon-minus.png';
+import plus from '@/assets/icons/icon-plus.png';
 
 import Button from '@/components/ui/Button';
 import EditModal from '@/features/marketplace/components/EditModal';
 
 export default function DetailPage() {
-  // const queryClient = useQueryClient();
-
   const { cardId } = useParams();
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const {
-    data: card,
-    isPending,
-    error,
-  } = useQuery({
-    queryKey: ['card', cardId],
-    queryFn: () => getCard(cardId),
-  });
-
-  //판매 카드 상세 조회
   const getCard = async (cardId) => {
+    const token =
+      localStorage.getItem('accessToken') || localStorage.getItem('token');
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     if (!res.ok) {
@@ -41,6 +38,19 @@ export default function DetailPage() {
 
     return cards.data;
   };
+
+  const {
+    data: card,
+    isSeller,
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ['detailcard', cardId],
+    queryFn: () => getCard(cardId),
+  });
+
+  const [quantity, setQuantity] = useState(card.remainQuantity);
+  const [price, setPrice] = useState(card?.price);
 
   if (isPending) {
     return <div>로딩중입니다....</div>;
@@ -78,13 +88,19 @@ export default function DetailPage() {
     tradeColor = 'text-red';
   }
 
+  const minusQuantity = (prev) => Math.max(1, prev - 1);
+  const plusQunatity = (prev) => Math.min(card.quantity, prev + 1);
+
   async function handlePurchase(cardId) {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}/purchase`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          quantity,
+          price,
+        }),
       }
     );
     if (!res.ok) {
@@ -129,7 +145,7 @@ export default function DetailPage() {
         </div>
 
         <div className="flex flex-col items-center gap-[80px]">
-          <div className="w-[440px]">
+          <div className="w-[500px]">
             <div className="flex items-center justify-between">
               <div className="flex gap-[10px]">
                 <span
@@ -181,7 +197,13 @@ export default function DetailPage() {
               </span>
               <div className="px-[12px] py-[10px] border border-gray-200 rounded-[2px]">
                 <div className=" flex flex-row justify-between items-center w-[120px] h-[25px]">
-                  <button>
+                  <button
+                    type="button"
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setQuantity(minusQuantity);
+                    }}
+                  >
                     <Image
                       src={minus}
                       alt="minus-icon"
@@ -189,9 +211,13 @@ export default function DetailPage() {
                     />
                   </button>
                   <span className="flex h-[22px] items-center justify-center text-white text-center text-[18px] font-normal">
-                    {card.remainQuantity}
+                    {quantity}
                   </span>
-                  <button>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(plusQunatity)}
+                    className="cursor-pointer"
+                  >
                     <Image
                       src={plus}
                       alt="plus-icon"
@@ -215,34 +241,54 @@ export default function DetailPage() {
               </div>
             </div>
           </div>
+          {isSeller ? (
+            <>
+              <Button
+                variant="primary"
+                height="80"
+                className="cursor-pointer"
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+              >
+                수정하기
+              </Button>
 
-          <Button variant="primary" height="80" onClick={handlePurchase}>
-            포토카드 구매하기
-          </Button>
+              {isOpen && card && (
+                <EditModal
+                  minusQuantity={minusQuantity}
+                  plusQunatity={plusQunatity}
+                  currentUrl={card.photoCard.template.imageUrl}
+                  card={card}
+                  saleColor={saleColor}
+                  minus={minus}
+                  plus={plus}
+                  cardId={cardId}
+                  onClose={() => {
+                    setIsOpen(false);
+                  }}
+                />
+              )}
 
-          {/* 판매자 페이지에서는 "수정하기"로 변경 */}
-          <Button
-            variant="primary"
-            height="80"
-            onClick={() => {
-              setIsOpen(true);
-            }}
-          >
-            수정하기
-          </Button>
-
-          {isOpen && (
-            <EditModal
-              onClose={() => {
-                setIsOpen(false);
-              }}
-            />
+              <Button
+                variant="secondary"
+                height="80"
+                className="cursor-pointer"
+                onClick={handleCancel}
+              >
+                취소하기
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="primary"
+              height="80"
+              className="cursor-pointer"
+              onClick={handlePurchase}
+            >
+              포토카드 구매하기
+            </Button>
           )}
-
-          {/* 판매자 페이지*/}
-          <Button variant="secondary" height="80" onClick={handleCancel}>
-            취소하기
-          </Button>
         </div>
       </div>
       <div className="flex flex-col gap-[20px]">
@@ -250,8 +296,8 @@ export default function DetailPage() {
           <span className="flex text-[40px] text-white font-bold">
             교환 희망 정보
           </span>
-          <div style={{ width: '440px' }}>
-            <Button variant="primary" height="60">
+          <div style={{ width: '500px' }}>
+            <Button variant="primary" height="60" className="cursor-pointer">
               포토카드 교환하기
             </Button>
           </div>
@@ -259,32 +305,32 @@ export default function DetailPage() {
         <p className="border border-white"></p>
       </div>
 
-      {/* 구매자 페이지*/}
-      <div>
-        <p className="mt-[60px] mb-[20px] text-[24px] text-white font-bold">
-          {card.exchangeDescription}
-        </p>
-        <div className="flex w-[220px] gap-[15px] mb-[180px]">
-          <span
-            className={`flex items-center justify-center ${tradeColor} text-[24px] font-bold`}
-          >
-            {card.exchangeGrade}
-          </span>
-          <span className="fles items-center justify-center text-gray-400 text-[24px] font-bold">
-            |
-          </span>
-          <span className="flex items-center justify-center text-[24px] font-bold text-gray-300">
-            {card.exchangeGenre}
-          </span>
+      {isSeller ? (
+        <div className="flex flex-row">
+          <div>교환 카드</div>
+          <div>교환 카드</div>
+          <div>교환 카드</div>
         </div>
-      </div>
-
-      {/* 판매자 페이지*/}
-      <div className="flex flex-row">
-        <div>교환 카드</div>
-        <div>교환 카드</div>
-        <div>교환 카드</div>
-      </div>
+      ) : (
+        <div>
+          <p className="mt-[60px] mb-[20px] text-[24px] text-white font-bold">
+            {card.exchangeDescription}
+          </p>
+          <div className="flex w-[220px] gap-[15px] mb-[180px]">
+            <span
+              className={`flex items-center justify-center ${tradeColor} text-[24px] font-bold`}
+            >
+              {card.exchangeGrade}
+            </span>
+            <span className="fles items-center justify-center text-gray-400 text-[24px] font-bold">
+              |
+            </span>
+            <span className="flex items-center justify-center text-[24px] font-bold text-gray-300">
+              {card.exchangeGenre}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
