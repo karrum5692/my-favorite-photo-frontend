@@ -10,9 +10,13 @@ import plus from '@/assets/icons/icon-plus.png';
 
 import Button from '@/components/ui/Button';
 import EditModal from '@/features/marketplace/components/EditModal';
+import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function DetailPage() {
   const { cardId } = useParams();
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -111,9 +115,11 @@ export default function DetailPage() {
     if (!res.ok) {
       const { message } = await res.json();
       alert(message);
+      return;
     }
 
     alert('구매하기 성공하였습니다.');
+    queryClient.invalidateQueries({ queryKey: ['detailcard', cardId] });
   }
 
   async function handleCancel(cardId) {
@@ -134,6 +140,8 @@ export default function DetailPage() {
       const { message } = await res.json();
       throw new Error(message);
     }
+    alert('판매글이 취소되었습니다.');
+    router.push('/marketplace');
   }
 
   return (
