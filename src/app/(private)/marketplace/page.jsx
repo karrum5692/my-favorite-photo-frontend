@@ -12,19 +12,23 @@ export default function MarketplacePage() {
   const [orderBy, setOrderBy] = useState('latest');
   const [activeFilter, setActiveFilter] = useState({ type: '', value: '' });
 
-  // 마켓플레이스 리셋
   const handleResetMarketplace = () => {
     setSearch('');
     setOrderBy('latest');
     setActiveFilter({ type: '', value: '' });
   };
 
-  // 1. 무한 스크롤 데이터 페칭 훅 (activeFilter 객체를 통째로 전달)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useMarketplace({ search, activeFilter, orderBy, limit: 9 });
 
-  // 2. 무한 스크롤 트리거 관찰 센서 설정
   const loadMoreRef = useRef(null);
+
+  // 💡 [수정] 무한 스크롤 첫 페이지 데이터 등에서 백엔드가 내려준 전체 갯수 통계(filterCounts)를 안전하게 추출합니다.
+  const filterCounts = data?.pages?.[0]?.filterCounts || {
+    grade: {},
+    genre: {},
+    status: {},
+  };
 
   useEffect(() => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -46,10 +50,8 @@ export default function MarketplacePage() {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // 3. 백엔드 서비스 응답인 'list' 필드에서 안전하게 추출하여 병합
   const allCards = data?.pages.flatMap((page) => page.list || []) || [];
 
-  // 🌟 백엔드 가공 변수(sellerNickname, remainQuantity)를 UI 규격에 맞게 매핑
   const formattedCards = allCards.map((card) => ({
     ...card,
     nickname: card.sellerNickname,
@@ -65,7 +67,7 @@ export default function MarketplacePage() {
             className="marketplace-title cursor-pointer select-none hover:opacity-80 transition-opacity"
             onClick={handleResetMarketplace}
           >
-            마켓플레이스
+            최애의포토
           </h1>
           <div className="space-y-2">
             <div className="marketplace-sell-btn">
@@ -84,6 +86,7 @@ export default function MarketplacePage() {
             onSearchChange={setSearch}
             orderBy={orderBy}
             onOrderByChange={setOrderBy}
+            filterCounts={filterCounts} // 👈 [추가] 백엔드에서 받은 카운트 데이터를 주입합니다.
           />
         </section>
 

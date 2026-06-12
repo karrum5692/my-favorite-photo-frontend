@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-// 왼쪽 필터용 상숫값 (백엔드 매칭)
 const GRADES = [
   { value: 'COMMON', label: 'COMMON' },
   { value: 'RARE', label: 'RARE' },
@@ -28,7 +27,6 @@ const STATUSES = [
   { value: 'SOLD', label: '매진' },
 ];
 
-// 📊 오른쪽 정렬용 상숫값
 const ORDER_OPTIONS = [
   { value: 'price_asc', label: '낮은 가격순' },
   { value: 'price_desc', label: '높은 가격순' },
@@ -42,16 +40,15 @@ export default function FilterBar({
   onSearchChange,
   orderBy,
   onOrderByChange,
+  filterCounts, // 👈 [추가] 부모로부터 전달받음
 }) {
   const [openDropdown, setOpenDropdown] = useState(null);
   const containerRef = useRef(null);
 
-  // 📱 모바일 전용 상태 상태값들
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentTab, setCurrentTab] = useState('grade'); // 'grade' | 'genre' | 'status'
-  const [tempFilter, setTempFilter] = useState(activeFilter); // 모바일 임시 저장용
+  const [currentTab, setCurrentTab] = useState('grade');
+  const [tempFilter, setTempFilter] = useState(activeFilter);
 
-  // 바깥 클릭 시 닫히는 기능
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (
@@ -83,8 +80,8 @@ export default function FilterBar({
     setOpenDropdown(null);
   };
 
-  // 📱 모바일 관련 핸들러들
   const handleMobileOptionClick = (type, value) => {
+    // 단일 필터 조건에 맞춰 탭 전역에서 하나만 활성화되도록 단일 객체 세팅
     if (tempFilter.type === type && tempFilter.value === value) {
       setTempFilter({ type: '', value: '' });
     } else {
@@ -126,7 +123,6 @@ export default function FilterBar({
     return ORDER_OPTIONS.find((o) => o.value === orderBy)?.label || '최신순';
   };
 
-  // 모바일 탭 내부 리스트 렌더링을 위한 매핑 헬퍼
   const getMobileOptions = () => {
     if (currentTab === 'grade') return GRADES;
     if (currentTab === 'genre') return GENRES;
@@ -134,11 +130,24 @@ export default function FilterBar({
     return [];
   };
 
-  const getMobileTabTitle = () => {
-    if (currentTab === 'grade') return '등급';
-    if (currentTab === 'genre') return '장르';
-    if (currentTab === 'status') return '매진 여부';
-    return '';
+  // 💡 [추가 헬퍼] 현재 탭과 옵션 Key 값에 매칭되는 백엔드 집계 카운트 반환
+  const getOptionCount = (tab, value) => {
+    if (!filterCounts || !filterCounts[tab]) return 0;
+    return filterCounts[tab][value] || 0;
+  };
+
+  // 💡 [추가 헬퍼] 모바일 바텀시트 하단 노란색 버튼에 표기할 갯수 산정 로직
+  const getSubmitButtonLabel = () => {
+    if (tempFilter.type && tempFilter.value) {
+      const count = getOptionCount(tempFilter.type, tempFilter.value);
+      return `${count}개 포토보기`;
+    }
+    // 아무것도 선택 안했을 때는 검색어 베이스 기준 전체 개수 합산 혹은 기본 노출
+    const totalCount = Object.values(filterCounts?.status || {}).reduce(
+      (a, b) => a + b,
+      0
+    );
+    return `${totalCount || 0}개 포토보기`;
   };
 
   return (
@@ -148,15 +157,15 @@ export default function FilterBar({
     >
       {/* 👈 [왼쪽 구역]: 검색창 + 필터 버튼들 */}
       <div className="controls-left flex items-center gap-3 w-full md:w-auto">
-        {/* 📱 모바일 전용 바텀 시트 트리거 버튼 (767px 이하에서만 노출) */}
         <button
           type="button"
           className="md:hidden p-2.5 bg-[#161616] border border-[#333333] rounded-md text-white flex items-center justify-center shrink-0"
           onClick={() => {
-            setTempFilter(activeFilter); // 열 때 현재 적용된 필터로 동기화
+            setTempFilter(activeFilter);
             setIsMobileMenuOpen(true);
           }}
         >
+          {/* 필터 아이콘 SVG */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
@@ -174,7 +183,6 @@ export default function FilterBar({
           </svg>
         </button>
 
-        {/* 검색창 */}
         <div className="search-wrapper flex-1">
           <input
             type="text"
@@ -198,7 +206,7 @@ export default function FilterBar({
           </span>
         </div>
 
-        {/* 💻 [PC용] 필터 버튼 그룹 (모바일 환경 pc-filter-dropdown 클래스로 숨김) */}
+        {/* 💻 [PC용] 필터 버튼 그룹 */}
         <div className="filter-group pc-filter-dropdown">
           {/* 등급 필터 */}
           <div className="dropdown-container">
@@ -215,10 +223,13 @@ export default function FilterBar({
                 {GRADES.map((g) => (
                   <li
                     key={g.value}
-                    className={`filter-popup-item ${activeFilter.value === g.value ? 'selected' : ''}`}
+                    className={`filter-popup-item flex justify-between items-center ${activeFilter.value === g.value ? 'selected' : ''}`}
                     onClick={() => handleSelectFilter('grade', g.value)}
                   >
-                    {g.label}
+                    <span>{g.label}</span>
+                    <span className="pc-filter-count">
+                      {getOptionCount('grade', g.value)}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -240,10 +251,13 @@ export default function FilterBar({
                 {GENRES.map((g) => (
                   <li
                     key={g.value}
-                    className={`filter-popup-item ${activeFilter.value === g.value ? 'selected' : ''}`}
+                    className={`filter-popup-item flex justify-between items-center ${activeFilter.value === g.value ? 'selected' : ''}`}
                     onClick={() => handleSelectFilter('genre', g.value)}
                   >
-                    {g.label}
+                    <span>{g.label}</span>
+                    <span className="pc-filter-count">
+                      {getOptionCount('genre', g.value)}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -265,10 +279,13 @@ export default function FilterBar({
                 {STATUSES.map((s) => (
                   <li
                     key={s.value}
-                    className={`filter-popup-item ${activeFilter.value === s.value ? 'selected' : ''}`}
+                    className={`filter-popup-item flex justify-between items-center ${activeFilter.value === s.value ? 'selected' : ''}`}
                     onClick={() => handleSelectFilter('status', s.value)}
                   >
-                    {s.label}
+                    <span>{s.label}</span>
+                    <span className="pc-filter-count">
+                      {getOptionCount('status', s.value)}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -277,7 +294,7 @@ export default function FilterBar({
         </div>
       </div>
 
-      {/* 👉 [오른쪽 구역]: 가격순/최신순 정렬 드롭다운 */}
+      {/* 👉 [오른쪽 구역]: 가격순 정렬 */}
       <div className="controls-right">
         <div className="dropdown-container">
           <button
@@ -288,7 +305,6 @@ export default function FilterBar({
             <span>{getCurrentOrderLabel()}</span>
             <span>{openDropdown === 'order' ? '▴' : '▾'}</span>
           </button>
-
           {openDropdown === 'order' && (
             <ul className="filter-popup-menu right-0 left-auto">
               {ORDER_OPTIONS.map((option) => (
@@ -305,9 +321,7 @@ export default function FilterBar({
         </div>
       </div>
 
-      {/* ==========================================
-         📱 [모바일 전용 바텀 시트 구현 단락]
-         ========================================== */}
+      {/* 📱 [모바일 전용 바텀 시트] */}
       {isMobileMenuOpen && (
         <div
           className="mobile-bottom-sheet-overlay"
@@ -317,7 +331,6 @@ export default function FilterBar({
             className="mobile-bottom-sheet"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* 타이틀 및 닫기 버튼 */}
             <div className="bottom-sheet-header">
               <span className="bottom-sheet-title">필터</span>
               <button
@@ -329,7 +342,6 @@ export default function FilterBar({
               </button>
             </div>
 
-            {/* 상단 분류 탭 고정 */}
             <div className="bottom-sheet-tabs">
               <button
                 type="button"
@@ -354,9 +366,10 @@ export default function FilterBar({
               </button>
             </div>
 
-            {/* 필터 세부 옵션 리스트 (❌ 우측 숫자는 완전 배제되어 깔끔하게 라벨만 출력) */}
+            {/* 💡 [수정] 우측 숫자가 스크린샷 디자인처럼 온전히 렌더링되도록 수정 */}
             <div className="bottom-sheet-list">
               {getMobileOptions().map((option) => {
+                // 단일 필터 제약조건 상 다른 탭에 선택되어 있는 경우 비활성화 스타일 처리
                 const isSelected =
                   tempFilter.type === currentTab &&
                   tempFilter.value === option.value;
@@ -368,13 +381,15 @@ export default function FilterBar({
                       handleMobileOptionClick(currentTab, option.value)
                     }
                   >
-                    <span>{option.label}</span>
+                    <span className="filter-item-label">{option.label}</span>
+                    <span className="filter-item-count">
+                      {getOptionCount(currentTab, option.value)}개
+                    </span>
                   </div>
                 );
               })}
             </div>
 
-            {/* 하단 제어 버튼 구역 */}
             <div className="bottom-sheet-footer">
               <button
                 type="button"
@@ -402,7 +417,7 @@ export default function FilterBar({
                 className="submit-filter-btn"
                 onClick={handleApplyFilter}
               >
-                포토보기
+                {getSubmitButtonLabel()} {/* 👈 다이내믹 레이블 적용 */}
               </button>
             </div>
           </div>
