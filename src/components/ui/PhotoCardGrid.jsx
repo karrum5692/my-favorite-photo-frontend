@@ -2,7 +2,8 @@
 
 import PhotoCardItem from '@/components/ui/PhotoCardItem';
 
-export default function PhotoCardGrid({ cards = [] }) {
+// onCardClick을 props로 추가합니다.
+export default function PhotoCardGrid({ cards = [], onCardClick }) {
   return (
     <div
       className="
@@ -17,7 +18,11 @@ export default function PhotoCardGrid({ cards = [] }) {
       "
     >
       {cards.map((card) => (
-        <PhotoCardItem key={card.id} {...card} />
+        <PhotoCardItem
+          key={card.id}
+          {...card}
+          onClick={() => onCardClick?.(card)} // 여기서 클릭 이벤트를 연결합니다.
+        />
       ))}
     </div>
   );
