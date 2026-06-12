@@ -15,6 +15,8 @@ const EditModal = ({
   saleColor,
   minus,
   plus,
+  minusQunatity,
+  plusQunatity,
 }) => {
   const [quantity, setQuantity] = useState(card.quantity);
   const [price, setPrice] = useState(card.price);
@@ -132,8 +134,6 @@ const EditModal = ({
       );
     }
   };
-
-  //검증해야 할 것들: 작성하지 않은 것들은 어떻게 할 것인가??
 
   return (
     <div

@@ -1,29 +1,64 @@
-'use client';
-
 import React, { useState } from 'react';
 import closeIcon from '@/assets/icons/icon-close.png';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
+import filterIcon from '@/assets/icons/icon-down.png';
+import { useRouter } from 'next/navigation';
 
-const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
-  const [quantity, setquantity] = useState(card.quantity);
+const DetailSale = ({
+  currentUrl,
+  card,
+  cardId,
+  onClose,
+  saleColor,
+  minus,
+  plus,
+  minusQunatity,
+  plusQunatity,
+}) => {
+  const [quantity, setQuantity] = useState(card.quantity);
   const [price, setPrice] = useState(card.price);
   const [grade, setGrade] = useState(card.grade);
   const [genre, setGenre] = useState(card.genre);
   const [description, setDescription] = useState('');
+  const [toggleGr, setToggleGr] = useState(false);
+  const [toggleGe, setToggleGe] = useState(false);
 
-  async function handleSubmit(cardId) {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard/${cardId}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+  const router = useRouter();
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard${cardId},`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token} `,
+          },
+          body: JSON.stringify({
+            quantity: Number(quantity),
+            price: Number(price),
+            exchangeGrade: grade,
+            exchangeGenre: genre,
+            exchangeDescription: description,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const { message } = await res.json();
+        throw new Error(message);
       }
-    );
 
-    if (!res.ok) {
-      throw new Error('서버로부터 판매 등록을 실패하였습니다.');
+      alert('판매하기를 완료하였습니다.');
+      router.push('/marketplace');
+    } catch (error) {
+      alert(error.message);
     }
   }
 
@@ -31,9 +66,71 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
     onClose && onClose();
   };
 
-  const minusQunatity = (prev) => Math.max(1, prev - 1);
+  const handleToggleGr = () => {
+    setToggleGr(!toggleGr);
+  };
 
-  const plusQunatity = (prev) => Math.min(card.quantity, prev + 1);
+  const grades = ['COMMON', 'RARE', 'SUPER_RARE', 'LEGENDARY'];
+
+  const dropdownGr = () => {
+    if (toggleGr === true)
+      return (
+        <div className="flex flex-col w-full bg-gray-500 absolute z-50 border border-gray-200 rounded-[2px]">
+          {grades.map((gr) => (
+            <button
+              key={gr}
+              type="button"
+              className="text-gray-200 border-b border-gray-200 text-left cursor-pointer h-[60px] w-full px-[20px] py-[18px]"
+              onClick={() => {
+                setGrade(gr);
+                setToggleGr(false);
+              }}
+            >
+              {gr}
+            </button>
+          ))}
+        </div>
+      );
+  };
+
+  const handleToggleGe = () => {
+    setToggleGe(!toggleGe);
+  };
+
+  const genres = [
+    'ALBUM',
+    'SPECIAL',
+    'FAN_SIGN',
+    'SEASON_GREETING',
+    'FAN_MEETING',
+    'CONCERT',
+    'MD',
+    'COLLABORATION',
+    'FAN_CLUB',
+    'OTHER',
+  ];
+
+  const dropdownGe = () => {
+    if (toggleGe === true) {
+      return (
+        <div className="flex flex-col w-full bg-gray-500 absolute z-50 border border-gray-200 rounded-[2px]">
+          {genres.map((g) => (
+            <button
+              key={g}
+              type="button"
+              className="text-gray-200 border-b border-gray-200 text-left cursor-pointer h-[60px] w-full px-[20px] py-[18px]"
+              onClick={() => {
+                setGenre(g);
+                setToggleGe(false);
+              }}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
+      );
+    }
+  };
 
   return (
     <div
@@ -64,9 +161,7 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
         >
           {/* CLOSE */}
           <button
-            onClick={() => {
-              handleClose;
-            }}
+            onClick={handleClose}
             className="
               absolute
               top-4
@@ -128,13 +223,18 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
               >
                 {card.photoCard.template.title}
               </h2>
-              <form onSubmit={handleSubmit}>
+              <form
+                onSubmit={
+                  handleSubmit
+                  //   onClose;
+                }
+              >
                 {/* 카드 정보 */}
                 <div className="flex justify-between">
                   {/* 이미지 */}
                   <div>
                     <Image
-                      src={card.photoCard.template.imageUrl}
+                      src={currentUrl}
                       alt={card.photoCard.template.title}
                       width={440}
                       height={330}
@@ -142,6 +242,7 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
                       priority
                     />
                   </div>
+
                   {/* 설명 */}
                   <div className="flex flex-col items-center">
                     <div className="w-[440px]">
@@ -175,7 +276,7 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
                             <button
                               type="button"
                               className="cursor-pointer"
-                              onClick={() => setRemainQuantity(minusQunatity)}
+                              onClick={() => setQuantity(minusQunatity)}
                             >
                               <Image
                                 src={minus}
@@ -187,16 +288,13 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
                             <input
                               readOnly
                               className="flex w-[15px] h-[24px] items-center justify-center text-white text-center text-[20px] font-normal"
-                              value={remainQuantity}
-                              onChange={(e) =>
-                                setRemainQuantity(e.target.value)
-                              }
+                              value={quantity}
                             />
 
                             <button
                               type="button"
                               className="cursor-pointer"
-                              onClick={() => setRemainQuantity(plusQunatity)}
+                              onClick={() => setQuantity(plusQunatity)}
                             >
                               <Image
                                 src={plus}
@@ -216,13 +314,15 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
                         </div>
                       </div>
                     </div>
+
+                    {/* 장당가격 */}
                     <div className="flex flex-row items-center justify-between w-full mt-[20px]">
                       <span className="flex itmes-center justify-center text-white text-[20px] font-normal">
                         장당 가격
                       </span>
                       <div>
                         <input
-                          className="h-[50px] pr-[10px] text-right mr-[10px] border border-gray-200 rounded-[2px]"
+                          className="focus:outline-none focus:border-main h-[50px] pr-[10px] text-right mr-[10px] border border-gray-200 rounded-[2px]"
                           type="text"
                           placeholder={card.price}
                           value={price}
@@ -233,6 +333,7 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
                     </div>
                   </div>
                 </div>
+
                 {/* 교환희망정보 */}
                 <div className="flex flex-col gap-[20px]">
                   <div className="flex flex-row gap-[20px] itmes-center justify-between mt-[80px]">
@@ -242,40 +343,72 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
                   </div>
                   <p className="border-b border-white mb-[50px]"></p>
                 </div>
-                {/* 등급/장르 */}
+
+                {/* 등급&장르 */}
                 <div className="flex flex-row mb-[50px] w-full items-center gap-[40px]">
+                  {/* 등급 */}
                   <div className="flex flex-col flex-1">
                     <span className="text-white text-[20px] font-bold mb-[10px]">
                       등급
                     </span>
-                    <input
-                      readOnly
-                      className="border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
-                      placeholder="등급을 선택해주세요"
-                      value={grade}
-                      onChange={(e) => setGrade(e.target.value)}
-                    />
+                    <div className="relative z-50">
+                      <button
+                        type="button"
+                        className="text-gray-200 text-left cursor-pointer border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
+                        onClick={() => {
+                          setToggleGr(!toggleGr);
+                        }}
+                      >
+                        {grade || '등급을 선택해 주세요'}
+                      </button>
+
+                      {/* //토글버튼 */}
+                      {toggleGr && dropdownGr()}
+
+                      <button
+                        type="button"
+                        className="absolute right-[20px] top-1/2 -translate-y-1/2 cursor-pointer"
+                        onClick={handleToggleGr}
+                      >
+                        <Image src={filterIcon} alt="dropdown" />
+                      </button>
+                    </div>
                   </div>
+
+                  {/* 장르 */}
                   <div className="flex flex-col flex-1">
                     <span className="text-white text-[20px] font-bold mb-[10px]">
                       장르
                     </span>
-                    <input
-                      readOnly
-                      className="border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
-                      placeholder="장르를 선택해주세요"
-                      value={genre}
-                      onChange={(e) => setGenre(e.target.value)}
-                    />
+                    <div className="relative">
+                      <button
+                        type="button"
+                        className="cursor-pointer text-left border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
+                        onClick={() => {
+                          setToggleGe(!toggleGe);
+                        }}
+                      >
+                        {genre || '장르를 선택해 주세요'}
+                      </button>
+                      {toggleGe && dropdownGe()}
+                      <button
+                        type="button"
+                        className="absolute right-[20px] top-1/2 -translate-y-1/2 cursor-pointer"
+                        onClick={handleToggleGe}
+                      >
+                        <Image src={filterIcon} alt="dropdown" />
+                      </button>
+                    </div>
                   </div>
                 </div>
+
                 {/* 설명 */}
                 <div className="flex flex-col">
                   <span className="text-white text-[20px] font-bold mb-[10px]">
                     교환 희망 설명
                   </span>
                   <input
-                    className="w-full border border-gray-200 rounded-[2px] h-[90px] px-[20px] py-[18px]"
+                    className="w-full border border-gray-200 rounded-[2px] focus:outline-none focus:border-main h-[90px] px-[20px] py-[18px]"
                     type="text"
                     placeholder="설명을 입력해주세요"
                     value={description}
@@ -283,13 +416,16 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
                   />
                 </div>
                 <p className="flex mt-[60px] mb-[30px] border border-gray-400"></p>
+
                 {/* 버튼 */}
                 <div className="flex items-center justify-center gap-[40px]">
                   <Button
+                    type="button"
                     style={{ width: 440 }}
                     variant="secondary"
                     height="60"
                     className="cursor-pointer"
+                    onClick={handleClose}
                   >
                     취소하기
                   </Button>
@@ -312,4 +448,4 @@ const EditModal = ({ card, onClose, saleColor, minus, plus }) => {
   );
 };
 
-export default EditModal;
+export default DetailSale;
