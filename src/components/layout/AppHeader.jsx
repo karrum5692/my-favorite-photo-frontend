@@ -94,7 +94,7 @@ function LoggedInMenu({ user, logout }) {
   return (
     <nav className="flex items-center gap-4">
       <span className="text-sm text-white font-bold hidden sm:inline">
-        {user?.point ? user.point.toLocaleString() : 0} P
+        {(user?.point?.balance ?? 0).toLocaleString()} P
       </span>
       <Link href="/notifications">
         <Image src={alarmIcon} alt="알림" width={24} height={24} />
