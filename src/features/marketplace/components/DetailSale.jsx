@@ -5,17 +5,10 @@ import Button from '@/components/ui/Button';
 import filterIcon from '@/assets/icons/icon-down.png';
 import { useRouter } from 'next/navigation';
 
-const DetailSale = ({
-  currentUrl,
-  card,
-  cardId,
-  onClose,
-  saleColor,
-  minus,
-  plus,
-  minusQunatity,
-  plusQunatity,
-}) => {
+import minus from '@/assets/icons/icon-minus.png';
+import plus from '@/assets/icons/icon-plus.png';
+
+const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
   const [quantity, setQuantity] = useState(card.quantity);
   const [price, setPrice] = useState(card.price);
   const [grade, setGrade] = useState(card.grade);
@@ -131,6 +124,10 @@ const DetailSale = ({
       );
     }
   };
+
+  const minusQuantity = (prev) => Math.max(1, prev - 1);
+
+  const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
 
   return (
     <div
@@ -276,7 +273,7 @@ const DetailSale = ({
                             <button
                               type="button"
                               className="cursor-pointer"
-                              onClick={() => setQuantity(minusQunatity)}
+                              onClick={() => setQuantity(minusQuantity)}
                             >
                               <Image
                                 src={minus}
@@ -294,7 +291,7 @@ const DetailSale = ({
                             <button
                               type="button"
                               className="cursor-pointer"
-                              onClick={() => setQuantity(plusQunatity)}
+                              onClick={() => setQuantity(plusQuantity)}
                             >
                               <Image
                                 src={plus}

@@ -91,7 +91,8 @@ export default function DetailPage() {
   }
 
   const minusQuantity = (prev) => Math.max(1, prev - 1);
-  const plusQunatity = (prev) => Math.min(card.quantity, prev + 1);
+
+  const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
 
   async function handlePurchase(cardId) {
     const token =
@@ -239,7 +240,7 @@ export default function DetailPage() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => setQuantity(plusQunatity)}
+                    onClick={() => setQuantity(plusQuantity)}
                     className="cursor-pointer"
                   >
                     <Image
@@ -281,7 +282,7 @@ export default function DetailPage() {
               {isOpen && card && (
                 <EditModal
                   minusQuantity={minusQuantity}
-                  plusQunatity={plusQunatity}
+                  plusQuantity={plusQuantity}
                   currentUrl={card.photoCard.template.imageUrl}
                   card={card}
                   saleColor={saleColor}
