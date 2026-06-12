@@ -94,7 +94,7 @@
   }
 }
 
-/* 🛠️ [수정 및 정렬] 검색 인풋 창 스타일링 (오른쪽 시안과 일치화) */
+/*  검색 인풋 창 스타일링  */
 .search-wrapper {
   position: relative;
   width: 100%;
@@ -176,7 +176,7 @@
   list-style: none;
 }
 
-/* 📱 모바일 환경에서는 기본 PC용 절대좌표 팝업 드롭다운을 화면에서 숨김 */
+/* 모바일 환경에서는 기본 PC용 절대좌표 팝업 드롭다운을 화면에서 숨김 */
 @media (max-width: 767px) {
   .pc-filter-dropdown {
     display: none;
@@ -184,7 +184,7 @@
 }
 
 /* ==========================================
-   🌟 [신규 추가] 모바일 전용 하단 바텀 시트 (Bottom Sheet) 레이아웃
+    모바일 전용 하단 바텀 시트 레이아웃
    ========================================== */
 .mobile-bottom-sheet-overlay {
   position: fixed;
@@ -283,7 +283,7 @@
 
 .bottom-sheet-item {
   display: flex;
-  justify-content: space-between; /* 양끝 정렬 유지하되 개수만 삭제 */
+  justify-content: space-between;
   align-items: center;
   padding: 12px 4px;
   font-size: 15px;
@@ -296,7 +296,6 @@
   font-weight: 600;
 }
 
-/* ❌ [요청 사항] 우측의 숫자 개수(예: 52개)는 화면에 나오지 않도록 숨김 */
 .filter-item-count {
   display: none !important;
 }
