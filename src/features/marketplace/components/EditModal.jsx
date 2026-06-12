@@ -15,8 +15,8 @@ const EditModal = ({
   saleColor,
   minus,
   plus,
-  minusQunatity,
-  plusQunatity,
+  minusQuantity,
+  plusQuantity,
 }) => {
   const [quantity, setQuantity] = useState(card.quantity);
   const [price, setPrice] = useState(card.price);
@@ -279,7 +279,7 @@ const EditModal = ({
                             <button
                               type="button"
                               className="cursor-pointer"
-                              onClick={() => setQuantity(minusQunatity)}
+                              onClick={() => setQuantity(minusQuantity)}
                             >
                               <Image
                                 src={minus}
@@ -297,7 +297,7 @@ const EditModal = ({
                             <button
                               type="button"
                               className="cursor-pointer"
-                              onClick={() => setQuantity(plusQunatity)}
+                              onClick={() => setQuantity(plusQuantity)}
                             >
                               <Image
                                 src={plus}
