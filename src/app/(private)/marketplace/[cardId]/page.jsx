@@ -12,6 +12,7 @@ import Button from '@/components/ui/Button';
 import EditModal from '@/features/marketplace/components/EditModal';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import TradeModal from '@/features/photocard/components/TradeModal';
 
 export default function DetailPage() {
   const { cardId } = useParams();
@@ -322,9 +323,21 @@ export default function DetailPage() {
             교환 희망 정보
           </span>
           <div style={{ width: '500px' }}>
-            <Button variant="primary" height="60" className="cursor-pointer">
+            <Button
+              variant="primary"
+              height="60"
+              className="cursor-pointer"
+              onClick={() => setIsOpen(true)}
+            >
               포토카드 교환하기
             </Button>
+            {
+              <TradeModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                targetListingId={cardId}
+              />
+            }
           </div>
         </div>
         <p className="border border-white"></p>
