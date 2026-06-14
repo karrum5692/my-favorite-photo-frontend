@@ -13,7 +13,6 @@ import EditModal from '@/features/marketplace/components/EditModal';
 import { useRouter } from 'next/navigation';
 import TradeModal from '@/features/photocard/components/TradeModal';
 import ResultModal from '@/components/ui/ResultModal';
-import PhotoCardGrid from '@/features/marketplace/components/PhotoCardGrid';
 
 export default function DetailPage() {
   const { cardId } = useParams();
