@@ -1,23 +1,14 @@
-'use client';
-
 import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import closeIcon from '@/assets/icons/icon-close.png';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import filterIcon from '@/assets/icons/icon-down.png';
+import { useRouter } from 'next/navigation';
 
-const EditModal = ({
-  currentUrl,
-  card,
-  cardId,
-  onClose,
-  saleColor,
-  minus,
-  plus,
-  minusQuantity,
-  plusQuantity,
-}) => {
+import minus from '@/assets/icons/icon-minus.png';
+import plus from '@/assets/icons/icon-plus.png';
+
+const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
   const [quantity, setQuantity] = useState(card.quantity);
   const [price, setPrice] = useState(card.price);
   const [grade, setGrade] = useState(card.grade);
@@ -26,7 +17,7 @@ const EditModal = ({
   const [toggleGr, setToggleGr] = useState(false);
   const [toggleGe, setToggleGe] = useState(false);
 
-  const queryClient = useQueryClient();
+  const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -35,9 +26,9 @@ const EditModal = ({
         localStorage.getItem('accessToken') || localStorage.getItem('token');
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard${cardId},`,
         {
-          method: 'PATCH',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token} `,
@@ -57,9 +48,8 @@ const EditModal = ({
         throw new Error(message);
       }
 
-      alert('수정하기를 완료하였습니다.');
-      handleClose();
-      queryClient.invalidateQueries({ queryKey: ['detailcard', cardId] });
+      alert('판매하기를 완료하였습니다.');
+      router.push('/marketplace');
     } catch (error) {
       alert(error.message);
     }
@@ -134,6 +124,10 @@ const EditModal = ({
       );
     }
   };
+
+  const minusQuantity = (prev) => Math.max(1, prev - 1);
+
+  const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
 
   return (
     <div
@@ -451,4 +445,4 @@ const EditModal = ({
   );
 };
 
-export default EditModal;
+export default DetailSale;
