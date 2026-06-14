@@ -44,8 +44,6 @@ export default function DetailPage() {
 
     const cards = await res.json();
 
-    console.log(cards.data);
-
     return cards.data;
   };
 
