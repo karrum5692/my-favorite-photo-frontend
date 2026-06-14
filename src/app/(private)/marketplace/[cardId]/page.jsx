@@ -13,6 +13,7 @@ import EditModal from '@/features/marketplace/components/EditModal';
 import { useRouter } from 'next/navigation';
 import TradeModal from '@/features/photocard/components/TradeModal';
 import ResultModal from '@/components/ui/ResultModal';
+import PhotoCardGrid from '@/features/marketplace/components/PhotoCardGrid';
 
 export default function DetailPage() {
   const { cardId } = useParams();
@@ -42,6 +43,8 @@ export default function DetailPage() {
     }
 
     const cards = await res.json();
+
+    console.log(cards.data);
 
     return cards.data;
   };
@@ -219,7 +222,7 @@ export default function DetailPage() {
                 </span>
               </div>
               <span className="flex items-center h-[29px] text-white text-[18px] font-bold underline [text-decoration-skip-ink:none] [text-underline-position:from-font]">
-                {card.photoCard.template.creator.nickname}
+                {card.photoCard.owner.nickname}
               </span>
             </div>
             <div className="border border-gray-400 my-[30px]"></div>
@@ -374,7 +377,6 @@ export default function DetailPage() {
         </div>
         <p className="border border-white"></p>
       </div>
-
       {card.isSeller ? (
         <div className="flex flex-row">
           <div>교환 카드</div>
