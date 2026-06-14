@@ -10,8 +10,8 @@
 .marketplace-container {
   min-height: 100vh;
   max-width: 120rem;
-  background-color: #0f0f0f;
-  color: #ffffff;
+  background-color: var(--color-black);
+  color: var(--color-white);
   margin: 0 auto;
   padding: 3.75rem 13.75rem 8.75rem;
   position: relative;
@@ -45,26 +45,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #ffffff; /* 💡 시안의 하얗고 명확한 라인으로 변경 */
+  border-bottom: 2px solid var(--color-white);
   padding-bottom: 1.5rem;
   margin-bottom: 2rem;
 }
 
-/* 📱 모바일 버전에서는 헤더 섹션을 숨김 처리 (시안 반영) */
+/* 📱 모바일 버전에서는 헤더 섹션을 숨김 처리  */
 @media (max-width: 767px) {
   .marketplace-header-section {
-    display: none !important;
+    display: none;
   }
 }
 
 .marketplace-title {
-  color: #fff;
+  color: var(--color-white);
   font-family: 'BR B';
   font-size: 3.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   letter-spacing: -0.11625rem;
+  cursor: pointer;
+  user-select: none;
 }
 
 /* ==========================================
@@ -81,70 +83,80 @@
 @media (min-width: 768px) {
   .marketplace-controls-container {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: 2.5rem;
-  }
-}
-
-/* 모바일 정렬 액션 한 줄 배치 래퍼 */
-.filter-actions-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 12px;
-}
-
-@media (min-width: 768px) {
-  .filter-actions-row {
-    width: auto;
-    justify-content: flex-start;
   }
 }
 
 /* 검색 인풋 창 스타일링 */
 .search-wrapper {
   position: relative;
+  flex-shrink: 0;
   width: 100%;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-white);
 }
 
 @media (min-width: 768px) {
   .search-wrapper {
-    width: 360px; /* PC 시안 비율에 맞춰 가로폭 소폭 확장 */
+    width: 320px;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 }
 
 .search-input {
   width: 100%;
   height: 44px;
-  background-color: #16161a; /* 💡 인풋 박스 내부 시안 색감 동기화 */
-  border: 1px solid #333333;
-  border-radius: 6px;
+  background-color: var(--color-black);
+  border: 1px solid var(--color-white);
   padding: 0 40px 0 14px;
   font-size: 14px;
-  color: #ffffff;
-  outline: none;
+  color: var(--color-white);
 }
 
 .search-input:focus {
-  border-color: #ffffff;
+  border-color: var(--color-white);
 }
 
 .search-input::placeholder {
-  color: #666666;
+  color: var(--color-gray-300);
 }
 
 .search-icon {
   position: absolute;
-  top: 50%;
+  top: 22px;
   right: 14px;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #888888;
   pointer-events: none;
+}
+
+.search-icon img {
+  display: block;
+  margin: 0;
+}
+
+/* ==========================================
+   PC용 드롭다운 필터 및 공통 드롭다운 버튼
+   ========================================== */
+
+/* 모바일 정렬 액션 한 줄 배치 래퍼 */
+.filter-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .filter-actions-row {
+    flex: 1;
+    justify-content: flex-start;
+  }
 }
 
 /* 모바일 전용 토글 버튼 */
@@ -155,44 +167,47 @@
   width: 44px;
   height: 44px;
   background-color: transparent;
-  border: none; /* 💡 테두리 제거 */
-  color: #ffffff;
+  border: none;
   cursor: pointer;
 }
 
 @media (min-width: 768px) {
   .mobile-filter-toggle-btn {
-    display: none !important;
+    display: none;
   }
 }
 
-/* ==========================================
-   PC용 드롭다운 필터 및 공통 드롭다운 버튼
-   ========================================== */
+/* PC 필터 그룹 레이아웃 배치 구조 보정 */
+.filter-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .pc-filter-dropdown {
+    display: none;
+  }
+}
+
 .dropdown-container {
   position: relative;
   display: inline-block;
 }
 
 .order-dropdown-wrapper {
-  flex: 1;
+  margin-left: auto;
+  border: 1px solid var(--color-white);
 }
 
-@media (min-width: 768px) {
-  .order-dropdown-wrapper {
-    flex: none;
-  }
-}
-
-/* 💡 [수정] 모든 필터 드롭다운 버튼의 테두리(border)를 제거합니다 */
 .filter-dropdown-btn {
   background-color: transparent;
-  border: none !important; /* 📌 테두리 완전 제거 */
+  border: none;
   outline: none;
   padding: 0 8px;
   height: 44px;
-  font-size: 15px; /* 시안 폰트 비율 반영 */
-  color: #ffffff;
+  font-size: 16px;
+  color: var(--color-white);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -210,7 +225,7 @@
 }
 
 .order-toggle-btn {
-  border: none !important; /* 📌 정렬 드롭다운 테두리도 함께 제거 */
+  border: none;
 }
 
 .filter-popup-menu {
@@ -220,12 +235,11 @@
   z-index: 99;
   margin-top: 6px;
   width: 140px;
-  background-color: #16161a;
-  border: 1px solid #2d2d34;
+  background-color: var(--color-black);
+  border: 1px solid var(--color-gray-200);
   border-radius: 6px;
-  padding: 6px 0;
+  padding: 6px;
   list-style: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .right-align-menu {
@@ -236,7 +250,7 @@
 .filter-popup-item {
   padding: 10px 14px;
   font-size: 13px;
-  color: #aaaaaa;
+  color: var(--color-white);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -244,32 +258,18 @@
 }
 
 .filter-popup-item:hover {
-  background-color: #24242b;
-  color: #ffffff;
+  background-color: var(--color-gray-400);
+  color: var(--color-white);
 }
 
 .filter-popup-item.selected,
 .filter-popup-item.selected-item {
-  color: #efff04 !important;
   font-weight: 600;
 }
 
 .pc-filter-count {
-  font-size: 11px;
-  color: #666666;
-}
-
-/* PC 필터 그룹 레이아웃 배치 구조 보정 */
-.filter-group {
-  display: flex;
-  gap: 16px; /* 필터 간격 시안 매칭 조정 */
-  align-items: center;
-}
-
-@media (max-width: 767px) {
-  .pc-filter-dropdown {
-    display: none !important;
-  }
+  font-size: 16px;
+  color: var(--color-white);
 }
 
 /* ==========================================
@@ -287,12 +287,18 @@
   align-items: flex-end;
 }
 
+@media (min-width: 768px) {
+  .mobile-bottom-sheet-overlay {
+    display: none;
+  }
+}
+
 .mobile-bottom-sheet {
   width: 100%;
-  background-color: #18181c;
+  background-color: var(--color-black);
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
-  padding: 24px 16px;
+  padding: 24px 16px 32px;
   box-sizing: border-box;
   animation: slideUp 0.25s ease-out;
 }
@@ -307,45 +313,58 @@
 }
 
 .bottom-sheet-header {
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .bottom-sheet-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-white);
+  text-align: center;
 }
 
 .bottom-sheet-close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
-  color: #888888;
+  color: var(--color-gray-300);
   font-size: 20px;
   cursor: pointer;
+  padding: 0;
+  line-height: 1;
 }
 
 .bottom-sheet-tabs {
   display: flex;
-  gap: 24px;
-  border-bottom: 1px solid #2a2a30;
-  margin-bottom: 20px;
+  gap: 0;
+
+  margin-bottom: 8px;
 }
 
 .bottom-sheet-tab {
   background: none;
   border: none;
-  color: #666666;
-  font-size: 16px;
-  padding-bottom: 12px;
+  color: var(--color-gray-300);
+  font-size: 15px;
+  padding: 0 20px 12px;
   cursor: pointer;
   position: relative;
+  white-space: nowrap;
+}
+
+.bottom-sheet-tab:first-child {
+  padding-left: 15px;
 }
 
 .bottom-sheet-tab.active {
-  color: #ffffff;
+  color: var(--color-white);
   font-weight: 600;
 }
 
@@ -356,14 +375,15 @@
   left: 0;
   right: 0;
   height: 2px;
-  background-color: #ffffff;
+  background-color: var(--color-white);
 }
 
+/* 목록: 스크롤 영역 */
 .bottom-sheet-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-height: 260px;
+  gap: 0;
+  max-height: 280px;
   overflow-y: auto;
   margin-bottom: 24px;
 }
@@ -372,31 +392,49 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 4px;
+  padding: 16px 4px;
   font-size: 15px;
-  color: #aaaaaa;
+  color: var(--color-gray-300);
   cursor: pointer;
 }
 
-.bottom-sheet-item[key='COMMON'] {
-  color: #aaaaaa;
+.bottom-sheet-item:last-child {
+  border-bottom: none;
 }
+
 .bottom-sheet-item.selected {
-  color: #efff04 !important;
+  color: var(--color-main);
   font-weight: 600;
 }
 
 .filter-item-count {
-  display: inline-block !important;
+  display: inline-block;
   font-size: 15px;
-  color: #888888;
+  color: var(--color-gray-300);
   font-weight: 400;
+}
+/* 등급별 텍스트 컬러 */
+.grade-common {
+  color: var(--color-main);
+}
+
+.grade-rare {
+  color: var(--color-blue);
+}
+
+.grade-super-rare {
+  color: var(--color-purple);
+}
+
+.grade-legendary {
+  color: var(--color-pink);
 }
 
 .bottom-sheet-item.selected .filter-item-count {
-  color: #efff04;
+  color: var(--color-white);
 }
 
+/* 푸터: 리셋 버튼 + 확인 버튼 */
 .bottom-sheet-footer {
   display: flex;
   align-items: center;
@@ -404,27 +442,27 @@
 }
 
 .reset-icon-btn {
-  background-color: #242428;
+  background-color: var(--color-black);
   border: none;
   border-radius: 8px;
   width: 56px;
   height: 56px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #ffffff;
 }
 
 .submit-filter-btn {
   flex: 1;
-  background-color: #efff04;
-  color: #000000;
+  background-color: var(--color-main);
+  color: var(--color-black);
   border: none;
   border-radius: 8px;
   height: 56px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -435,37 +473,37 @@
   width: 320px;
 }
 
-/* 💻 PC 스크린 전용 배치 분리 클래스 */
+/* PC 스크린 전용 배치 분리 클래스 */
 @media (min-width: 768px) {
   .pc-only-btn {
-    display: block !important;
+    display: block;
   }
   .mobile-only-sticky-btn {
-    display: none !important;
+    display: none;
   }
 }
 
-/* 📱 모바일 스크린 전용 하단 고정 버튼 분리 클래스 */
+/* 모바일 스크린 전용 하단 고정 버튼 분리 클래스 */
 @media (max-width: 767px) {
   .pc-only-btn {
-    display: none !important;
+    display: none;
   }
   .mobile-only-sticky-btn {
-    display: block !important;
+    display: block;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #0f0f0f;
+    background-color: var(--color-black);
     padding: 16px;
     box-sizing: border-box;
     box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.6);
     z-index: 100;
   }
   .mobile-only-sticky-btn button {
-    width: 100% !important;
-    background-color: #efff04 !important;
-    color: #000000 !important;
+    width: 100%;
+    background-color: var(--color-main);
+    color: var(--color-black);
     font-weight: 600;
   }
 }

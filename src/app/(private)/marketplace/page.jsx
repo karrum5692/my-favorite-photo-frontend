@@ -38,7 +38,7 @@ export default function MarketplacePage() {
     totalQuantity: card.totalQuantity,
   }));
 
-  // 🔄 [수정] IntersectionObserver 무한 스크롤 트리거 로직 최적화
+  //  [수정] IntersectionObserver 무한 스크롤 트리거 로직 최적화
   useEffect(() => {
     // 다음 페이지가 없거나 이미 로딩 중이면 감지 생략
     if (!hasNextPage || isFetchingNextPage) return;
@@ -55,8 +55,8 @@ export default function MarketplacePage() {
       },
       {
         root: null, // 브라우저 뷰포트 기준
-        threshold: 0.1, // 💡 1.0에서 0.1로 하향 조정 (화면에 10%만 걸쳐도 미리 부드럽게 로딩)
-        rootMargin: '100px', // 💡 스크롤이 바닥에 닿기 100px 전에 미리 다음 장을 로드하여 끊김 현상 방지
+        threshold: 0.1,
+        rootMargin: '100px', //  스크롤이 바닥에 닿기 100px 전에 미리 다음 장을 로드하여 끊김 현상 방지
       }
     );
 
@@ -67,16 +67,16 @@ export default function MarketplacePage() {
         observer.unobserve(currentTarget);
       }
     };
-    // 💡 데이터 배열이나 상태가 변경될 때마다 옵저버 위치를 정확하게 리프레시하도록 의존성 주입
+    //  데이터 배열이나 상태가 변경될 때마다 옵저버 위치를 정확하게 리프레시하도록 의존성 주입
   }, [hasNextPage, isFetchingNextPage, fetchNextPage, formattedCards.length]);
 
   return (
     <div className="marketplace-container">
       <main className="marketplace-content">
-        {/* 💻 PC/태블릿 상단 타이틀 구역 (밑줄 포함) */}
+        {/*  PC/태블릿 상단 타이틀 구역  */}
         <section className="marketplace-header-section">
           <h1
-            className="marketplace-title cursor-pointer select-none hover:opacity-80 transition-opacity"
+            className="marketplace-title hover:opacity-80 "
             onClick={handleResetMarketplace}
           >
             마켓플레이스
@@ -90,7 +90,7 @@ export default function MarketplacePage() {
           </div>
         </section>
 
-        {/* 🔍 시안 연동 검색 및 드롭다운 필터 바 (테두리 제거 및 인라인 정렬 구역) */}
+        {/* 시안 연동 검색 및 드롭다운 필터 바 (테두리 제거 및 인라인 정렬 구역) */}
         <section className="marketplace-controls">
           <FilterBar
             activeFilter={activeFilter}
@@ -100,10 +100,11 @@ export default function MarketplacePage() {
             orderBy={orderBy}
             onOrderByChange={setOrderBy}
             filterCounts={filterCounts}
+            totalCount={data?.pages?.[0]?.totalCount || 0}
           />
         </section>
 
-        {/* 📦 포토카드 그리드 리스트 판 구역 */}
+        {/*  포토카드 그리드 리스트 판 구역 */}
         <section className="photocard-grid-layout mt-6">
           {status === 'pending' ? (
             <div className="text-center py-20 text-gray-500 w-full col-span-full">
@@ -122,7 +123,7 @@ export default function MarketplacePage() {
           )}
         </section>
 
-        {/* 🔄 무한스크롤 트리거 센서 구역 */}
+        {/* 무한스크롤 트리거 센서 구역 */}
         <div
           ref={loadMoreRef}
           className="infinite-scroll-trigger py-14 text-center text-sm text-gray-500"
@@ -139,7 +140,7 @@ export default function MarketplacePage() {
           )}
         </div>
 
-        {/* 📱 모바일 하단 sticky 고정형 판매 버튼 구역 */}
+        {/*  모바일 하단 sticky 고정형 판매 버튼 구역 */}
         <div className="marketplace-sell-btn mobile-only-sticky-btn">
           <Button variant="primary" height="60">
             나의 포토카드 판매하기

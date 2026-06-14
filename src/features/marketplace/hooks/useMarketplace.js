@@ -29,7 +29,7 @@ export function useMarketplace(params) {
 
     initialPageParam: 1,
 
-    // 🎯 [수정 완료] 백엔드가 리턴하는 실제 데이터 구조인 최상위 hasNextPage와 매핑
+    //백엔드가 리턴하는 실제 데이터 구조인 최상위 hasNextPage와 매핑
     getNextPageParam: (lastPage, allPages) => {
       // 백엔드 서비스(findMarketCards)가 return { list, totalCount, hasNextPage } 구조로 직접 주기 때문에
       // meta를 거치지 않고 바로 lastPage.hasNextPage를 읽어야 합니다.
