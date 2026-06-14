@@ -19,7 +19,8 @@ export default function DetailPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenE, setIsOpenE] = useState(false);
+  const [isOpenEx, setIsOpenEx] = useState(false);
 
   const getCard = async (cardId) => {
     const token =
@@ -274,13 +275,13 @@ export default function DetailPage() {
                 height="80"
                 className="cursor-pointer"
                 onClick={() => {
-                  setIsOpen(true);
+                  setIsOpenE(true);
                 }}
               >
                 수정하기
               </Button>
 
-              {isOpen && card && (
+              {isOpenE && card && (
                 <EditModal
                   minusQuantity={minusQuantity}
                   plusQuantity={plusQuantity}
@@ -291,7 +292,7 @@ export default function DetailPage() {
                   plus={plus}
                   cardId={cardId}
                   onClose={() => {
-                    setIsOpen(false);
+                    setIsOpenE(false);
                   }}
                 />
               )}
@@ -327,14 +328,14 @@ export default function DetailPage() {
               variant="primary"
               height="60"
               className="cursor-pointer"
-              onClick={() => setIsOpen(true)}
+              onClick={() => setIsOpenEx(true)}
             >
               포토카드 교환하기
             </Button>
             {
               <TradeModal
-                isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
+                isOpen={isOpenEx}
+                onClose={() => setIsOpenEx(false)}
                 targetListingId={cardId}
               />
             }

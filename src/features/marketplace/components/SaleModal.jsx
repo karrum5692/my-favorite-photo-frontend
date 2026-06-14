@@ -66,8 +66,6 @@ const SaleModal = ({ isOpen, onClose }) => {
     error,
   } = useQuery({ queryKey: ['myCards'], queryFn: getMyCard });
 
-  console.log('data:', myCards);
-
   return (
     <>
       <MarketModal
@@ -116,6 +114,7 @@ const SaleModal = ({ isOpen, onClose }) => {
         isOpen={!!selectedCard}
         onClose={() => setSelectedCard(null)}
       >
+        {console.log(selectedCard)}
         {selectedCard && (
           <DetailSale
             currentUrl={selectedCard.imageUrl}

@@ -26,7 +26,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
         localStorage.getItem('accessToken') || localStorage.getItem('token');
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard${cardId},`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard/${cardId}`,
         {
           method: 'POST',
           headers: {
