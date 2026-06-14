@@ -28,20 +28,20 @@ export default function PhotoCardItem({
     <article
       onClick={onClick}
       className="
-        bg-[#1E1E1E]
-        border border-gray-800
+        bg-gray-500
+        border border-gray-500
         rounded-lg
         overflow-hidden
         flex flex-col
         w-full
         cursor-pointer
-        hover:border-gray-500
+        hover:border-gray-800
         transition-colors
         /* 고정 높이 대신 내부 패딩 균형으로 시안 비율 유지 */
         h-auto
       "
     >
-      {/* 🖼️ IMAGE AREA */}
+      {/*  IMAGE AREA */}
       <div className="px-[12px] pt-[12px] md:px-[30px] lg:px-[40px] md:pt-[30px] lg:pt-[40px]">
         <div
           className="
@@ -125,7 +125,7 @@ export default function PhotoCardItem({
           </div>
         </div>
 
-        {/* 🏷️ BOTTOM LOGO (모바일에서는 완전히 숨기고 태블릿/데스크톱 공간 확보 시 노출) */}
+        {/*  BOTTOM LOGO (모바일에서는 완전히 숨기고 태블릿/데스크톱 공간 확보 시 노출) */}
         <div className="mt-[16px] md:mt-[24px] lg:mt-auto hidden md:flex justify-center">
           <Image src="/images/logo64.png" alt="logo" width={64} height={20} />
         </div>

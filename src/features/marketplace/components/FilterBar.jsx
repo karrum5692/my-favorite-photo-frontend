@@ -3,10 +3,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 const GRADES = [
-  { value: 'COMMON', label: 'COMMON' },
-  { value: 'RARE', label: 'RARE' },
-  { value: 'SUPER_RARE', label: 'SUPER RARE' },
-  { value: 'LEGENDARY', label: 'LEGENDARY' },
+  { value: 'COMMON', label: 'COMMON', className: 'grade-common' },
+  { value: 'RARE', label: 'RARE', className: 'grade-rare' },
+  { value: 'SUPER_RARE', label: 'SUPER RARE', className: 'grade-super-rare' },
+  { value: 'LEGENDARY', label: 'LEGENDARY', className: 'grade-legendary' },
 ];
 
 const GENRES = [
@@ -40,7 +40,9 @@ export default function FilterBar({
   onSearchChange,
   orderBy,
   onOrderByChange,
-  filterCounts, // 👈 [추가] 부모로부터 전달받음
+  filterCounts,
+  totalCount = 0, // 백엔드가 연산한 원본 totalCount 수치를 직접 받습니다.
+  onOpenMobileFilter,
 }) {
   const [openDropdown, setOpenDropdown] = useState(null);
   const containerRef = useRef(null);
@@ -70,6 +72,7 @@ export default function FilterBar({
     if (activeFilter.type === type && activeFilter.value === value) {
       onFilterChange({ type: '', value: '' });
     } else {
+      //  PC에서도 다른 종류의 필터를 누르면 기존 필터가 덮어써지도록 단일 필터 규격 보장
       onFilterChange({ type, value });
     }
     setOpenDropdown(null);
@@ -81,7 +84,6 @@ export default function FilterBar({
   };
 
   const handleMobileOptionClick = (type, value) => {
-    // 단일 필터 조건에 맞춰 탭 전역에서 하나만 활성화되도록 단일 객체 세팅
     if (tempFilter.type === type && tempFilter.value === value) {
       setTempFilter({ type: '', value: '' });
     } else {
@@ -130,89 +132,62 @@ export default function FilterBar({
     return [];
   };
 
-  // 💡 [추가 헬퍼] 현재 탭과 옵션 Key 값에 매칭되는 백엔드 집계 카운트 반환
   const getOptionCount = (tab, value) => {
     if (!filterCounts || !filterCounts[tab]) return 0;
     return filterCounts[tab][value] || 0;
   };
 
-  // 💡 [추가 헬퍼] 모바일 바텀시트 하단 노란색 버튼에 표기할 갯수 산정 로직
+  // 하단 매핑 런타임 에러 방지 및 단순화
   const getSubmitButtonLabel = () => {
     if (tempFilter.type && tempFilter.value) {
       const count = getOptionCount(tempFilter.type, tempFilter.value);
       return `${count}개 포토보기`;
     }
-    // 아무것도 선택 안했을 때는 검색어 베이스 기준 전체 개수 합산 혹은 기본 노출
-    const totalCount = Object.values(filterCounts?.status || {}).reduce(
-      (a, b) => a + b,
-      0
-    );
-    return `${totalCount || 0}개 포토보기`;
+    // 필터가 안 걸려있을 때는 복잡하게 꺼내서 덧셈 연산하지 않고 props의 totalCount를 신뢰합니다.
+    return `${totalCount}개 포토보기`;
   };
 
   return (
-    <div
-      className="flex justify-between items-center w-full relative"
-      ref={containerRef}
-    >
-      {/* 👈 [왼쪽 구역]: 검색창 + 필터 버튼들 */}
-      <div className="controls-left flex items-center gap-3 w-full md:w-auto">
+    <div className="marketplace-controls-container" ref={containerRef}>
+      {/*  검색 영역 */}
+      <div className="search-wrapper">
+        <input
+          type="text"
+          placeholder="검색"
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="search-input"
+        />
+        <span className="search-icon">
+          <img src="images/search.png" alt="검색" width="20" height="20" />
+        </span>
+      </div>
+
+      {/*  하단 필터 세션 한줄 배열 구역 */}
+      <div className="filter-actions-row">
+        {/* 모바일 필터 바텀시트 활성화 버튼 */}
         <button
           type="button"
-          className="md:hidden p-2.5 bg-[#161616] border border-[#333333] rounded-md text-white flex items-center justify-center shrink-0"
+          className="mobile-filter-toggle-btn"
           onClick={() => {
             setTempFilter(activeFilter);
             setIsMobileMenuOpen(true);
           }}
         >
-          {/* 필터 아이콘 SVG */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M3 4h18M3 12h18M3 20h18"
-            />
-          </svg>
+          <img
+            src="images/dropdown2.png"
+            alt="모바일 필터 메뉴"
+            width="35"
+            height="35"
+          />
         </button>
 
-        <div className="search-wrapper flex-1">
-          <input
-            type="text"
-            placeholder="검색"
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="search-input"
-          />
-          <span className="search-icon">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </span>
-        </div>
-
-        {/* 💻 [PC용] 필터 버튼 그룹 */}
+        {/*  [PC용] 필터 버튼 그룹 */}
         <div className="filter-group pc-filter-dropdown">
-          {/* 등급 필터 */}
           <div className="dropdown-container">
             <button
               type="button"
-              className={`filter-dropdown-btn flex items-center justify-between gap-1.5 whitespace-nowrap ${activeFilter.type === 'grade' ? 'active' : ''}`}
+              className={`filter-dropdown-btn ${activeFilter.type === 'grade' ? 'active' : ''}`}
               onClick={() => handleDropdownToggle('grade')}
             >
               <span>{getButtonLabel('grade', '등급')}</span>
@@ -223,7 +198,7 @@ export default function FilterBar({
                 {GRADES.map((g) => (
                   <li
                     key={g.value}
-                    className={`filter-popup-item flex justify-between items-center ${activeFilter.value === g.value ? 'selected' : ''}`}
+                    className={`filter-popup-item ${activeFilter.value === g.value ? 'selected' : ''}`}
                     onClick={() => handleSelectFilter('grade', g.value)}
                   >
                     <span>{g.label}</span>
@@ -236,11 +211,10 @@ export default function FilterBar({
             )}
           </div>
 
-          {/* 장르 필터 */}
           <div className="dropdown-container">
             <button
               type="button"
-              className={`filter-dropdown-btn flex items-center justify-between gap-1.5 whitespace-nowrap ${activeFilter.type === 'genre' ? 'active' : ''}`}
+              className={`filter-dropdown-btn ${activeFilter.type === 'genre' ? 'active' : ''}`}
               onClick={() => handleDropdownToggle('genre')}
             >
               <span>{getButtonLabel('genre', '장르')}</span>
@@ -251,7 +225,7 @@ export default function FilterBar({
                 {GENRES.map((g) => (
                   <li
                     key={g.value}
-                    className={`filter-popup-item flex justify-between items-center ${activeFilter.value === g.value ? 'selected' : ''}`}
+                    className={`filter-popup-item ${activeFilter.value === g.value ? 'selected' : ''}`}
                     onClick={() => handleSelectFilter('genre', g.value)}
                   >
                     <span>{g.label}</span>
@@ -264,11 +238,10 @@ export default function FilterBar({
             )}
           </div>
 
-          {/* 매진 여부 필터 */}
           <div className="dropdown-container">
             <button
               type="button"
-              className={`filter-dropdown-btn flex items-center justify-between gap-1.5 whitespace-nowrap ${activeFilter.type === 'status' ? 'active' : ''}`}
+              className={`filter-dropdown-btn ${activeFilter.type === 'status' ? 'active' : ''}`}
               onClick={() => handleDropdownToggle('status')}
             >
               <span>{getButtonLabel('status', '매진여부')}</span>
@@ -279,7 +252,7 @@ export default function FilterBar({
                 {STATUSES.map((s) => (
                   <li
                     key={s.value}
-                    className={`filter-popup-item flex justify-between items-center ${activeFilter.value === s.value ? 'selected' : ''}`}
+                    className={`filter-popup-item ${activeFilter.value === s.value ? 'selected' : ''}`}
                     onClick={() => handleSelectFilter('status', s.value)}
                   >
                     <span>{s.label}</span>
@@ -292,25 +265,23 @@ export default function FilterBar({
             )}
           </div>
         </div>
-      </div>
 
-      {/* 👉 [오른쪽 구역]: 가격순 정렬 */}
-      <div className="controls-right">
-        <div className="dropdown-container">
+        {/*  정렬 드롭다운 구역 */}
+        <div className="dropdown-container order-dropdown-wrapper">
           <button
             type="button"
-            className="filter-dropdown-btn flex items-center justify-between gap-1.5 whitespace-nowrap"
+            className="filter-dropdown-btn order-toggle-btn"
             onClick={() => handleDropdownToggle('order')}
           >
             <span>{getCurrentOrderLabel()}</span>
             <span>{openDropdown === 'order' ? '▴' : '▾'}</span>
           </button>
           {openDropdown === 'order' && (
-            <ul className="filter-popup-menu right-0 left-auto">
+            <ul className="filter-popup-menu right-align-menu">
               {ORDER_OPTIONS.map((option) => (
                 <li
                   key={option.value}
-                  className={`filter-popup-item ${orderBy === option.value ? 'selected text-[#E0F62B]' : ''}`}
+                  className={`filter-popup-item ${orderBy === option.value ? 'selected-item' : ''}`}
                   onClick={() => handleSelectOrder(option.value)}
                 >
                   {option.label}
@@ -321,7 +292,7 @@ export default function FilterBar({
         </div>
       </div>
 
-      {/* 📱 [모바일 전용 바텀 시트] */}
+      {/* [모바일 전용 바텀 시트] */}
       {isMobileMenuOpen && (
         <div
           className="mobile-bottom-sheet-overlay"
@@ -346,30 +317,37 @@ export default function FilterBar({
               <button
                 type="button"
                 className={`bottom-sheet-tab ${currentTab === 'grade' ? 'active' : ''}`}
-                onClick={() => setCurrentTab('grade')}
+                onClick={() => {
+                  setCurrentTab('grade');
+                  setTempFilter({ type: '', value: '' });
+                }}
               >
                 등급
               </button>
               <button
                 type="button"
                 className={`bottom-sheet-tab ${currentTab === 'genre' ? 'active' : ''}`}
-                onClick={() => setCurrentTab('genre')}
+                onClick={() => {
+                  setCurrentTab('genre');
+                  setTempFilter({ type: '', value: '' });
+                }}
               >
                 장르
               </button>
               <button
                 type="button"
                 className={`bottom-sheet-tab ${currentTab === 'status' ? 'active' : ''}`}
-                onClick={() => setCurrentTab('status')}
+                onClick={() => {
+                  setCurrentTab('status');
+                  setTempFilter({ type: '', value: '' });
+                }}
               >
                 매진 여부
               </button>
             </div>
 
-            {/* 💡 [수정] 우측 숫자가 스크린샷 디자인처럼 온전히 렌더링되도록 수정 */}
             <div className="bottom-sheet-list">
               {getMobileOptions().map((option) => {
-                // 단일 필터 제약조건 상 다른 탭에 선택되어 있는 경우 비활성화 스타일 처리
                 const isSelected =
                   tempFilter.type === currentTab &&
                   tempFilter.value === option.value;
@@ -381,7 +359,13 @@ export default function FilterBar({
                       handleMobileOptionClick(currentTab, option.value)
                     }
                   >
-                    <span className="filter-item-label">{option.label}</span>
+                    <span
+                      className={`filter-item-label ${
+                        currentTab === 'grade' ? option.className : ''
+                      }`}
+                    >
+                      {option.label}
+                    </span>
                     <span className="filter-item-count">
                       {getOptionCount(currentTab, option.value)}개
                     </span>
@@ -396,28 +380,20 @@ export default function FilterBar({
                 className="reset-icon-btn"
                 onClick={handleResetFilter}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"
-                  />
-                </svg>
+                <img
+                  src="/images/reset.png"
+                  alt="필터 초기화"
+                  width="22"
+                  height="22"
+                  className="reset-btn-img"
+                />
               </button>
               <button
                 type="button"
                 className="submit-filter-btn"
                 onClick={handleApplyFilter}
               >
-                {getSubmitButtonLabel()} {/* 👈 다이내믹 레이블 적용 */}
+                {getSubmitButtonLabel()}
               </button>
             </div>
           </div>
