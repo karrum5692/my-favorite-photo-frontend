@@ -114,7 +114,6 @@ const SaleModal = ({ isOpen, onClose }) => {
         isOpen={!!selectedCard}
         onClose={() => setSelectedCard(null)}
       >
-        {console.log(selectedCard)}
         {selectedCard && (
           <DetailSale
             currentUrl={selectedCard.imageUrl}

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 import minus from '@/assets/icons/icon-minus.png';
 import plus from '@/assets/icons/icon-plus.png';
+import ResultModal from '@/components/ui/ResultModal';
 
 const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
   const [quantity, setQuantity] = useState(card.quantity);
@@ -16,6 +17,8 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
   const [description, setDescription] = useState('');
   const [toggleGr, setToggleGr] = useState(false);
   const [toggleGe, setToggleGe] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const router = useRouter();
 
@@ -47,12 +50,34 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
         const { message } = await res.json();
         throw new Error(message);
       }
-
-      alert('판매하기를 완료하였습니다.');
-      router.push('/marketplace');
+      setIsSuccess(true);
     } catch (error) {
       alert(error.message);
+      setIsSuccess(false);
+    } finally {
+      setIsSubmitted(true);
     }
+  }
+
+  if (isSubmitted) {
+    return (
+      <ResultModal
+        isOpen={true}
+        onClose={(e) => setIsSubmitted(false)}
+        title="판매 등록"
+        result="success"
+        description={
+          isSuccess
+            ? `[${card.grade}|${card.title}]${quantity}장 판매 등록에 성공했습니다!`
+            : `[${card.grade}|${card.title}]${quantity}장 판매 등록에 실패했습니다!`
+        }
+        buttonText="나의 판매 포토카드에서 확인하기"
+        onButtonClick={() => {
+          setIsSubmitted(false);
+          router.push('/marketplace/1');
+        }}
+      />
+    );
   }
 
   const handleClose = () => {

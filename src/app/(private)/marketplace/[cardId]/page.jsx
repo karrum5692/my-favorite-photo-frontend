@@ -11,16 +11,17 @@ import plus from '@/assets/icons/icon-plus.png';
 import Button from '@/components/ui/Button';
 import EditModal from '@/features/marketplace/components/EditModal';
 import { useRouter } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
 import TradeModal from '@/features/photocard/components/TradeModal';
+import ResultModal from '@/components/ui/ResultModal';
 
 export default function DetailPage() {
   const { cardId } = useParams();
-  const queryClient = useQueryClient();
   const router = useRouter();
 
-  const [isOpenE, setIsOpenE] = useState(false);
-  const [isOpenEx, setIsOpenEx] = useState(false);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const [isOpenExchange, setIsOpenExchange] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const getCard = async (cardId) => {
     const token =
@@ -97,54 +98,80 @@ export default function DetailPage() {
   const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
 
   async function handlePurchase(cardId) {
-    const token =
-      localStorage.getItem('accessToken') || localStorage.getItem('token');
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}/purchase`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          quantity,
-          price: quantity * card.price,
-        }),
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}/purchase`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            quantity,
+            price: quantity * card.price,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const { message } = await res.json();
+        alert(message);
+        return;
       }
-    );
-
-    if (!res.ok) {
-      const { message } = await res.json();
-      alert(message);
-      return;
+      setIsSuccess(true);
+    } catch (error) {
+      alert(error.message);
+      setIsSuccess(false);
+    } finally {
+      setIsSubmitted(true);
     }
+  }
 
-    alert('구매하기 성공하였습니다.');
-    queryClient.invalidateQueries({ queryKey: ['detailcard', cardId] });
+  if (isSubmitted) {
+    return (
+      <ResultModal
+        isOpen={true}
+        onClose={() => setIsSubmitted(false)}
+        title="구매"
+        result="success"
+        description={`[${card.photoCard.template.grade}|${card.photoCard.template.title}]${quantity}장 구매에 성공했습니다.`}
+        buttonText="마이갤러리에서 확인하기"
+        onButtonClick={() => {
+          setIsSubmitted(false);
+          router.push('/marketplace/1');
+        }}
+      />
+    );
   }
 
   async function handleCancel(cardId) {
-    const token =
-      localStorage.getItem('accessToken') || localStorage.getItem('token');
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        const { message } = await res.json();
+        throw new Error(message);
       }
-    );
-    if (!res.ok) {
-      const { message } = await res.json();
-      throw new Error(message);
+      alert('판매글이 취소되었습니다.');
+      router.push('/marketplace');
+    } catch (error) {
+      alert(error.message);
     }
-    alert('판매글이 취소되었습니다.');
-    router.push('/marketplace');
   }
 
   return (
@@ -275,13 +302,13 @@ export default function DetailPage() {
                 height="80"
                 className="cursor-pointer"
                 onClick={() => {
-                  setIsOpenE(true);
+                  setIsOpenEdit(true);
                 }}
               >
                 수정하기
               </Button>
 
-              {isOpenE && card && (
+              {isOpenEdit && card && (
                 <EditModal
                   minusQuantity={minusQuantity}
                   plusQuantity={plusQuantity}
@@ -292,7 +319,7 @@ export default function DetailPage() {
                   plus={plus}
                   cardId={cardId}
                   onClose={() => {
-                    setIsOpenE(false);
+                    setIsOpenEdit(false);
                   }}
                 />
               )}
@@ -303,7 +330,7 @@ export default function DetailPage() {
                 className="cursor-pointer"
                 onClick={() => handleCancel(cardId)}
               >
-                취소하기
+                판매 내리기
               </Button>
             </>
           ) : (
@@ -328,14 +355,14 @@ export default function DetailPage() {
               variant="primary"
               height="60"
               className="cursor-pointer"
-              onClick={() => setIsOpenEx(true)}
+              onClick={() => setIsOpenExchange(true)}
             >
               포토카드 교환하기
             </Button>
             {
               <TradeModal
-                isOpen={isOpenEx}
-                onClose={() => setIsOpenEx(false)}
+                isOpen={isOpenExchange}
+                onClose={() => setIsOpenExchange(false)}
                 targetListingId={cardId}
               />
             }
