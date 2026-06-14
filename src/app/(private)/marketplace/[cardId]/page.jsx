@@ -138,7 +138,11 @@ export default function DetailPage() {
         onClose={() => setIsSubmitted(false)}
         title="구매"
         result="success"
-        description={`[${card.photoCard.template.grade}|${card.photoCard.template.title}]${quantity}장 구매에 성공했습니다.`}
+        description={
+          isSuccess
+            ? `[${card.photoCard.template.grade}|${card.photoCard.template.title}]${quantity}장 구매에 성공했습니다.`
+            : `[${card.photoCard.template.grade}|${card.photoCard.template.title}]${quantity}장 구매에 실패했습니다.`
+        }
         buttonText="마이갤러리에서 확인하기"
         onButtonClick={() => {
           setIsSubmitted(false);
