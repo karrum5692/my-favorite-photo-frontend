@@ -45,13 +45,14 @@ const SaleModal = ({ isOpen, onClose }) => {
 
       return myCard.data.map((c) => {
         return {
+          id: c.id,
           quantity: c.quantity,
           title: c.template.title,
           genre: c.template.genre,
           grade: c.template.grade,
           imageUrl: c.template.imageUrl,
           price: c.template.price,
-          nickname: c.template.creator.nickname,
+          nickname: c.owner.nickname,
         };
       });
     } catch (error) {
@@ -64,6 +65,8 @@ const SaleModal = ({ isOpen, onClose }) => {
     isPending,
     error,
   } = useQuery({ queryKey: ['myCards'], queryFn: getMyCard });
+
+  console.log('data:', myCards);
 
   return (
     <>
@@ -113,7 +116,14 @@ const SaleModal = ({ isOpen, onClose }) => {
         isOpen={!!selectedCard}
         onClose={() => setSelectedCard(null)}
       >
-        {/* <DetailSale currentUrl={} card={selectedCard} cardId={} onClose={} /> */}
+        {selectedCard && (
+          <DetailSale
+            currentUrl={selectedCard.imageUrl}
+            card={selectedCard}
+            cardId={selectedCard.id}
+            onClose={() => setSelectedCard(null)}
+          />
+        )}
       </DetailModalWrapper>
     </>
   );

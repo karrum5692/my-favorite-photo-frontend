@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import minus from '@/assets/icons/icon-minus.png';
 import plus from '@/assets/icons/icon-plus.png';
 
-const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
+const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
   const [quantity, setQuantity] = useState(card.quantity);
   const [price, setPrice] = useState(card.price);
   const [grade, setGrade] = useState(card.grade);
@@ -126,8 +126,19 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
   };
 
   const minusQuantity = (prev) => Math.max(1, prev - 1);
-
   const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
+
+  let saleColor = 'text-white';
+
+  if (card.grade === 'COMMON') {
+    saleColor = 'text-main';
+  } else if (card.grade === 'RARE') {
+    saleColor = 'text-blue';
+  } else if (card.grade === 'SUPER_RARE') {
+    saleColor = 'text-purple';
+  } else {
+    saleColor = 'text-red';
+  }
 
   return (
     <div
@@ -218,7 +229,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
                   mb-6
                 "
               >
-                {card.photoCard.template.title}
+                {card.title}
               </h2>
               <form
                 onSubmit={
@@ -232,7 +243,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
                   <div>
                     <Image
                       src={currentUrl}
-                      alt={card.photoCard.template.title}
+                      alt={card.title}
                       width={440}
                       height={330}
                       loading="eager"
@@ -248,17 +259,17 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
                           <span
                             className={`flex items-center h-[29px] text-[22px] font-bold ${saleColor}`}
                           >
-                            {card.photoCard.template.grade}
+                            {card.grade}
                           </span>
                           <span className="flex items-center h-[29px] text-gray-400 text-[22px] font-bold">
                             |
                           </span>
                           <span className="flex items-center h-[29px] text-gray=300 text-[22px] font-bold">
-                            {card.photoCard.template.genre}
+                            {card.genre}
                           </span>
                         </div>
                         <span className="flex items-center h-[29px] text-white text-[18px] font-bold underline [text-decoration-skip-ink:none] [text-underline-position:from-font]">
-                          {card.photoCard.template.creator.nickname}
+                          {card.nickname}
                         </span>
                       </div>
                     </div>
@@ -433,7 +444,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
                     height="60"
                     className="cursor-pointer"
                   >
-                    수정하기
+                    판매하기
                   </Button>
                 </div>
               </form>
