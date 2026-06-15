@@ -13,6 +13,7 @@ const SaleModal = ({ isOpen, onClose }) => {
   const [selectedCard, setSelectedCard] = useState(null);
 
   const {
+    cards,
     searchInput,
     setSearchInput,
     handleSearch,
@@ -23,70 +24,70 @@ const SaleModal = ({ isOpen, onClose }) => {
     setSelectedGrade,
   } = useMarketModal(isOpen);
 
-  async function getMyCard() {
-    const token =
-      localStorage.getItem('accessToken') || localStorage.getItem('token');
+  // async function getMyCard() {
+  //   const token =
+  //     localStorage.getItem('accessToken') || localStorage.getItem('token');
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  //   const res = await fetch(
+  //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard`,
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     }
+  //   );
 
-    if (!res.ok) {
-      const { message } = await res.json();
-      throw new Error(message);
-    }
+  //   if (!res.ok) {
+  //     const { message } = await res.json();
+  //     throw new Error(message);
+  //   }
 
-    const myCard = await res.json();
+  //   const myCard = await res.json();
 
-    return myCard.data.map((c) => {
-      return {
-        id: c.id,
-        quantity: c.quantity,
-        title: c.template.title,
-        genre: c.template.genre,
-        grade: c.template.grade,
-        imageUrl: c.template.imageUrl,
-        price: c.template.price,
-        nickname: c.owner.nickname,
-      };
-    });
-  }
+  //   return myCard.data.map((c) => {
+  //     return {
+  //       id: c.id,
+  //       quantity: c.quantity,
+  //       title: c.template.title,
+  //       genre: c.template.genre,
+  //       grade: c.template.grade,
+  //       imageUrl: c.template.imageUrl,
+  //       price: c.template.price,
+  //       nickname: c.owner.nickname,
+  //     };
+  //   });
+  // }
 
-  const {
-    data: myCards,
-    isPending,
-    error,
-  } = useQuery({ queryKey: ['myCards'], queryFn: getMyCard });
+  // const {
+  //   data: myCards,
+  //   isPending,
+  //   error,
+  // } = useQuery({ queryKey: ['myCards'], queryFn: getMyCard });
 
-  if (isPending) {
-    return (
-      <MarketModal
-        isOpen={isOpen}
-        onClose={onClose}
-        titleTop="마이갤러리"
-        titleMain="나의 포토카드 판매하기"
-      >
-        로딩 중...
-      </MarketModal>
-    );
-  }
+  // if (isPending) {
+  //   return (
+  //     <MarketModal
+  //       isOpen={isOpen}
+  //       onClose={onClose}
+  //       titleTop="마이갤러리"
+  //       titleMain="나의 포토카드 판매하기"
+  //     >
+  //       로딩 중...
+  //     </MarketModal>
+  //   );
+  // }
 
-  if (error) {
-    <MarketModal
-      isOpen={isOpen}
-      onClose={onClose}
-      titleTop="마이갤러리"
-      titleMain="나의 포토카드 판매하기"
-    >
-      {error.message}
-    </MarketModal>;
-  }
+  // if (error) {
+  //   <MarketModal
+  //     isOpen={isOpen}
+  //     onClose={onClose}
+  //     titleTop="마이갤러리"
+  //     titleMain="나의 포토카드 판매하기"
+  //   >
+  //     {error.message}
+  //   </MarketModal>;
+  // }
 
   return (
     <>
@@ -127,7 +128,7 @@ const SaleModal = ({ isOpen, onClose }) => {
         ]}
       >
         <PhotoCardGrid
-          cards={myCards}
+          cards={cards}
           onCardClick={(card) => setSelectedCard(card)}
         />
       </MarketModal>
