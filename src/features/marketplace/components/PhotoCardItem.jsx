@@ -9,10 +9,11 @@ export default function PhotoCardItem({
   nickname,
   price,
   quantity, // 남은 수량 (remainQuantity)
-  totalQuantity, // 전체 수량 (totalQuantity) -> [추가]
+  totalQuantity, // 전체 수량 (totalQuantity)
   imageUrl,
   status,
   onClick,
+  isClickable = true,
 }) {
   const gradeColorMap = {
     COMMON: '#EFFF04',
@@ -27,19 +28,17 @@ export default function PhotoCardItem({
   return (
     <article
       onClick={onClick}
-      className="
-        bg-gray-500
-        border border-gray-500
-        rounded-lg
-        overflow-hidden
-        flex flex-col
-        w-full
-        cursor-pointer
-        hover:border-gray-800
-        transition-colors
-        /* 고정 높이 대신 내부 패딩 균형으로 시안 비율 유지 */
-        h-auto
-      "
+      className={`
+      bg-gray-500
+      border border-gray-500
+      rounded-lg
+      overflow-hidden
+      flex flex-col
+      w-full
+      ${isClickable ? 'cursor-pointer hover:border-gray-800' : 'cursor-default'}
+      transition-colors
+      h-auto
+    `}
     >
       {/*  IMAGE AREA */}
       <div className="px-[12px] pt-[12px] md:px-[30px] lg:px-[40px] md:pt-[30px] lg:pt-[40px]">
@@ -52,7 +51,13 @@ export default function PhotoCardItem({
           "
         >
           {imageUrl && (
-            <Image src={imageUrl} alt={title} fill className="object-cover" />
+            <Image
+              src={imageUrl}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+              className="object-cover"
+            />
           )}
 
           {/* 🚨 SOLD OUT 오버레이 */}
@@ -63,6 +68,7 @@ export default function PhotoCardItem({
                   src="/images/soldout.png"
                   alt="SOLD OUT"
                   fill
+                  sizes="(max-width: 768px) 50px, (max-width: 1200px) 120px, 160px"
                   className="object-contain"
                 />
               </div>
@@ -127,7 +133,13 @@ export default function PhotoCardItem({
 
         {/*  BOTTOM LOGO (모바일에서는 완전히 숨기고 태블릿/데스크톱 공간 확보 시 노출) */}
         <div className="mt-[16px] md:mt-[24px] lg:mt-auto hidden md:flex justify-center">
-          <Image src="/images/logo64.png" alt="logo" width={64} height={20} />
+          <Image
+            src="/images/logo64.png"
+            alt="logo"
+            width={64}
+            height={20}
+            className="h-auto w-auto"
+          />
         </div>
       </div>
     </article>
