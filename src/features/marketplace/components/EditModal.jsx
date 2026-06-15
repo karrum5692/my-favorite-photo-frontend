@@ -264,7 +264,7 @@ const EditModal = ({
                           </span>
                         </div>
                         <span className="flex items-center h-[29px] text-white text-[18px] font-bold underline [text-decoration-skip-ink:none] [text-underline-position:from-font]">
-                          {card.photoCard.template.creator.nickname}
+                          {card.photoCard.owner.nickname}
                         </span>
                       </div>
                     </div>
