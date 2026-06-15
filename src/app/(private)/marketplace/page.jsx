@@ -36,7 +36,7 @@ export default function MarketplacePage() {
   // 로그인이 안되어있으면 확인 누르면 로그인창 띄우기
   const handleGoToLogin = () => {
     setIsLoginModalOpen(false);
-    router.push('/login'); //
+    router.push('/login');
   };
 
   const handleResetMarketplace = () => {

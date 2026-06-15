@@ -1,8 +1,5 @@
 import client from '@/lib/axios';
 
-/**
- * 마켓플레이스 판매 카드 목록 조회 API
- */
 export const getMarketCards = async ({
   search,
   grade,
