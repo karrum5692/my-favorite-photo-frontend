@@ -7,7 +7,7 @@ import MarketModal from '@/components/ui/MarketModal';
 import PhotoCardGrid from '@/components/ui/PhotoCardGrid';
 import DetailModalWrapper from '@/components/ui/DetailModalWrapper';
 import useMarketModal from '@/shared/hooks/useMarketModal';
-import DetailSale from './DetailSale';
+import DetailSaleModal from './DetailSaleModal';
 
 const SaleModal = ({ isOpen, onClose }) => {
   const [selectedCard, setSelectedCard] = useState(null);
@@ -138,7 +138,7 @@ const SaleModal = ({ isOpen, onClose }) => {
         onClose={() => setSelectedCard(null)}
       >
         {selectedCard && (
-          <DetailSale
+          <DetailSaleModal
             currentUrl={selectedCard.imageUrl}
             card={selectedCard}
             cardId={selectedCard.id}
