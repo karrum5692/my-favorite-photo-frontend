@@ -22,14 +22,15 @@ export default function MarketplacePage() {
 
   // 판매하기 버튼 클릭 핸들러
   const handleSellButtonClick = () => {
-    const currentToken = localStorage.getItem('accessToken');
+    // 🌟 accessToken과 token을 모두 조회하여 방어 코드 구축
+    const currentToken =
+      localStorage.getItem('accessToken') || localStorage.getItem('token');
 
+    // 두 토큰이 모두 없을 때만 로그인 요구 모달을 띄웁니다.
     if (!currentToken) {
-      // 로그아웃되어 토큰이 없다면 즉시 "로그인 필요 모달"
       setIsLoginModalOpen(true);
-      setIsSaleModalOpen(false); // 만약 열려있던 판매창이 있다면 닫아주는 방어 코드
+      setIsSaleModalOpen(false);
     } else {
-      // 로그인 상태여서 토큰이 있다면 진짜 "판매 등록 모달"
       setIsSaleModalOpen(true);
     }
   };
