@@ -7,8 +7,9 @@ import { useRouter } from 'next/navigation';
 
 import minus from '@/assets/icons/icon-minus.png';
 import plus from '@/assets/icons/icon-plus.png';
+import ResultModal from '@/components/ui/ResultModal';
 
-const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
+const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
   const [quantity, setQuantity] = useState(card.quantity);
   const [price, setPrice] = useState(card.price);
   const [grade, setGrade] = useState(card.grade);
@@ -16,6 +17,8 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
   const [description, setDescription] = useState('');
   const [toggleGr, setToggleGr] = useState(false);
   const [toggleGe, setToggleGe] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const router = useRouter();
 
@@ -26,7 +29,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
         localStorage.getItem('accessToken') || localStorage.getItem('token');
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard${cardId},`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard/${cardId}`,
         {
           method: 'POST',
           headers: {
@@ -47,12 +50,34 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
         const { message } = await res.json();
         throw new Error(message);
       }
-
-      alert('판매하기를 완료하였습니다.');
-      router.push('/marketplace');
+      setIsSuccess(true);
     } catch (error) {
       alert(error.message);
+      setIsSuccess(false);
+    } finally {
+      setIsSubmitted(true);
     }
+  }
+
+  if (isSubmitted) {
+    return (
+      <ResultModal
+        isOpen={true}
+        onClose={(e) => setIsSubmitted(false)}
+        title="판매 등록"
+        result="success"
+        description={
+          isSuccess
+            ? `[${card.grade}|${card.title}]${quantity}장 판매 등록에 성공했습니다!`
+            : `[${card.grade}|${card.title}]${quantity}장 판매 등록에 실패했습니다!`
+        }
+        buttonText="나의 판매 포토카드에서 확인하기"
+        onButtonClick={() => {
+          setIsSubmitted(false);
+          router.push('/marketplace/1');
+        }}
+      />
+    );
   }
 
   const handleClose = () => {
@@ -126,8 +151,19 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
   };
 
   const minusQuantity = (prev) => Math.max(1, prev - 1);
-
   const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
+
+  let saleColor = 'text-white';
+
+  if (card.grade === 'COMMON') {
+    saleColor = 'text-main';
+  } else if (card.grade === 'RARE') {
+    saleColor = 'text-blue';
+  } else if (card.grade === 'SUPER_RARE') {
+    saleColor = 'text-purple';
+  } else {
+    saleColor = 'text-red';
+  }
 
   return (
     <div
@@ -218,7 +254,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
                   mb-6
                 "
               >
-                {card.photoCard.template.title}
+                {card.title}
               </h2>
               <form
                 onSubmit={
@@ -232,7 +268,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
                   <div>
                     <Image
                       src={currentUrl}
-                      alt={card.photoCard.template.title}
+                      alt={card.title}
                       width={440}
                       height={330}
                       loading="eager"
@@ -248,17 +284,17 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
                           <span
                             className={`flex items-center h-[29px] text-[22px] font-bold ${saleColor}`}
                           >
-                            {card.photoCard.template.grade}
+                            {card.grade}
                           </span>
                           <span className="flex items-center h-[29px] text-gray-400 text-[22px] font-bold">
                             |
                           </span>
                           <span className="flex items-center h-[29px] text-gray=300 text-[22px] font-bold">
-                            {card.photoCard.template.genre}
+                            {card.genre}
                           </span>
                         </div>
                         <span className="flex items-center h-[29px] text-white text-[18px] font-bold underline [text-decoration-skip-ink:none] [text-underline-position:from-font]">
-                          {card.photoCard.template.creator.nickname}
+                          {card.nickname}
                         </span>
                       </div>
                     </div>
@@ -433,7 +469,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, saleColor }) => {
                     height="60"
                     className="cursor-pointer"
                   >
-                    수정하기
+                    판매하기
                   </Button>
                 </div>
               </form>
