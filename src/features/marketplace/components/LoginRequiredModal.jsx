@@ -1,36 +1,77 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react'; // 1. useRef 추가
 import '../../../styles/LoginRequiredModal.css';
 
 const LoginRequiredModal = ({ isOpen, onClose, onConfirm }) => {
-  // 2. 키보드 Escape 키 입력 시 모달 닫기 기능 추가
+  // 포커스 제어를 위한 Ref 선언
+  const modalRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
   useEffect(() => {
     if (!isOpen) return;
 
+    // 모달이 열릴 때 이전에 포커스가 있던 요소를 저장
+    previousFocusRef.current = document.activeElement;
+
+    // 모달 내부에 초점을 맞출 수 있는 태그들 수집
+    const focusableElements = modalRef.current?.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex="0"]'
+    );
+    const firstElement = focusableElements?.[0];
+    const lastElement = focusableElements?.[focusableElements.length - 1];
+
+    // 모달이 열리면 첫 번째 요소(X 버튼)에 포커스 자동 지정
+    if (firstElement) firstElement.focus();
+
     const handleKeyDown = (e) => {
+      // Escape 키 입력 시 모달 닫기
       if (e.key === 'Escape') {
         onClose();
+        return;
+      }
+
+      // Tab 키가 모달 외부로 탈출하지 못하도록 가두기 (Focus Trap)
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          // Shift + Tab: 역방향 이동 시 첫 번째 요소면 마지막 요소로 보냄
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          // Tab: 정방향 이동 시 마지막 요소면 첫 번째 요소로 보냄
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    // 모달이 닫힐 때 원래 누르고 있던 화면의 버튼으로 포커스를 돌려줌
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus();
+      }
+    };
   }, [isOpen, onClose]);
 
-  // 모달이 열려있지 않으면 아무것도 렌더링하지 않음
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      {/* 모달 내부를 클릭했을 때는 창이 닫히지 않도록 이벤트 전파 막기 */}
       <div
+        ref={modalRef} // 2. modalRef 연결
         className="modal-content"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="login-modal-title"
         aria-describedby="login-modal-desc"
+        tabIndex="-1" // 키보드 포커스를 프로그래밍 방식으로 주기 위해 추가
       >
-        {/* 닫기 (X) 버튼 */}
         <button
           type="button"
           className="modal-close-btn"
@@ -40,7 +81,6 @@ const LoginRequiredModal = ({ isOpen, onClose, onConfirm }) => {
           ✕
         </button>
 
-        {/* 안내 텍스트 구역 */}
         <div className="modal-body">
           <h3 id="login-modal-title" className="modal-title">
             로그인이 필요합니다.
@@ -52,7 +92,6 @@ const LoginRequiredModal = ({ isOpen, onClose, onConfirm }) => {
           </p>
         </div>
 
-        {/* 노란색 확인 버튼 */}
         <button type="button" className="modal-confirm-btn" onClick={onConfirm}>
           확인
         </button>
