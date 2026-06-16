@@ -24,6 +24,8 @@ const SaleModal = ({ isOpen, onClose }) => {
     setSelectedGrade,
   } = useMarketModal(isOpen);
 
+  console.log(cards);
+
   // async function getMyCard() {
   //   const token =
   //     localStorage.getItem('accessToken') || localStorage.getItem('token');

@@ -6,7 +6,7 @@ import FilterBar from '../../../features/marketplace/components/FilterBar';
 import { useMarketplace } from '../../../features/marketplace/hooks/useMarketplace';
 import '../../../styles/market.css';
 import Button from '@/components/ui/Button';
-import PhotoCardGrid from '../../../features/marketplace/components/PhotoCardGrid';
+import PhotoCardGrid from '@/components/ui/PhotoCardGrid';
 import LoginRequiredModal from '../../../features/marketplace/components/LoginRequiredModal';
 import SaleModal from '../../../features/marketplace/components/SaleModal';
 

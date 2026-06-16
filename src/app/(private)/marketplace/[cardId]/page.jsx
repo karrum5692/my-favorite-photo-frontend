@@ -13,6 +13,7 @@ import EditModal from '@/features/marketplace/components/EditModal';
 import { useRouter } from 'next/navigation';
 import TradeModal from '@/features/photocard/components/TradeModal';
 import ResultModal from '@/components/ui/ResultModal';
+import ExchangeGrid from '@/features/marketplace/components/ExchangeGrid';
 
 export default function DetailPage() {
   const { cardId } = useParams();
@@ -54,6 +55,101 @@ export default function DetailPage() {
     queryKey: ['detailcard', cardId],
     queryFn: () => getCard(cardId),
   });
+
+  //교환 신청 정보 가져오기
+  async function getProposals(cardId) {
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/listings/${cardId}/proposals`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || '서버 응답 오류');
+      }
+      const data = await res.json();
+      console.log('교환 정보:', data);
+
+      return data;
+    } catch (error) {
+      alert(`전송 실패: ${error.message}`);
+    }
+  }
+
+  const { data: proposalCards } = useQuery({
+    queryKey: ['proposalCards', cardId],
+    queryFn: () => getProposals(cardId),
+  });
+
+  console.log(proposalCards);
+
+  //교환 수락
+  async function handleAcceptProposal() {
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/${proposalId}/accept`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.mesage || '서버 응답 오류');
+      }
+
+      alert('교환 신청이 완료되었습니다.');
+    } catch (error) {
+      alert(`전송 실패: ${error.message}`);
+    }
+  }
+
+  //교환 거절
+  async function handleRejectProposal() {
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/${proposalId}/reject`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.mesage || '서버 응답 오류');
+      }
+
+      alert('교환 신청을 거절하였습니다.');
+    } catch (error) {
+      alert(`전송 실패: ${error.message}`);
+    }
+  }
+
+  //교환 취소-교환 거절?
 
   const [quantity, setQuantity] = useState(1);
 
@@ -135,18 +231,28 @@ export default function DetailPage() {
     return (
       <ResultModal
         isOpen={true}
-        onClose={() => setIsSubmitted(false)}
+        onClose={() => {
+          setIsSubmitted(false);
+          router.push('/marketplace');
+        }}
         title="구매"
-        result="success"
+        result={isSuccess ? 'success' : 'failure'}
         description={
           isSuccess
-            ? `[${card.photoCard.template.grade}|${card.photoCard.template.title}]${quantity}장 구매에 성공했습니다.`
-            : `[${card.photoCard.template.grade}|${card.photoCard.template.title}]${quantity}장 구매에 실패했습니다.`
+            ? `[${card.photoCard.template.grade}|${card.photoCard.template.title}]${quantity}장 구매에 성공했습니다!`
+            : `[${card.photoCard.template.grade}|${card.photoCard.template.title}]${quantity}장 구매에 실패했습니다!`
         }
-        buttonText="마이갤러리에서 확인하기"
+        buttonText={
+          isSuccess ? '마이갤러리에서 확인하기' : '마켓플레이스로 돌아가기'
+        }
         onButtonClick={() => {
-          setIsSubmitted(false);
-          router.push('/marketplace/1');
+          if (isSuccess) {
+            setIsSubmitted(false);
+            router.push('/gallery');
+          } else {
+            setIsSubmitted(false);
+            router.push('/marketplace');
+          }
         }}
       />
     );
@@ -189,7 +295,6 @@ export default function DetailPage() {
         </p>
         <p className="border border-white"></p>
       </div>
-
       <div className="flex justify-between">
         <div>
           <Image
@@ -349,57 +454,70 @@ export default function DetailPage() {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-[20px]">
-        <div className="flex flex-row gap-[20px] itmes-center justify-between mt-[120px]">
-          <span className="flex text-[40px] text-white font-bold">
-            교환 희망 정보
-          </span>
-          <div style={{ width: '500px' }}>
-            <Button
-              variant="primary"
-              height="60"
-              className="cursor-pointer"
-              onClick={() => setIsOpenExchange(true)}
-            >
-              포토카드 교환하기
-            </Button>
-            {
-              <TradeModal
-                isOpen={isOpenExchange}
-                onClose={() => setIsOpenExchange(false)}
-                targetListingId={cardId}
-              />
-            }
-          </div>
-        </div>
-        <p className="border border-white"></p>
-      </div>
-      {card.isSeller ? (
-        <div className="flex flex-row">
-          <div>교환 카드</div>
-          <div>교환 카드</div>
-          <div>교환 카드</div>
+      {/* {card.isSeller ? (
+        <div>
+          <p className="flex text-[40px] text-white font-bold mt-[120px] mb-[20px]">
+            교환 제시 목록
+          </p>
+          <p className="border border-white"></p>
+          {proposalCards?.data?.length > 0 ? (
+            <ExchangeGrid card={proposalCards} />
+          ) : (
+            <p className="my-[70px]">교환 제시된 목록이 없습니다.</p>
+          )}
         </div>
       ) : (
         <div>
-          <p className="mt-[60px] mb-[20px] text-[24px] text-white font-bold">
-            {card.exchangeDescription}
-          </p>
-          <div className="flex w-[220px] gap-[15px] mb-[180px]">
-            <span
-              className={`flex items-center justify-center ${tradeColor} text-[24px] font-bold`}
-            >
-              {card.exchangeGrade}
-            </span>
-            <span className="fles items-center justify-center text-gray-400 text-[24px] font-bold">
-              |
-            </span>
-            <span className="flex items-center justify-center text-[24px] font-bold text-gray-300">
-              {card.exchangeGenre}
-            </span>
+          <div className="flex flex-col gap-[20px]">
+            <div className="flex flex-row gap-[20px] itmes-center justify-between mt-[120px]">
+              <span className="flex text-[40px] text-white font-bold">
+                교환 희망 정보
+              </span>
+              <div style={{ width: '500px' }}>
+                <Button
+                  variant="primary"
+                  height="60"
+                  className="cursor-pointer"
+                  onClick={() => setIsOpenExchange(true)}
+                >
+                  포토카드 교환하기
+                </Button>
+                {
+                  <TradeModal
+                    isOpen={isOpenExchange}
+                    onClose={() => setIsOpenExchange(false)}
+                    targetListingId={cardId}
+                  />
+                }
+              </div>
+            </div>
+            <p className="border border-white"></p>
           </div>
+          <div>
+            <p className="mt-[60px] mb-[20px] text-[24px] text-white font-bold">
+              {card.exchangeDescription}
+            </p>
+            <div className="flex w-[220px] gap-[15px] mb-[180px]">
+              <span
+                className={`flex items-center justify-center ${tradeColor} text-[24px] font-bold`}
+              >
+                {card.exchangeGrade}
+              </span>
+              <span className="fles items-center justify-center text-gray-400 text-[24px] font-bold">
+                |
+              </span>
+              <span className="flex items-center justify-center text-[24px] font-bold text-gray-300">
+                {card.exchangeGenre}
+              </span>
+            </div>
+          </div>
+          <p className="flex text-[40px] text-white font-bold mt-[120px]">
+            내가 제시한 교환 목록
+          </p>
+          <p className="border border-white"></p>
+          <ExchangeGrid card={proposalCards} />
         </div>
-      )}
+      )} */}
     </div>
   );
 }
