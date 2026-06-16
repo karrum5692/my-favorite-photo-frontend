@@ -63,7 +63,7 @@ export default function AppHeader() {
         </button>
 
         <Link
-          href="/"
+          href={isLoggedIn ? '/marketplace' : '/'}
           className="flex items-center absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 z-10"
         >
           <div className="relative w-[84px] h-[15px] min-[744px]:w-[111px] min-[744px]:h-[20px] min-[1920px]:w-[139px] min-[1920px]:h-[25px]">
