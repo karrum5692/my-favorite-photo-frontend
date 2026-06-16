@@ -1,16 +1,44 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import FilterBar from '../../../features/marketplace/components/FilterBar';
 import { useMarketplace } from '../../../features/marketplace/hooks/useMarketplace';
 import '../../../styles/market.css';
 import Button from '@/components/ui/Button';
 import PhotoCardGrid from '../../../features/marketplace/components/PhotoCardGrid';
+import LoginRequiredModal from '../../../features/marketplace/components/LoginRequiredModal';
+import SaleModal from '../../../features/marketplace/components/SaleModal';
 
 export default function MarketplacePage() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [orderBy, setOrderBy] = useState('latest');
   const [activeFilter, setActiveFilter] = useState({ type: '', value: '' });
+  // 로그인 안내
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  // 판매 등록 모달 상태
+  const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
+
+  // 판매하기 버튼 클릭 핸들러
+  const handleSellButtonClick = () => {
+    // 🌟 accessToken과 token을 모두 조회하여 방어 코드 구축
+    const currentToken =
+      localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+    // 두 토큰이 모두 없을 때만 로그인 요구 모달을 띄웁니다.
+    if (!currentToken) {
+      setIsLoginModalOpen(true);
+      setIsSaleModalOpen(false);
+    } else {
+      setIsSaleModalOpen(true);
+    }
+  };
+  // 로그인이 안되어있으면 확인 누르면 로그인창 띄우기
+  const handleGoToLogin = () => {
+    setIsLoginModalOpen(false);
+    router.push('/login');
+  };
 
   const handleResetMarketplace = () => {
     setSearch('');
@@ -84,7 +112,11 @@ export default function MarketplacePage() {
 
           {/* PC 우측 상단 판매하기 버튼 배치 */}
           <div className="marketplace-sell-btn pc-only-btn">
-            <Button variant="primary" height="60">
+            <Button
+              variant="primary"
+              height="60"
+              onClick={handleSellButtonClick}
+            >
               나의 포토카드 판매하기
             </Button>
           </div>
@@ -142,10 +174,29 @@ export default function MarketplacePage() {
 
         {/*  모바일 하단 sticky 고정형 판매 버튼 구역 */}
         <div className="marketplace-sell-btn mobile-only-sticky-btn">
-          <Button variant="primary" height="60">
+          <Button variant="primary" height="60" onClick={handleSellButtonClick}>
             나의 포토카드 판매하기
           </Button>
         </div>
+
+        {/* 로그인이 필요합니다 안내 모달 */}
+        <LoginRequiredModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onConfirm={handleGoToLogin}
+        />
+
+        {/*  로그인 성공 시 열리는 진짜 판매 등록 모달 */}
+        {isSaleModalOpen && (
+          <SaleModal
+            isOpen={isSaleModalOpen}
+            onClose={() => setIsSaleModalOpen(false)}
+          />
+        )}
+        <PhotoCardGrid
+          cards={formattedCards}
+          onUnauthorizedClick={() => setIsLoginModalOpen(true)}
+        />
       </main>
     </div>
   );
