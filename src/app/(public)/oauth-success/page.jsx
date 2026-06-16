@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function OAuthSuccessPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
