@@ -1,25 +1,140 @@
+import RedirectIfLoggedIn from '@/components/RedirectIfLoggedIn';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function LandingPage() {
   return (
-    <main className="bg-black overflow-x-hidden">
-      <section className="relative bg-hero-pattern">
-        <div className="text-center pt-16 pb-8 px-4 md:pt-20 lg:pt-24">
-          <div className="hidden md:flex justify-center mb-4">
-            <Image
-              src="/images/logo.png"
-              alt="최애의포토"
-              width={139}
-              height={25}
-            />
+    <>
+      <RedirectIfLoggedIn />
+
+      <main className="bg-black overflow-x-hidden">
+        <section className="relative bg-hero-pattern">
+          <div className="text-center pt-16 pb-8 px-4 md:pt-20 lg:pt-24">
+            <div className="hidden md:flex justify-center mb-4">
+              <Image
+                src="/images/logo.png"
+                alt="최애의포토"
+                width={139}
+                height={25}
+              />
+            </div>
+
+            <h1 className="text-white font-bold leading-tight mb-8 text-3xl md:text-5xl lg:text-6xl">
+              구하기 어려웠던
+              <br />
+              나의 <span className="text-main">최애</span>가 여기에!
+            </h1>
+
+            <Link
+              href="/marketplace"
+              className="inline-block bg-main text-black font-bold px-8 py-3 text-sm md:text-base hover:brightness-90 transition-all"
+            >
+              최애 찾으러 가기
+            </Link>
           </div>
 
-          <h1 className="text-white font-bold leading-tight mb-8 text-3xl md:text-5xl lg:text-6xl">
-            구하기 어려웠던
-            <br />
-            나의 <span className="text-main">최애</span>가 여기에!
-          </h1>
+          <div className="w-full">
+            <div className="block md:hidden">
+              <Image
+                src="/images/landing/mobile/hero.png"
+                alt="미리보기"
+                width={375}
+                height={300}
+                className="w-full h-auto"
+              />
+            </div>
+
+            <div className="hidden md:block lg:hidden">
+              <Image
+                src="/images/landing/tablet/hero.png"
+                alt="미리보기"
+                width={744}
+                height={400}
+                className="w-full h-auto"
+              />
+            </div>
+
+            <div className="hidden lg:block">
+              <Image
+                src="/images/landing/pc/hero.png"
+                alt="미리보기"
+                width={1920}
+                height={600}
+                className="w-full h-auto"
+                priority
+              />
+            </div>
+          </div>
+        </section>
+
+        <FeatureSection
+          heading={
+            <>
+              포인트로{' '}
+              <span className="font-bold text-main">안전하게 거래</span>
+              하세요
+            </>
+          }
+          description={`내 포토카드를 포인트로 팔고, 원하는 포토카드를\n포인트로 안전하게 교환하세요`}
+          imgName="point"
+          bgAccent="#efff04"
+          glowType="circle"
+          glowPosition="right"
+        />
+
+        <FeatureSection
+          heading={
+            <>
+              알림으로 보다{' '}
+              <span className="text-blue font-bold">빨라진 거래</span>
+            </>
+          }
+          description={`교환 제안부터 판매 완료까지,\n실시간 알림으로 놓치지 마세요`}
+          imgName="notification"
+          bgAccent="#29c9f9"
+          glowType="circle"
+          glowPosition="left"
+        />
+
+        <FeatureSection
+          heading={
+            <>
+              랜덤 상자로{' '}
+              <span className="text-main font-bold">포인트 받자! 🎉</span>
+            </>
+          }
+          description={`한 시간마다 주어지는 랜덤 상자를 열고,\n포인트를 획득하세요`}
+          imgName="random-box"
+          bgAccent="#efff04"
+          glowType="gradient"
+        />
+
+        <section className="bg-black text-center py-20 px-4">
+          <div className="mb-12 flex justify-center">
+            <div className="block md:hidden">
+              <Image
+                src="/images/landing/mobile/Rectangle.png"
+                alt="포토카드"
+                width={78}
+                height={114}
+                className="rounded-sm w-auto h-auto"
+              />
+            </div>
+
+            <div className="hidden md:block">
+              <Image
+                src="/images/landing/pc/Rectangle.png"
+                alt="포토카드"
+                width={104}
+                height={151}
+                className="rounded-sm w-auto h-auto"
+              />
+            </div>
+          </div>
+
+          <h2 className="text-white font-bold text-2xl md:text-3xl mb-8">
+            나의 최애를 지금 찾아보세요!
+          </h2>
 
           <Link
             href="/marketplace"
@@ -27,118 +142,9 @@ export default function LandingPage() {
           >
             최애 찾으러 가기
           </Link>
-        </div>
-
-        <div className="w-full">
-          <div className="block md:hidden">
-            <Image
-              src="/images/landing/mobile/hero.png"
-              alt="미리보기"
-              width={375}
-              height={300}
-              className="w-full h-auto"
-            />
-          </div>
-
-          <div className="hidden md:block lg:hidden">
-            <Image
-              src="/images/landing/tablet/hero.png"
-              alt="미리보기"
-              width={744}
-              height={400}
-              className="w-full h-auto"
-            />
-          </div>
-
-          <div className="hidden lg:block">
-            <Image
-              src="/images/landing/pc/hero.png"
-              alt="미리보기"
-              width={1920}
-              height={600}
-              className="w-full h-auto"
-              priority
-            />
-          </div>
-        </div>
-      </section>
-
-      <FeatureSection
-        heading={
-          <>
-            포인트로 <span className="font-bold text-main">안전하게 거래</span>
-            하세요
-          </>
-        }
-        description={`내 포토카드를 포인트로 팔고, 원하는 포토카드를\n포인트로 안전하게 교환하세요`}
-        imgName="point"
-        bgAccent="#efff04"
-        glowType="circle"
-        glowPosition="right"
-      />
-
-      <FeatureSection
-        heading={
-          <>
-            알림으로 보다{' '}
-            <span className="text-blue font-bold">빨라진 거래</span>
-          </>
-        }
-        description={`교환 제안부터 판매 완료까지,\n실시간 알림으로 놓치지 마세요`}
-        imgName="notification"
-        bgAccent="#29c9f9"
-        glowType="circle"
-        glowPosition="left"
-      />
-
-      <FeatureSection
-        heading={
-          <>
-            랜덤 상자로{' '}
-            <span className="text-main font-bold">포인트 받자! 🎉</span>
-          </>
-        }
-        description={`한 시간마다 주어지는 랜덤 상자를 열고,\n포인트를 획득하세요`}
-        imgName="random-box"
-        bgAccent="#efff04"
-        glowType="gradient"
-      />
-
-      <section className="bg-black text-center py-20 px-4">
-        <div className="mb-12 flex justify-center">
-          <div className="block md:hidden">
-            <Image
-              src="/images/landing/mobile/Rectangle.png"
-              alt="포토카드"
-              width={78}
-              height={114}
-              className="rounded-sm w-auto h-auto"
-            />
-          </div>
-
-          <div className="hidden md:block">
-            <Image
-              src="/images/landing/pc/Rectangle.png"
-              alt="포토카드"
-              width={104}
-              height={151}
-              className="rounded-sm w-auto h-auto"
-            />
-          </div>
-        </div>
-
-        <h2 className="text-white font-bold text-2xl md:text-3xl mb-8">
-          나의 최애를 지금 찾아보세요!
-        </h2>
-
-        <Link
-          href="/marketplace"
-          className="inline-block bg-main text-black font-bold px-8 py-3 text-sm md:text-base hover:brightness-90 transition-all"
-        >
-          최애 찾으러 가기
-        </Link>
-      </section>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }
 
