@@ -16,10 +16,10 @@ export async function getNotifications() {
   return response.json();
 }
 
-export async function readNotifications() {
+export async function readNotifications(id) {
   const token = localStorage.getItem('accessToken');
 
-  const response = await fetch(`${BACKEND_URL}/notifications/:id`, {
+  const response = await fetch(`${BACKEND_URL}/notifications/${id}`, {
     method: 'PATCH',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export async function readNotifications() {
   });
 
   if (!response.ok) {
-    throw new HttpError(404, '알림이 없습니다.');
+    throw new Error('알림 읽음 실패');
   }
 
   return response.json();
@@ -44,7 +44,7 @@ export async function readAllNotifications() {
   });
 
   if (!response.ok) {
-    throw new HttpError(404, '알림이 없습니다.');
+    throw new Error('알림 전체 읽음 실패');
   }
 
   return response.json();
