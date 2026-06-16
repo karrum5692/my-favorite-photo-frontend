@@ -19,7 +19,11 @@ export default function NotificationModal({ onClose }) {
   });
 
   if (isLoading) {
-    return <div>로딩중...</div>;
+    return (
+      <div className="notification bg-[#161616] p-[20px] w-[300px] h-[107px] border-b border-gray-400">
+        로딩중...
+      </div>
+    );
   }
 
   if (isError) {
@@ -32,9 +36,14 @@ export default function NotificationModal({ onClose }) {
 
   return (
     <div className="notifications-overlay" onClick={onClose}>
-      <div className="notifications-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="notifications-modal notification bg-[#161616] p-[20px] w-[300px] h-[107px] border-b border-gray-400"
+        onClick={(e) => e.stopPropagation()}
+      >
         {notifications.length === 0 ? (
-          <p>알림이 없습니다.</p>
+          <p className="text-[14px] font-normal italic-none leading-normal">
+            알림이 없습니다.
+          </p>
         ) : (
           notifications.map((notification) => (
             <div
