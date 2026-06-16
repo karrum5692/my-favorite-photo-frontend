@@ -56,7 +56,7 @@ export default function DetailPage() {
     queryFn: () => getCard(cardId),
   });
 
-  //교환 신청 정보 가져오기
+  //판매자 상세페이지 - 타인의 교환 신청 정보 가져오기
   async function getProposals(cardId) {
     try {
       const token =
@@ -78,20 +78,52 @@ export default function DetailPage() {
         throw new Error(errorData.message || '서버 응답 오류');
       }
       const data = await res.json();
-      console.log('교환 정보:', data);
 
-      return data;
+      return data.data;
     } catch (error) {
-      alert(`전송 실패: ${error.message}`);
+      throw new Error(error.message);
     }
   }
 
   const { data: proposalCards } = useQuery({
-    queryKey: ['proposalCards', cardId],
+    queryKey: ['proposedCards', cardId],
     queryFn: () => getProposals(cardId),
+    enabled: !!card?.isSeller,
   });
 
-  console.log(proposalCards);
+  //구매자 상세페이지 - 나의 교환 신청 정보 가져오기
+  async function getMyProposals() {
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/sent`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'appplication/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || '서버 응답 오류');
+      }
+
+      const data = await res.json();
+      return data.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  const { data: myProposalCards } = useQuery({
+    queryKey: ['myProposalCards'],
+    queryFn: () => getMyProposals(),
+  });
 
   //교환 수락
   async function handleAcceptProposal() {
@@ -117,7 +149,7 @@ export default function DetailPage() {
 
       alert('교환 신청이 완료되었습니다.');
     } catch (error) {
-      alert(`전송 실패: ${error.message}`);
+      throw new Error(error.message);
     }
   }
 
@@ -145,7 +177,7 @@ export default function DetailPage() {
 
       alert('교환 신청을 거절하였습니다.');
     } catch (error) {
-      alert(`전송 실패: ${error.message}`);
+      throw new Error(error.message);
     }
   }
 
@@ -404,7 +436,7 @@ export default function DetailPage() {
               </div>
             </div>
           </div>
-          {card.isSeller ? (
+          {card?.isSeller ? (
             <>
               <Button
                 variant="primary"
@@ -454,14 +486,17 @@ export default function DetailPage() {
           )}
         </div>
       </div>
-      {/* {card.isSeller ? (
+      {card?.isSeller ? (
         <div>
           <p className="flex text-[40px] text-white font-bold mt-[120px] mb-[20px]">
             교환 제시 목록
           </p>
           <p className="border border-white"></p>
-          {proposalCards?.data?.length > 0 ? (
-            <ExchangeGrid card={proposalCards} />
+          {proposalCards?.length > 0 ? (
+            <ExchangeGrid
+              proposal={proposalCards}
+              cardIsSeller={card?.isSeller}
+            />
           ) : (
             <p className="my-[70px]">교환 제시된 목록이 없습니다.</p>
           )}
@@ -511,13 +546,20 @@ export default function DetailPage() {
               </span>
             </div>
           </div>
-          <p className="flex text-[40px] text-white font-bold mt-[120px]">
-            내가 제시한 교환 목록
-          </p>
-          <p className="border border-white"></p>
-          <ExchangeGrid card={proposalCards} />
+          {myProposalCards?.length > 0 ? (
+            <>
+              <p className="flex text-[40px] text-white font-bold mt-[120px]">
+                내가 제시한 교환 목록
+              </p>
+              <p className="border border-white"></p>
+              <ExchangeGrid
+                proposal={myProposalCards}
+                cardIsSeller={card?.isSeller}
+              />
+            </>
+          ) : null}
         </div>
-      )} */}
+      )}
     </div>
   );
 }

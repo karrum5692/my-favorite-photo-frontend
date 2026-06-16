@@ -3,7 +3,12 @@
 import Button from '@/components/ui/Button';
 import Image from 'next/image';
 
-export default function ExchangeItem({ card }) {
+export default function ExchangeItem({
+  offeredCard,
+  proposer,
+  message,
+  cardIsSeller,
+}) {
   const gradeColorMap = {
     COMMON: '#EFFF04',
     RARE: '#29C9F9',
@@ -11,7 +16,10 @@ export default function ExchangeItem({ card }) {
     LEGENDARY: '#FF2A6A',
   };
 
-  const gradeColor = gradeColorMap[card.data] || '#fff';
+  const gradeColor = gradeColorMap[offeredCard.template.grade] || '#fff';
+
+  const { title, imageUrl, grade, genre, price } = offeredCard.template;
+  const nickname = '???';
 
   return (
     <article
@@ -39,13 +47,8 @@ export default function ExchangeItem({ card }) {
             lg:h-[270px]
           "
         >
-          {card.data && (
-            <Image
-              src={card.data}
-              alt={card.data}
-              fill
-              className="object-cover"
-            />
+          {imageUrl && (
+            <Image src={imageUrl} alt={title} fill className="object-cover" />
           )}
         </div>
       </div>
@@ -61,31 +64,35 @@ export default function ExchangeItem({ card }) {
       >
         {/* TITLE */}
         <h3 className="text-white font-bold text-[13px] md:text-[20px] lg:text-[22px] leading-tight truncate">
-          {card.data}
+          {title}
         </h3>
 
         {/* GRADE / GENRE / NICKNAME */}
         <div className="flex justify-between items-center mt-[4px] md:mt-[6px] text-[10px] md:text-[14px] leading-none">
           <div className="flex items-center gap-[4px]">
             <span style={{ color: gradeColor }} className="font-bold">
-              {card.data}
+              {grade}
             </span>
-            <span className="text-[#A4A4A4]">| {card.data}</span>
+            <span className="text-[#A4A4A4]">| {genre}</span>
+            <div>
+              <span className="text-white font-semibold">
+                {price?.toLocaleString()}P
+              </span>
+              <span className="text-gray-300 font-normal">에 구매</span>
+            </div>
           </div>
+
           <span className="text-white underline whitespace-nowrap max-w-[60px] md:max-w-[120px] truncate">
-            {card.data}
-          </span>
-          <span className="text-white font-semibold">
-            {card.data?.toLocaleString()} P
+            {nickname}
           </span>
         </div>
 
         {/* 얇은 경계선 구분 구역 (반응형 마진 적용) */}
         <div className="border-t border-gray-800 my-[10px] md:my-[20px]" />
 
-        <div>{card.message}</div>
+        <div>{message}</div>
         <div>
-          {card.isSeller ? (
+          {cardIsSeller ? (
             <div className="flex flex-row gap-[20px] mt-[40px]">
               <Button variant="secondary" weight="170" height="60">
                 거절하기

@@ -1,6 +1,8 @@
 import ExchangeItem from './ExchangeItem';
 
-export default function ExchangeGrid({ card }) {
+export default function ExchangeGrid({ proposal, cardIsSeller }) {
+  console.log('grid:', proposal);
+
   return (
     <div
       className="
@@ -16,7 +18,9 @@ export default function ExchangeGrid({ card }) {
         mx-auto
       "
     >
-      {<ExchangeItem card={card} />}
+      {proposal.map((c) => (
+        <ExchangeItem key={c.id} {...c} cardIsSeller={cardIsSeller} />
+      ))}
     </div>
   );
 }
