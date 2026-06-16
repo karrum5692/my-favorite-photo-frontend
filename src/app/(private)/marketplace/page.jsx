@@ -193,6 +193,10 @@ export default function MarketplacePage() {
             onClose={() => setIsSaleModalOpen(false)}
           />
         )}
+        <PhotoCardGrid
+          cards={formattedCards}
+          onUnauthorizedClick={() => setIsLoginModalOpen(true)}
+        />
       </main>
     </div>
   );
