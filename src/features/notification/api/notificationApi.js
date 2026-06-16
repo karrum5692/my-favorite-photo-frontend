@@ -1,52 +1,58 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const getToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('accessToken');
-  }
-  return null;
-};
-
-const authHeader = () => {
-  const token = getToken();
-
-  return {
-    'Content-Type': 'application/json',
-    ...(token && {
-      Authorization: `Bearer ${token}`,
-    }),
-  };
-};
-
-// 알림 목록 조회
 export async function getNotifications() {
+  const token = localStorage.getItem('accessToken');
+
   try {
-    const res = await fetch(`${BASE_URL}/notifications`, {
-      headers: authHeader(),
+    const response = await fetch(`${BACKEND_URL}/notifications`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    if (res.status === 401) {
-      localStorage.removeItem('accessToken');
-
-      alert('로그인이 만료되었습니다.');
-      window.location.href = '/login';
-
-      return;
+    if (!response.ok) {
+      throw new Error('알림 조회 실패');
     }
 
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-
-      throw new Error(
-        errorData.message || `알림 조회 실패 (${res.status}: ${res.statusText})`
-      );
-    }
-
-    return res.json();
+    return response.json();
   } catch (error) {
-    if (error instanceof TypeError) {
-      throw new Error('네트워크 연결 오류');
+    if (error instanceof Error) {
+      throw error;
     }
-    throw error;
+    throw new Error('알림 조회 실패');
   }
+}
+
+export async function readNotifications(id) {
+  const token = localStorage.getItem('accessToken');
+
+  const response = await fetch(`${BACKEND_URL}/notifications/${id}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('알림 읽음 실패');
+  }
+
+  return response.json();
+}
+
+export async function readAllNotifications() {
+  const token = localStorage.getItem('accessToken');
+
+  const response = await fetch(`${BACKEND_URL}/notifications/read-all`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('알림 전체 읽음 실패');
+  }
+
+  return response.json();
 }

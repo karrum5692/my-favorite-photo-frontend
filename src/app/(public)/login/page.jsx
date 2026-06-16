@@ -56,7 +56,7 @@ export default function LoginPage() {
     }
 
     await queryClient.invalidateQueries({ queryKey: ['user'] });
-    router.push('/');
+    router.push('/marketplace');
   }
 
   return (
