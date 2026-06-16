@@ -5,6 +5,8 @@ import Image from 'next/image';
 import menuIcon from '@/assets/icons/icon-menu.png';
 import alarmIcon from '@/assets/icons/icon-alarm-default.png';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import NotificationModal from '../notifications/page.jsx';
 
 const fetchUser = async () => {
   const token = localStorage.getItem('accessToken');
@@ -91,14 +93,27 @@ export default function AppHeader() {
 }
 
 function LoggedInMenu({ user, logout }) {
+  const [NotificationOpen, setNotificationOpen] = useState(false);
+
   return (
     <nav className="flex items-center gap-4">
       <span className="text-sm text-white font-bold hidden sm:inline">
         {(user?.point?.balance ?? 0).toLocaleString()} P
       </span>
-      <Link href="/notifications">
-        <Image src={alarmIcon} alt="알림" width={24} height={24} />
-      </Link>
+      <div className="relative">
+        <button
+          aria-label="알림 열기"
+          onClick={() => setNotificationOpen((prev) => !prev)}
+        >
+          <Image src={alarmIcon} alt="알림" width={24} height={24} />
+        </button>
+
+        {NotificationOpen && (
+          <div className="absolute right-0 top-8 z-50">
+            <NotificationModal onClose={() => setNotificationOpen(false)} />
+          </div>
+        )}
+      </div>
 
       <Link href="/profile">
         <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">

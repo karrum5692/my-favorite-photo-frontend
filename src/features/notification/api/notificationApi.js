@@ -1,52 +1,51 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const getToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('accessToken');
-  }
-  return null;
-};
-
-const authHeader = () => {
-  const token = getToken();
-
-  return {
-    'Content-Type': 'application/json',
-    ...(token && {
-      Authorization: `Bearer ${token}`,
-    }),
-  };
-};
-
-// 알림 목록 조회
 export async function getNotifications() {
-  try {
-    const res = await fetch(`${BASE_URL}/notifications`, {
-      headers: authHeader(),
-    });
+  const token = localStorage.getItem('accessToken');
 
-    if (res.status === 401) {
-      localStorage.removeItem('accessToken');
+  const response = await fetch(`${BACKEND_URL}/notifications`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-      alert('로그인이 만료되었습니다.');
-      window.location.href = '/login';
-
-      return;
-    }
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-
-      throw new Error(
-        errorData.message || `알림 조회 실패 (${res.status}: ${res.statusText})`
-      );
-    }
-
-    return res.json();
-  } catch (error) {
-    if (error instanceof TypeError) {
-      throw new Error('네트워크 연결 오류');
-    }
-    throw error;
+  if (!response.ok) {
+    throw new Error('알림 조회 실패');
   }
+
+  return response.json();
+}
+
+export async function readNotifications() {
+  const token = localStorage.getItem('accessToken');
+
+  const response = await fetch(`${BACKEND_URL}/notifications/:id`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new HttpError(404, '알림이 없습니다.');
+  }
+
+  return response.json();
+}
+
+export async function readAllNotifications() {
+  const token = localStorage.getItem('accessToken');
+
+  const response = await fetch(`${BACKEND_URL}/notifications/read-all`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new HttpError(404, '알림이 없습니다.');
+  }
+
+  return response.json();
 }
