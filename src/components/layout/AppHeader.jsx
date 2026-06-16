@@ -6,7 +6,7 @@ import menuIcon from '@/assets/icons/icon-menu.png';
 import alarmIcon from '@/assets/icons/icon-alarm-default.png';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import NotificationModal from '../notifications/page.jsx';
+import NotificationModal from '../../features/notification/components/notificationModal.jsx';
 
 const fetchUser = async () => {
   const token = localStorage.getItem('accessToken');
@@ -93,7 +93,7 @@ export default function AppHeader() {
 }
 
 function LoggedInMenu({ user, logout }) {
-  const [NotificationOpen, setNotificationOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
 
   return (
     <nav className="flex items-center gap-4">
@@ -108,7 +108,7 @@ function LoggedInMenu({ user, logout }) {
           <Image src={alarmIcon} alt="알림" width={24} height={24} />
         </button>
 
-        {NotificationOpen && (
+        {notificationOpen && (
           <div className="absolute right-0 top-8 z-50">
             <NotificationModal onClose={() => setNotificationOpen(false)} />
           </div>

@@ -3,17 +3,21 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export async function getNotifications() {
   const token = localStorage.getItem('accessToken');
 
-  const response = await fetch(`${BACKEND_URL}/notifications`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const response = await fetch(`${BACKEND_URL}/notifications`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error('알림 조회 실패');
+    if (!response.ok) {
+      throw new Error('알림 조회 실패');
+    }
+
+    return response.json();
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  return response.json();
 }
 
 export async function readNotifications(id) {

@@ -1,19 +1,33 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getNotifications } from '../../features/notification/api/notificationApi.js';
+import { getNotifications } from '../api/notificationApi.js';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 export default function NotificationModal({ onClose }) {
-  const { data: notifications = [], isLoading } = useQuery({
+  const {
+    data: notifications = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ['notifications'],
     queryFn: getNotifications,
     refetchInterval: 10000,
+    staleTime: 9000,
   });
 
   if (isLoading) {
     return <div>로딩중...</div>;
+  }
+
+  if (isError) {
+    return (
+      <div className="text-red-500">
+        알림을 불러올 수 없습니다:{error.message}
+      </div>
+    );
   }
 
   return (
