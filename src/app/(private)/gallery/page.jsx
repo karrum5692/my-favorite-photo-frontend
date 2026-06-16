@@ -3,6 +3,7 @@ import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
 import Button from '@/components/ui/Button';
 import { useMyCards } from '@/features/gallery/hooks/useGallery';
+import GalleryGrid from '@/features/gallery/components/GalleryGrid';
 
 export default function GalleryPage() {
   const [search, setSearch] = useState('');
@@ -63,36 +64,34 @@ export default function GalleryPage() {
         </section>
 
         <hr className="border-t border-solid border-gray-700 w-full mt-[1.5rem] mb-[2rem]" />
-
-        <div className="flex flex-col md:flex-row md:justify-start md:items-center gap-[12px] mb-[1.5rem] md:mb-[2.5rem] w-full">
-          <div className="relative shrink-0 w-full pb-[15px] border-b border-solid border-[var(--color-white)] md:w-[320px] md:pb-0 md:border-b-0">
-            <input
-              type="text"
-              placeholder="검색"
-              className="w-full h-[44px] bg-[var(--color-black)] border border-solid border-[var(--color-white)] pl-[14px] pr-[40px] text-[14px] text-[var(--color-white)] focus:outline-none focus:border-[var(--color-white)] placeholder-[var(--color-gray-300)]"
-            />
-            <div className="absolute top-[22px] md:top-1/2 right-[14px] -translate-y-1/2 flex items-center justify-center pointer-events-none">
-              <Image
-                src="/images/search.png"
-                alt="포토카드"
-                width={19}
-                height={19}
-                className="rounded-sm w-auto h-auto"
+        <section>
+          <div className="flex flex-col md:flex-row md:justify-start md:items-center gap-[12px] mb-[1.5rem] md:mb-[2.5rem] w-full">
+            <div className="relative shrink-0 w-full pb-[15px] border-b border-solid border-[var(--color-white)] md:w-[320px] md:pb-0 md:border-b-0">
+              <input
+                type="text"
+                placeholder="검색"
+                className="w-full h-[44px] bg-[var(--color-black)] border border-solid border-[var(--color-white)] pl-[14px] pr-[40px] text-[14px] text-[var(--color-white)] focus:outline-none focus:border-[var(--color-white)] placeholder-[var(--color-gray-300)]"
               />
+              <div className="absolute top-[22px] md:top-1/2 right-[14px] -translate-y-1/2 flex items-center justify-center pointer-events-none">
+                <Image
+                  src="/images/search.png"
+                  alt="포토카드"
+                  width={19}
+                  height={19}
+                  className="rounded-sm w-auto h-auto"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-[12px] w-full md:flex-1 md:justify-start">
+              <div className="flex gap-[16px] items-center">
+                <div className="dropdown-container pc-filter-dropdown hidden md:inline-block"></div>
+              </div>
             </div>
           </div>
-
-          <div className="flex items-center gap-[12px] w-full md:flex-1 md:justify-start">
-            <div className="flex gap-[16px] items-center">
-              <div className="dropdown-container pc-filter-dropdown hidden md:inline-block"></div>
-            </div>
-          </div>
-          <div>
-            {data?.card?.map((card) => (
-              <div key={card.id}>{card.title}</div>
-            ))}
-          </div>
-        </div>
+        </section>
+        <section>
+          <GalleryGrid cards={data?.card} />
+        </section>
       </main>
     </div>
   );
