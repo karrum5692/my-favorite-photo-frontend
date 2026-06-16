@@ -47,17 +47,17 @@ export default function GalleryPage() {
             </span>
           </div>
 
-          <div className="flex items-start gap-[10px]">
-            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[var(--main-main,#EFFF04)] bg-[var(--black-black,#0F0F0F)] text-[var(--main-main,#EFFF04)] font-['Noto_Sans_KR'] text-[14px] font-[500] whitespace-nowrap">
+          <div className="flex items-start gap-[20px]">
+            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[var(--main-main,#EFFF04)] bg-[var(--black-black,#0F0F0F)] text-[var(--main-main,#EFFF04)] font-['Noto_Sans_KR'] text-[16px] font-[300] whitespace-nowrap">
               COMMON {data?.gradeCount?.COMMON}장
             </div>
-            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#3DFFC3] bg-[var(--black-black,#0F0F0F)] text-[#3DFFC3] font-['Noto_Sans_KR'] text-[14px] font-[500] whitespace-nowrap">
+            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#29C9F9] bg-[var(--black-black,#0F0F0F)] text-[#29C9F9] font-['Noto_Sans_KR'] text-[16px] font-[300] whitespace-nowrap">
               RARE {data?.gradeCount?.RARE}장
             </div>
-            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#8C52FF] bg-[var(--black-black,#0F0F0F)] text-[#8C52FF] font-['Noto_Sans_KR'] text-[14px] font-[500] whitespace-nowrap">
+            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#A77EFF] bg-[var(--black-black,#0F0F0F)] text-[#A77EFF] font-['Noto_Sans_KR'] text-[16px] font-[300] whitespace-nowrap">
               SUPER RARE {data?.gradeCount?.SUPER_RARE}장
             </div>
-            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#FF4D4D] bg-[var(--black-black,#0F0F0F)] text-[#FF4D4D] font-['Noto_Sans_KR'] text-[14px] font-[500] whitespace-nowrap">
+            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#FF2A6A] bg-[var(--black-black,#0F0F0F)] text-[#FF2A6A] font-['Noto_Sans_KR'] text-[16px] font-[300] whitespace-nowrap">
               LEGENDARY {data?.gradeCount?.LEGENDARY}장
             </div>
           </div>
@@ -76,8 +76,8 @@ export default function GalleryPage() {
                 <Image
                   src="/images/search.png"
                   alt="포토카드"
-                  width={19}
-                  height={19}
+                  width={24}
+                  height={24}
                   className="rounded-sm w-auto h-auto"
                 />
               </div>
