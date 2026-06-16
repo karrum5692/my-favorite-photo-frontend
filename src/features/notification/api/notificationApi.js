@@ -16,7 +16,10 @@ export async function getNotifications() {
 
     return response.json();
   } catch (error) {
-    throw new Error(error.message);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('알림 조회 실패');
   }
 }
 

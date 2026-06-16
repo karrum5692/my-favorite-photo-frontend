@@ -39,7 +39,7 @@ export default function NotificationModal({ onClose }) {
           notifications.map((notification) => (
             <div
               key={notification.id}
-              className="notification bg-[#161616] p-[20px] w-[300px] h-[107px] gap-[10px]"
+              className="notification bg-[#161616] p-[20px] w-[300px] h-[107px] border-b border-gray-400"
             >
               <p className="text-[14px] font-normal italic-none leading-normal">
                 {notification.message}
