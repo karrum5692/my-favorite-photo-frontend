@@ -167,12 +167,14 @@ function LoggedInMenu({ user, logout }) {
         <button
           aria-label="알림 열기"
           onClick={() => setNotificationOpen((p) => !p)}
+          className="flex items-center"
         >
           <Image
             src={unreadCount > 0 ? alarmActiveIcon : alarmDefaultIcon}
             alt={unreadCount > 0 ? `읽지 않은 알림 ${unreadCount}개` : '알림'}
             width={24}
             height={24}
+            className="block"
           />
         </button>
         {notificationOpen && (
@@ -182,16 +184,28 @@ function LoggedInMenu({ user, logout }) {
         )}
       </div>
 
-      <Link href="/profile" aria-label="프로필">
-        <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden">
-          <Image
-            src={user?.profileImageUrl || profileIcon}
-            alt="프로필"
-            width={32}
-            height={32}
-            className="object-cover"
-          />
-        </div>
+      <Link href="/profile" aria-label="프로필" className="flex items-center">
+        {user?.profileImageUrl ? (
+          <div className="w-8 h-8 rounded-full overflow-hidden">
+            <Image
+              src={user.profileImageUrl}
+              alt="프로필"
+              width={32}
+              height={32}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center overflow-hidden">
+            <Image
+              src={profileIcon}
+              alt="프로필"
+              width={20}
+              height={20}
+              className="object-contain"
+            />
+          </div>
+        )}
       </Link>
 
       <div className="relative hidden md:block">
