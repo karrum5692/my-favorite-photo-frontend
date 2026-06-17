@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import closeIcon from '@/assets/icons/icon-close.png';
 import Image from 'next/image';
@@ -63,18 +65,30 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
     return (
       <ResultModal
         isOpen={true}
-        onClose={(e) => setIsSubmitted(false)}
+        onClose={(e) => {
+          setIsSubmitted(false);
+          router.push('/marketplace');
+        }}
         title="판매 등록"
-        result="success"
+        result={isSuccess ? 'success' : 'failure'}
         description={
           isSuccess
             ? `[${card.grade}|${card.title}]${quantity}장 판매 등록에 성공했습니다!`
             : `[${card.grade}|${card.title}]${quantity}장 판매 등록에 실패했습니다!`
         }
-        buttonText="나의 판매 포토카드에서 확인하기"
+        buttonText={
+          isSuccess
+            ? '나의 판매 포토카드에서 확인하기'
+            : '마켓플레이스로 돌아가기'
+        }
         onButtonClick={() => {
-          setIsSubmitted(false);
-          router.push('/marketplace/1');
+          if (isSuccess) {
+            setIsSubmitted(false);
+            router.push('/my-sales');
+          } else {
+            setIsSubmitted(false);
+            router.push('/marketplace');
+          }
         }}
       />
     );
