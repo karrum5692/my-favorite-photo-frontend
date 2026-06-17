@@ -3,12 +3,7 @@
 import Button from '@/components/ui/Button';
 import Image from 'next/image';
 
-export default function ExchangeItem({
-  offeredCard,
-  proposer,
-  message,
-  cardIsSeller,
-}) {
+export default function ExchangeItem({ offeredCard, message, cardIsSeller }) {
   const gradeColorMap = {
     COMMON: '#EFFF04',
     RARE: '#29C9F9',
@@ -17,8 +12,16 @@ export default function ExchangeItem({
   };
 
   const gradeColor = gradeColorMap[offeredCard.template.grade] || '#fff';
+  const template = offeredCard.template ?? {};
+  const {
+    title = '제목 없음',
+    imageUrl,
+    grade = 'UNKNOWN',
+    genre = '-',
+    price,
+  } = template;
 
-  const { title, imageUrl, grade, genre, price } = offeredCard.template;
+  //닉네임 아직 백엔드에서 데이터 넘겨 줄 것
   const nickname = '???';
 
   return (

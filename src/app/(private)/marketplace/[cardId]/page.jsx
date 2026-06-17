@@ -102,7 +102,7 @@ export default function DetailPage() {
         {
           method: 'GET',
           headers: {
-            'Content-Type': 'appplication/json',
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
         }
@@ -123,7 +123,11 @@ export default function DetailPage() {
   const { data: myProposalCards } = useQuery({
     queryKey: ['myProposalCards'],
     queryFn: () => getMyProposals(),
+    enabled: !card?.isSeller,
   });
+
+  //교환신청한 사람의 proposalId필요한 것
+  console.log(proposalCards.id);
 
   //교환 수락
   async function handleAcceptProposal() {
