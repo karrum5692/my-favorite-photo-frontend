@@ -7,7 +7,7 @@ export default function PhotoCardGrid({ cards = [], onCardClick }) {
   return (
     <div
       className="
-        grid grid-cols-2
+        grid grid-cols-2 lg:grid-cols-3
         gap-[10px]
         md:gap-[20px]
         lg:gap-[40px]

@@ -127,7 +127,8 @@ export default function DetailPage() {
   });
 
   //교환신청한 사람의 proposalId필요한 것
-  console.log(proposalCards.id);
+  // console.log(proposalCards.id); 에러로 주석처리합니다.
+  // 제안이 여러개일 수 있기 때문에, proposalId는 각 제안 카드에서 받아와야 합니다.
 
   //교환 수락
   async function handleAcceptProposal() {
