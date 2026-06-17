@@ -1,8 +1,6 @@
 import ExchangeItem from './ExchangeItem';
 
 export default function ExchangeGrid({ proposal, cardIsSeller }) {
-  console.log('grid:', proposal);
-
   return (
     <div
       className="

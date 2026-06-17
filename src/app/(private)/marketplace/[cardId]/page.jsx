@@ -127,7 +127,7 @@ export default function DetailPage() {
   });
 
   //교환신청한 사람의 proposalId필요한 것
-  console.log(proposalCards.id);
+  console.log(proposalCards);
 
   //교환 수락
   async function handleAcceptProposal() {
