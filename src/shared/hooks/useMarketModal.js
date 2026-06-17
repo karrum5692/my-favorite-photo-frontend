@@ -26,7 +26,7 @@ export default function useMarketModal(isOpen) {
         }
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/me/cards`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/me/cards`,
           {
             method: 'GET',
             headers: {
