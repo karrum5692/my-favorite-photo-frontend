@@ -23,7 +23,6 @@ export default function PhotoCardItem({
   };
 
   const gradeColor = gradeColorMap[grade] || '#fff';
-  const isSoldOut = status === 'SOLD' || quantity === 0;
 
   return (
     <article
@@ -99,9 +98,11 @@ export default function PhotoCardItem({
             </span>
             <span className="text-[#A4A4A4]">| {genre}</span>
           </div>
-
           <span className="text-white underline whitespace-nowrap max-w-[60px] md:max-w-[120px] truncate">
             {nickname}
+          </span>
+          <span className="text-white font-semibold">
+            {price?.toLocaleString()} P
           </span>
         </div>
 
