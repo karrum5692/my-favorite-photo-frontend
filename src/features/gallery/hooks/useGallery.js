@@ -7,5 +7,7 @@ export function useMyCards(filters) {
     queryFn: function () {
       return getMyCards(filters);
     },
+    placeholderData: (prev) => prev,
+    staleTime: 1000 * 30,
   });
 }

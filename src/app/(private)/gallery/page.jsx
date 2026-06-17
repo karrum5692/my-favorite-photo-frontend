@@ -4,12 +4,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import Button from '@/components/ui/Button';
 import { useMyCards } from '@/features/gallery/hooks/useGallery';
 import GalleryGrid from '@/features/gallery/components/GalleryGrid';
+import GallerySearch from '@/features/gallery/components/GallerySearch';
+import GalleryFilter from '@/features/gallery/components/GalleryFilter';
+import Pagination from '@/components/ui/Pagination';
+import { useSearchParams } from 'next/navigation';
 
 export default function GalleryPage() {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState({ type: '', value: '' });
-  const [page, setPage] = useState(1);
-
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
   const filters = {
     search,
     grade: activeFilter.type === 'grade' ? activeFilter.value : '',
@@ -18,16 +22,28 @@ export default function GalleryPage() {
     limit: 9,
   };
 
+  const handleSearch = function (value) {
+    setSearch(value);
+  };
+
+  const handleFilter = function (value) {
+    setActiveFilter({ type: 'grade', value });
+  };
+
+  const handleFilter2 = function (value) {
+    setActiveFilter({ type: 'genre', value });
+  };
+
   const { data, isLoading, error } = useMyCards(filters);
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading && !data) return <div>로딩 중...</div>;
   if (error) return <div>에러남</div>;
 
   return (
     <div className="mx-auto min-height-[100vh] max-w-[120rem] bg-[var(--color-black)] px-[16px] pt-[1.5rem] pb-[10rem] text-[var(--color-white)] relative md:max-[1500px]:px-[24px] md:max-[1500px]:pt-[3.75rem] md:max-[1500px]:pb-[8.75rem] min-[1500px]:px-[13.75rem] min-[1500px]:pt-[3.75rem] min-[1500px]:pb-[8.75rem]">
       <main className="p-0 min-[1500px]:py-[3rem] min-[1500px]:px-[2.5rem]">
         <section className="hidden md:flex justify-between items-center border-b-[2px] border-solid border-[var(--color-white)] pb-[1.5rem] mb-[2rem]">
-          <h1 className="text-[var(--color-white)] font-['BR_B'] text-[3.875rem] font-[400] italic-none tracking-[-0.11625rem] cursor-pointer select-none hover:opacity-80">
+          <h1 className="text-[#FFF] font-['BR_B'] text-[62px] font-[400] leading-normal tracking-[-1.86px]text-[var(--color-white)] font-['BR_B'] text-[3.875rem] font-[400] italic-none tracking-[-0.11625rem] cursor-pointer select-none hover:opacity-80">
             마이 갤러리
           </h1>
           <div className="w-[320px] hidden md:block">
@@ -65,13 +81,9 @@ export default function GalleryPage() {
 
         <hr className="border-t border-solid border-gray-700 w-full mt-[1.5rem] mb-[2rem]" />
         <section>
-          <div className="flex flex-col md:flex-row md:justify-start md:items-center gap-[12px] mb-[1.5rem] md:mb-[2.5rem] w-full">
+          <div className="flex flex-col md:flex-row md:items-center gap-[12px] mb-[1.5rem] md:mb-[2.5rem] w-full">
             <div className="relative shrink-0 w-full pb-[15px] border-b border-solid border-[var(--color-white)] md:w-[320px] md:pb-0 md:border-b-0">
-              <input
-                type="text"
-                placeholder="검색"
-                className="w-full h-[44px] bg-[var(--color-black)] border border-solid border-[var(--color-white)] pl-[14px] pr-[40px] text-[14px] text-[var(--color-white)] focus:outline-none focus:border-[var(--color-white)] placeholder-[var(--color-gray-300)]"
-              />
+              <GallerySearch onSearch={handleSearch} />
               <div className="absolute top-[22px] md:top-1/2 right-[14px] -translate-y-1/2 flex items-center justify-center pointer-events-none">
                 <Image
                   src="/images/search.png"
@@ -82,17 +94,21 @@ export default function GalleryPage() {
                 />
               </div>
             </div>
-            <div className="flex items-center gap-[12px] w-full md:flex-1 md:justify-start">
-              <div className="flex gap-[16px] items-center">
-                <div className="dropdown-container pc-filter-dropdown hidden md:inline-block"></div>
-              </div>
-            </div>
+            <GalleryFilter
+              grade={activeFilter.value}
+              genre={activeFilter.value}
+              onGradeChange={handleFilter}
+              onGenreChange={handleFilter2}
+            />
           </div>
         </section>
         <section>
           <GalleryGrid cards={data?.card} />
         </section>
       </main>
+      <div className="flex justify-center">
+        <Pagination totalPages={data?.totalPages} />
+      </div>
     </div>
   );
 }
