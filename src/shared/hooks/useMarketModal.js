@@ -26,7 +26,7 @@ export default function useMarketModal(isOpen) {
         }
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/me/cards`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/mycard/owned`,
           {
             method: 'GET',
             headers: {
@@ -43,7 +43,7 @@ export default function useMarketModal(isOpen) {
 
         const data = await res.json();
 
-        setCards(Array.isArray(data) ? data : []);
+        setCards(Array.isArray(data?.data?.card) ? data?.data?.card : []);
       } catch (e) {
         console.error('카드 로딩 실패:', e);
         setCards([]);
