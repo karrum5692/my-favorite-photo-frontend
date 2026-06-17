@@ -1,6 +1,25 @@
-import ExchangeItem from './ExchangeItem';
+'use client';
 
-export default function ExchangeGrid({ proposal, cardIsSeller }) {
+import ExchangeItem from './ExchangeItem';
+import { useState } from 'react';
+
+export default function ExchangeGrid({
+  proposal,
+  cardIsSeller,
+  handleAcceptProposal,
+  handleRejectProposal,
+}) {
+  const prevData = JSON.parse(localStorage.getItem('hiddenCardId'));
+  const [hiddenCardId, setHiddenCardId] = useState(prevData ? prevData : []);
+
+  const allHidden = proposal?.every((c) =>
+    hiddenCardId.includes(c.offeredCard?.id)
+  );
+
+  if (allHidden && proposal?.length > 0) {
+    return <p className="my-[70px]">교환 제시된 목록이 없습니다.</p>;
+  }
+
   return (
     <div
       className="
@@ -17,7 +36,15 @@ export default function ExchangeGrid({ proposal, cardIsSeller }) {
       "
     >
       {proposal.map((c) => (
-        <ExchangeItem key={c.id} {...c} cardIsSeller={cardIsSeller} />
+        <ExchangeItem
+          key={c.id}
+          {...c}
+          cardIsSeller={cardIsSeller}
+          handleAcceptProposal={() => handleAcceptProposal(c.id)}
+          handleRejectProposal={() => handleRejectProposal(c.id)}
+          hiddenCardId={hiddenCardId}
+          setHiddenCardId={setHiddenCardId}
+        />
       ))}
     </div>
   );
