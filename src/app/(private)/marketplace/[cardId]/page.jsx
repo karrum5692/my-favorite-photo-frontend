@@ -357,7 +357,7 @@ export default function DetailPage() {
                 <span className="flex items-center text-gray-400 text-lg xl:text-2xl font-bold">
                   |
                 </span>
-                <span className="flex items-center text-gray=300 text-lg xl:text-2xl font-bold">
+                <span className="flex items-center text-gray-300 text-lg xl:text-2xl font-bold">
                   {card.photoCard.template.genre}
                 </span>
               </div>
@@ -374,14 +374,14 @@ export default function DetailPage() {
               <span className="flex items-center text-gray-300 text-lg font-normal">
                 가격
               </span>
-              <span className="flex itmes-center text-white text-xl font-bold]">
+              <span className="flex itmes-center text-white text-xl font-bold">
                 {card.price}P
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-300 text-lg font-normal">잔여</span>
               <div className="flex gap-1.5">
-                <span className="flex items-center text-white text-right text-xl font-bold]">
+                <span className="flex items-center text-white text-right text-xl font-bold">
                   {card.remainQuantity}
                 </span>
                 <span className="flex items-center text-gray-300 text-right text-xl font-normal">
