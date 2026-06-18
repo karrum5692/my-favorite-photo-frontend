@@ -130,14 +130,21 @@ export default function ExchangeItem({
                         onClose={() => setIsOpenRejectAlert(false)}
                         title="교환 제시 거절"
                         description={`[${grade} | ${title}]\n카드와의 교환을 거절하시겠습니까?`}
-                        onButtonClick={() => {
-                          handleRejectProposal();
-                          const updatdIds = [...hiddenCardId, offeredCard?.id];
-                          setHiddenCardId(updatdIds);
-                          localStorage.setItem(
-                            'hiddenCardId',
-                            JSON.stringify(updatdIds)
-                          );
+                        onButtonClick={async () => {
+                          try {
+                            await handleRejectProposal();
+                            const updatdIds = [
+                              ...hiddenCardId,
+                              offeredCard?.id,
+                            ];
+                            setHiddenCardId(updatdIds);
+                            localStorage.setItem(
+                              'hiddenCardId',
+                              JSON.stringify(updatdIds)
+                            );
+                          } catch (error) {
+                            //실패 시 항목 숨김 상태 변경 x
+                          }
                         }}
                         buttonText="거절하기"
                       />
@@ -158,14 +165,21 @@ export default function ExchangeItem({
                         onClose={() => setIsOpenAcceptAlert(false)}
                         title="교환 제시 승인"
                         description={`[${grade} | ${title}]\n카드와의 교환을 승인하시겠습니까?`}
-                        onButtonClick={() => {
-                          handleAcceptProposal();
-                          const updatdIds = [...hiddenCardId, offeredCard?.id];
-                          setHiddenCardId(updatdIds);
-                          localStorage.setItem(
-                            'hiddenCardId',
-                            JSON.stringify(updatdIds)
-                          );
+                        onButtonClick={async () => {
+                          try {
+                            await handleAcceptProposal();
+                            const updatdIds = [
+                              ...hiddenCardId,
+                              offeredCard?.id,
+                            ];
+                            setHiddenCardId(updatdIds);
+                            localStorage.setItem(
+                              'hiddenCardId',
+                              JSON.stringify(updatdIds)
+                            );
+                          } catch (error) {
+                            //실패 시 항목 숨김 상태 변경 x
+                          }
                         }}
                         buttonText="승인하기"
                       />
