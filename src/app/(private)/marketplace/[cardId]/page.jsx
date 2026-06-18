@@ -126,68 +126,6 @@ export default function DetailPage() {
     enabled: !card?.isSeller,
   });
 
-  //교환신청한 사람의 proposalId필요한 것
-  // console.log(proposalCards.id); 에러로 주석처리합니다.
-  // 제안이 여러개일 수 있기 때문에, proposalId는 각 제안 카드에서 받아와야 합니다.
-
-  //교환 수락
-  async function handleAcceptProposal() {
-    try {
-      const token =
-        localStorage.getItem('accessToken') || localStorage.getItem('token');
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/${proposalId}/accept`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.mesage || '서버 응답 오류');
-      }
-
-      alert('교환 신청이 완료되었습니다.');
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
-
-  //교환 거절
-  async function handleRejectProposal() {
-    try {
-      const token =
-        localStorage.getItem('accessToken') || localStorage.getItem('token');
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/${proposalId}/reject`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.mesage || '서버 응답 오류');
-      }
-
-      alert('교환 신청을 거절하였습니다.');
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
-
-  //교환 취소-교환 거절?
-
   const [quantity, setQuantity] = useState(1);
 
   if (isPending) {
@@ -320,6 +258,64 @@ export default function DetailPage() {
       alert(error.message);
     }
   }
+
+  //교환 수락
+  async function handleAcceptProposal(proposalId) {
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/${proposalId}/accept`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.mesage || '서버 응답 오류');
+      }
+
+      alert('교환 신청이 완료되었습니다.');
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  //교환 거절
+  async function handleRejectProposal(proposalId) {
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/${proposalId}/reject`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.mesage || '서버 응답 오류');
+      }
+
+      alert('교환 신청을 거절하였습니다.');
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  //교환 취소-교환 거절?
 
   return (
     <div className="px-4 md:px-10 xl:px-20 min-[1920px]:px-32">
@@ -501,6 +497,8 @@ export default function DetailPage() {
             <ExchangeGrid
               proposal={proposalCards}
               cardIsSeller={card?.isSeller}
+              handleAcceptProposal={handleAcceptProposal}
+              handleRejectProposal={handleRejectProposal}
             />
           ) : (
             <p className="my-[70px]">교환 제시된 목록이 없습니다.</p>
@@ -551,7 +549,8 @@ export default function DetailPage() {
               </span>
             </div>
           </div>
-          {myProposalCards?.length > 0 ? (
+          {myProposalCards?.length > 0 &&
+          cardId == myProposalCards?.[0]?.saleListing?.id ? (
             <>
               <p className="flex text-[40px] text-white font-bold mt-[120px]">
                 내가 제시한 교환 목록
