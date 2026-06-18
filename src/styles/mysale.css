@@ -1,0 +1,550 @@
+/* ==========================================
+   나의 판매 포토카드 페이지
+   ========================================== */
+
+@font-face {
+  font-family: 'BR B';
+  src: url('/fonts/배스킨라빈스B.otf') format('opentype');
+}
+
+/* 페이지 레이아웃 */
+.my-sales-container {
+  min-height: 100vh;
+  max-width: 120rem;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  margin: 0 auto;
+  padding: 3.75rem 13.75rem 8.75rem;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .my-sales-container {
+    padding: 1.5rem 16px 10rem;
+  }
+}
+
+@media (max-width: 1500px) {
+  .my-sales-container {
+    padding: 3.75rem 24px 8.75rem;
+  }
+  .my-sales-content {
+    padding: 0;
+  }
+}
+
+@media (min-width: 1500px) {
+  .my-sales-content {
+    padding: 3rem 2.5rem;
+  }
+}
+
+/* 페이지 타이틀 */
+.my-sales-title {
+  color: var(--color-white);
+  font-family: 'BR B';
+  font-size: 3.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.11625rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+@media (min-width: 1500px) {
+  .my-sales-title {
+    font-size: 3.875rem;
+    font-weight: 400;
+    letter-spacing: -0.11625rem;
+  }
+}
+
+.my-sales-divider {
+  border-top: 2px solid var(--color-white);
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 767.5px) {
+  .my-sales-divider {
+    display: none;
+  }
+  .my-sales-title {
+    display: none;
+  }
+}
+
+/* 요약 섹션 */
+.my-sales-summary {
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .my-sales-summary {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.my-sales-summary-text {
+  color: var(--gray-gray200);
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 20px;
+}
+
+.my-sales-summary-text strong {
+  color: var(--color-gray-300);
+
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+@media (max-width: 768px) {
+  .my-sales-summary-text {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  .my-sales-summary-text strong {
+    color: var(--gray-gray300);
+
+    font-size: 12px;
+  }
+}
+
+/* 등급 배지 */
+.my-sales-grade-badges {
+  display: flex;
+  gap: 10px;
+  padding-bottom: 40px;
+  border-bottom: 2px solid var(--color-gray-400);
+}
+
+.my-sales-grade-badge {
+  border: 1px solid;
+  height: 40px;
+  padding: 8px 20px;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+@media (max-width: 768px) {
+  .my-sales-grade-badges {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 15px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .my-sales-grade-badge {
+    border: 1px solid;
+    height: 30px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 300;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .my-sales-grade-badges::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==========================================
+   필터 바
+   ========================================== */
+.my-sales-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  margin-bottom: 1.5rem;
+}
+
+.my-sales-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .my-sales-filter-bar {
+    gap: 12px;
+  }
+
+  .mobile-filter-toggle-btn {
+    order: 1;
+  }
+
+  .my-sales-search-form {
+    order: 2;
+    flex: 1;
+    width: auto;
+  }
+
+  .pc-filter-dropdown {
+    order: 3;
+  }
+}
+
+/* 검색 폼 */
+.my-sales-search-form {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-gray-200);
+  width: 320px;
+  padding: 13px 20px;
+  background: var(--color-black);
+  gap: 8px;
+}
+
+.my-sales-search-input {
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+}
+
+.my-sales-search-input::placeholder {
+  color: var(--color-gray-300);
+}
+
+.my-sales-search-btn {
+  background: var(--color-black);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+/* 드롭다운 */
+.my-sales-dropdown-container {
+  position: relative;
+}
+
+.my-sales-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8125rem;
+  padding: 0.375rem 0.75rem;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+@media (min-width: 768px) {
+  .my-sales-dropdown-btn {
+    font-size: 0.9375rem;
+  }
+}
+
+.my-sales-dropdown-btn:hover {
+  border-color: var(--color-white);
+}
+
+.my-sales-dropdown-arrow {
+  width: 0.75rem;
+  height: 0.75rem;
+  transition: transform 0.15s;
+}
+
+.my-sales-dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.my-sales-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  z-index: 30;
+  background-color: var(--color-black);
+  border: 1px solid var(--color-white);
+
+  min-width: 7.5rem;
+}
+
+.my-sales-dropdown-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  color: var(--color-white);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+/* ==========================================
+   카드 그리드
+   ========================================== */
+.my-sales-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .my-sales-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .my-sales-grid {
+    gap: 40px;
+  }
+}
+
+/* 빈 상태 */
+.my-sales-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 18.75rem;
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+/* 로딩 스피너 */
+.my-sales-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 18.75rem;
+}
+
+.my-sales-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--color-white);
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: my-sales-spin 0.6s linear infinite;
+}
+
+@keyframes my-sales-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================
+   모바일 필터 토글 버튼
+   ========================================== */
+.mobile-filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background-color: var(--color-black);
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .mobile-filter-toggle-btn {
+    display: none;
+  }
+}
+
+/* PC 드롭다운 필터 숨김 */
+.pc-filter-dropdown {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .pc-filter-dropdown {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+}
+
+/* ==========================================
+   모바일 바텀시트
+   ========================================== */
+.mobile-bottom-sheet-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+}
+
+@media (min-width: 768px) {
+  .mobile-bottom-sheet-overlay {
+    display: none;
+  }
+}
+
+.mobile-bottom-sheet {
+  width: 100%;
+  background-color: var(--color-black);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 24px 16px 32px;
+  box-sizing: border-box;
+  animation: slideUp 0.25s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.bottom-sheet-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.bottom-sheet-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-white);
+  text-align: center;
+}
+
+.bottom-sheet-close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-gray-300);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.bottom-sheet-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 8px;
+}
+
+.bottom-sheet-tab {
+  background: none;
+  border: none;
+  color: var(--color-gray-300);
+  font-size: 15px;
+  padding: 0 20px 12px;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+}
+
+.bottom-sheet-tab:first-child {
+  padding-left: 15px;
+}
+
+.bottom-sheet-tab.active {
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.bottom-sheet-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-white);
+}
+
+.bottom-sheet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 280px;
+  overflow-y: auto;
+  margin-bottom: 24px;
+}
+
+.bottom-sheet-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 4px;
+  font-size: 15px;
+  color: var(--color-gray-300);
+  cursor: pointer;
+}
+
+.bottom-sheet-item.selected {
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.bottom-sheet-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reset-icon-btn {
+  background-color: var(--color-black);
+  border: none;
+  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.submit-filter-btn {
+  flex: 1;
+  background-color: var(--color-main);
+  color: var(--color-black);
+  border: none;
+  border-radius: 8px;
+  height: 56px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 등급별 텍스트 컬러 */
+.grade-common {
+  color: var(--color-main);
+}
+
+.grade-rare {
+  color: var(--color-blue);
+}
+
+.grade-super-rare {
+  color: var(--color-purple);
+}
+
+.grade-legendary {
+  color: var(--color-pink);
+}
