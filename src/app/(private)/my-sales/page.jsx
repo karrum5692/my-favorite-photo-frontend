@@ -67,7 +67,7 @@ export default function MySalesPage() {
           {/* SUMMARY */}
           <div className="my-sales-summary">
             <p className="my-sales-summary-text">
-              {nickname || '유저'}님이 판매 중인 포토카드{' '}
+              {nickname || '유저'}님이 보유한 포토카드{' '}
               <strong>({allCounts}장)</strong>
             </p>
 
