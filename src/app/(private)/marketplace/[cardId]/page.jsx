@@ -317,15 +317,15 @@ export default function DetailPage() {
     }
   }
 
-  //교환 취소-교환 거절?
+  //교환 취소
 
   return (
     <div className="px-4 md:px-10 xl:px-20 min-[1920px]:px-32">
-      <span className="flex py-[60px] text-gray-300 font-brb text-[24px] font-normal tracking-[-.0.72px] ">
+      <span className="flex text-gray-300 font-brb font-normal tracking-[-.0.72px] text-[20px] md:text-[16px] xl:text-[24px] xl:py-[60px]">
         마켓플레이스
       </span>
       <div className="flex flex-col gap-[20px] mb-[70px]">
-        <p className="flex text-[40px] text-white font-bold">
+        <p className="flex text-[24px] md:text-[32px] xl:text-[40px] text-white font-bold">
           {card.photoCard.template.title}
         </p>
         <p className="border border-white"></p>
