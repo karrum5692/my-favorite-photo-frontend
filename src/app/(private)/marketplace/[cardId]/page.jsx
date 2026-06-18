@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import TradeModal from '@/features/photocard/components/TradeModal';
 import ResultModal from '@/components/ui/ResultModal';
 import ExchangeGrid from '@/features/marketplace/components/ExchangeGrid';
+import AlertModal from '@/components/ui/AlertModal';
 
 export default function DetailPage() {
   const { cardId } = useParams();
@@ -21,6 +22,7 @@ export default function DetailPage() {
 
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isOpenExchange, setIsOpenExchange] = useState(false);
+  const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -470,20 +472,42 @@ export default function DetailPage() {
                 variant="secondary"
                 height="80"
                 className="cursor-pointer"
-                onClick={() => handleCancel(cardId)}
+                onClick={() => setIsOpenAlert(true)}
               >
                 판매 내리기
               </Button>
+              {isOpenAlert && (
+                <AlertModal
+                  isOpen={isOpenAlert}
+                  onClose={() => setIsOpenAlert(false)}
+                  title="포토카드 판매 내리기"
+                  description="정말로 판매를 중단하시겠습니까?"
+                  onButtonClick={() => handleCancel(cardId)}
+                  buttonText="판매 내리기"
+                />
+              )}
             </>
           ) : (
-            <Button
-              variant="primary"
-              height="80"
-              className="cursor-pointer"
-              onClick={() => handlePurchase(cardId)}
-            >
-              포토카드 구매하기
-            </Button>
+            <>
+              <Button
+                variant="primary"
+                height="80"
+                className="cursor-pointer"
+                onClick={() => setIsOpenAlert(true)}
+              >
+                포토카드 구매하기
+              </Button>
+              {isOpenAlert && (
+                <AlertModal
+                  isOpen={isOpenAlert}
+                  onClose={() => setIsOpenAlert(false)}
+                  title="포토카드 구매"
+                  description={`[${card.photoCard.template.grade} | ${card.photoCard.template.title}]\n${quantity}장을 구매하시겠습니까?`}
+                  onButtonClick={() => handlePurchase(cardId)}
+                  buttonText="구매하기"
+                />
+              )}
+            </>
           )}
         </div>
       </div>

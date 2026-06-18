@@ -1,7 +1,9 @@
 'use client';
 
+import AlertModal from '@/components/ui/AlertModal';
 import Button from '@/components/ui/Button';
 import Image from 'next/image';
+import { useState } from 'react';
 
 export default function ExchangeItem({
   offeredCard,
@@ -19,6 +21,9 @@ export default function ExchangeItem({
     SUPER_RARE: '#A77EFF',
     LEGENDARY: '#FF2A6A',
   };
+
+  const [isOpenAcceptAlert, setIsOpenAcceptAlert] = useState(false);
+  const [isOpenRejectAlert, setIsOpenRejectAlert] = useState(false);
 
   if (!offeredCard?.template) {
     return null;
@@ -110,38 +115,62 @@ export default function ExchangeItem({
             <div>
               {cardIsSeller ? (
                 <div className="flex flex-row gap-[20px] mt-[40px]">
-                  <Button
-                    variant="secondary"
-                    weight="170"
-                    height="60"
-                    onClick={() => {
-                      handleRejectProposal();
-                      const updatdIds = [...hiddenCardId, offeredCard?.id];
-                      setHiddenCardId(updatdIds);
-                      localStorage.setItem(
-                        'hiddenCardId',
-                        JSON.stringify(updatdIds)
-                      );
-                    }}
-                  >
-                    거절하기
-                  </Button>
-                  <Button
-                    variant="primary"
-                    weight="170"
-                    height="60"
-                    onClick={() => {
-                      handleAcceptProposal();
-                      const updatdIds = [...hiddenCardId, offeredCard?.id];
-                      setHiddenCardId(updatdIds);
-                      localStorage.setItem(
-                        'hiddenCardId',
-                        JSON.stringify(updatdIds)
-                      );
-                    }}
-                  >
-                    승인하기
-                  </Button>
+                  <>
+                    <Button
+                      variant="secondary"
+                      weight="170"
+                      height="60"
+                      onClick={() => setIsOpenRejectAlert(true)}
+                    >
+                      거절하기
+                    </Button>
+                    {isOpenRejectAlert && (
+                      <AlertModal
+                        isOpen={isOpenRejectAlert}
+                        onClose={() => setIsOpenRejectAlert(false)}
+                        title="교환 제시 거절"
+                        description={`[${grade} | ${title}]\n카드와의 교환을 거절하시겠습니까?`}
+                        onButtonClick={() => {
+                          handleRejectProposal();
+                          const updatdIds = [...hiddenCardId, offeredCard?.id];
+                          setHiddenCardId(updatdIds);
+                          localStorage.setItem(
+                            'hiddenCardId',
+                            JSON.stringify(updatdIds)
+                          );
+                        }}
+                        buttonText="거절하기"
+                      />
+                    )}
+                  </>
+                  <>
+                    <Button
+                      variant="primary"
+                      weight="170"
+                      height="60"
+                      onClick={() => setIsOpenAcceptAlert(true)}
+                    >
+                      승인하기
+                    </Button>
+                    {isOpenAcceptAlert && (
+                      <AlertModal
+                        isOpen={isOpenAcceptAlert}
+                        onClose={() => setIsOpenAcceptAlert(false)}
+                        title="교환 제시 승인"
+                        description={`[${grade} | ${title}]\n카드와의 교환을 승인하시겠습니까?`}
+                        onButtonClick={() => {
+                          handleAcceptProposal();
+                          const updatdIds = [...hiddenCardId, offeredCard?.id];
+                          setHiddenCardId(updatdIds);
+                          localStorage.setItem(
+                            'hiddenCardId',
+                            JSON.stringify(updatdIds)
+                          );
+                        }}
+                        buttonText="승인하기"
+                      />
+                    )}
+                  </>
                 </div>
               ) : (
                 <div className="mt-[40px]">
