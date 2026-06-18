@@ -1,6 +1,6 @@
 'use client';
 import { getProfile, patchProfile } from '../api/userApi';
-import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useProfile() {
   return useQuery({
@@ -12,13 +12,14 @@ export function useProfile() {
 }
 
 export function useUpdateProfile() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: function ({ nickname, profileImageUrl }) {
       return patchProfile(nickname, profileImageUrl);
     },
     onSuccess: function () {
-      QueryClient.invalidateQueries({ queryKey: ['myProfile'] });
-      alert('프로필이 정상적으로 수정되었습니다.');
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     },
     onError: function (error) {
       alert(`수정 실패:${error.message}`);
