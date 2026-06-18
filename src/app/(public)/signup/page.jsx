@@ -8,6 +8,7 @@ import {
   signupAction,
   googleLoginAction,
 } from '../../../features/auth/api/authApi.js';
+import Modal from '../../../components/ui/AuthModal.jsx';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -22,6 +23,11 @@ export default function SignUpPage() {
     nickname: '',
     password: '',
     passwordConfirm: '',
+  });
+  const [modal, setModal] = useState({
+    open: false,
+    message: '',
+    redirectTo: null,
   });
 
   const router = useRouter();
@@ -45,11 +51,10 @@ export default function SignUpPage() {
     setLoading(false);
 
     if (result.success) {
-      alert(result.message);
-      router.push('/login');
+      setModal({ open: true, message: result.message, redirectTo: '/login' });
     } else {
       if (result.alert) {
-        alert(result.message);
+        setModal({ open: true, message: result.message });
         return;
       }
 
@@ -59,6 +64,24 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] text-white flex flex-col justify-center items-center px-4">
+      <Modal
+        open={modal.open}
+        message={modal.message}
+        onClose={() => {
+          const redirectTo = modal.redirectTo;
+
+          setModal({
+            open: false,
+            message: '',
+            redirectTo: null,
+          });
+
+          if (redirectTo) {
+            router.push(redirectTo);
+          }
+        }}
+      />
+
       <div className="w-full max-w-[520px]">
         {/* 로고 타이틀 */}
         <div className="mb-[60px] flex justify-center">
@@ -204,7 +227,7 @@ export default function SignUpPage() {
           {/* 가입하기 버튼 */}
           <button
             type="submit"
-            className="w-full py-4 mt-4 bg-[#eaff00] text-black font-bold rounded text-base hover:bg-[#d8ec00] transition-colors mb-[16px]"
+            className="w-full py-4 mt-4 bg-[#eaff00] text-black font-bold rounded text-base hover:bg-[#d8ec00] transition-colors mb-[16px] cursor-pointer"
             disabled={loading}
           >
             {loading ? '가입 중...' : '가입하기'}
@@ -214,7 +237,7 @@ export default function SignUpPage() {
           <button
             type="button"
             onClick={googleLoginAction}
-            className="w-full py-4 bg-white text-black font-bold rounded text-base flex justify-center items-center gap-2.5 hover:bg-neutral-100 transition-colors"
+            className="w-full py-4 bg-white text-black font-bold rounded text-base flex justify-center items-center gap-2.5 hover:bg-neutral-100 transition-colors cursor-pointer"
           >
             <Image
               src="/images/google.png"

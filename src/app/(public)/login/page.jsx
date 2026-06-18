@@ -9,6 +9,7 @@ import {
   googleLoginAction,
 } from '../../../features/auth/api/authApi';
 import { useQueryClient } from '@tanstack/react-query';
+import Modal from '../../../components/ui/AuthModal.jsx';
 
 export default function LoginPage() {
   const queryClient = useQueryClient();
@@ -19,6 +20,10 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({
     email: '',
     password: '',
+  });
+  const [modal, setModal] = useState({
+    open: false,
+    message: '',
   });
 
   const router = useRouter();
@@ -39,7 +44,7 @@ export default function LoginPage() {
 
     if (!result.success) {
       if (result.alert) {
-        alert(result.message);
+        setModal({ open: true, message: result.message });
         return;
       }
 
@@ -61,6 +66,17 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] text-white flex flex-col justify-center items-center px-4">
+      <Modal
+        open={modal.open}
+        message={modal.message}
+        onClose={() =>
+          setModal({
+            open: false,
+            message: '',
+          })
+        }
+      />
+
       <div className="w-full max-w-[520px]">
         {/* 로고 타이틀 */}
         <div className="mb-[60px] flex justify-center">
@@ -146,7 +162,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 mt-4 bg-[#eaff00] text-black font-bold rounded text-base hover:bg-[#d8ec00] transition-colors mb-[16px]"
+            className="w-full py-4 mt-4 bg-[#eaff00] text-black font-bold rounded text-base hover:bg-[#d8ec00] transition-colors mb-[16px] cursor-pointer"
           >
             {loading ? '로그인 중...' : '로그인'}
           </button>
@@ -155,7 +171,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={googleLoginAction}
-            className="w-full py-4 bg-white text-black font-bold rounded text-base flex justify-center items-center gap-2.5 hover:bg-neutral-100 transition-colors"
+            className="w-full py-4 bg-white text-black font-bold rounded text-base flex justify-center items-center gap-2.5 hover:bg-neutral-100 transition-colors cursor-pointer"
           >
             <Image
               src="/images/google.png"
