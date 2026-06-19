@@ -13,10 +13,8 @@ export default function GalleryGrid({ cards }) {
       {cards?.map((card) => (
         <div
           key={card.id}
-          /* 💡 팁: bg-[#161616]와 rounded-[2px] 사이 공백 붙어있던 부분 깔끔하게 분리 */
           className="w-full max-w-[440px] h-auto flex flex-col bg-[#161616] rounded-[2px] border border-solid border-[rgba(255,255,255,0.10)] p-[24px] md:p-[40px] overflow-hidden"
         >
-          {/* 💡 변경 포인트 1: 큰 이미지가 카드 상자 크기에 맞춰 유연하게 줄어들도록 w-full h-auto 적용 */}
           <div className="w-full aspect-square relative rounded-[4px] overflow-hidden">
             <Image
               src={card.imageUrl}

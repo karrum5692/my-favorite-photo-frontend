@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { getMyCards } from '../api/galleryApi';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { createMyCard, getMyCards } from '../api/galleryApi';
 
 export function useMyCards(filters) {
   return useQuery({
@@ -11,3 +11,16 @@ export function useMyCards(filters) {
     staleTime: 1000 * 30,
   });
 }
+
+export const useCreateMyCard = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: function (cardData) {
+      return createMyCard(cardData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myCards'] });
+    },
+  });
+};

@@ -1,9 +1,5 @@
 import client from '@/lib/axios';
 
-/**
- * 마켓플레이스 판매 카드 목록 조회 API
- * @param {Object} params - 검색, 필터, 정렬, 페이지네이션 파라미터
- */
 export const getMyCards = async ({
   search,
   grade,
@@ -20,6 +16,20 @@ export const getMyCards = async ({
   query.append('page', page);
   query.append('limit', limit);
 
-  const response = await client.get(`/users/me/cards?${query.toString()}`);
-  return response.data;
+  const res = await client.get(`/users/me/cards?${query.toString()}`);
+  return res.data;
+};
+
+export const createMyCard = async (cardData) => {
+  const formData = new FormData();
+  formData.append('image', cardData.image);
+  formData.append('title', cardData.title);
+  formData.append('description', cardData.description);
+  formData.append('grade', cardData.grade);
+  formData.append('genre', cardData.genre);
+  formData.append('price', cardData.price);
+  formData.append('totalIssued', cardData.totalIssued);
+
+  const res = await client.post('/users/gallery/cards', formData);
+  return res.data;
 };

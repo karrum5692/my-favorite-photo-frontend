@@ -8,6 +8,7 @@ import GallerySearch from '@/features/gallery/components/GallerySearch';
 import GalleryFilter from '@/features/gallery/components/GalleryFilter';
 import Pagination from '@/components/ui/Pagination';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 export default function GalleryPage() {
   const [search, setSearch] = useState('');
@@ -47,9 +48,11 @@ export default function GalleryPage() {
             마이 갤러리
           </h1>
           <div className="w-[320px] hidden md:block">
-            <Button variant="primary" height="60">
-              포토카드 생성하기
-            </Button>
+            <Link href="/gallery/create" className="w-full">
+              <Button variant="primary" height="60">
+                포토카드 생성하기
+              </Button>
+            </Link>
           </div>
         </section>
 
@@ -95,8 +98,8 @@ export default function GalleryPage() {
               </div>
             </div>
             <GalleryFilter
-              grade={activeFilter.value}
-              genre={activeFilter.value}
+              grade={activeFilter.type === 'grade' ? activeFilter.value : ''}
+              genre={activeFilter.type === 'genre' ? activeFilter.value : ''}
               onGradeChange={handleFilter}
               onGenreChange={handleFilter2}
             />

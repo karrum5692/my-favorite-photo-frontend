@@ -15,6 +15,7 @@ export default function ProfileCard() {
   const [inputNickname, setInputNickname] = useState('');
   const [confirmedNickname, setConfirmedNickname] = useState('');
   const [customImageUrl, setCustomImageUrl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const finalNickname = confirmedNickname || profile?.nickname || '';
   const finalImageUrl = customImageUrl || profile?.profileImageUrl || null;
@@ -22,6 +23,8 @@ export default function ProfileCard() {
   const handleFileChange = function (e) {
     const file = e.target.files[0];
     if (!file) return;
+
+    setSelectedFile(file);
 
     const fakeUrl = URL.createObjectURL(file);
     setCustomImageUrl(fakeUrl);
@@ -42,18 +45,41 @@ export default function ProfileCard() {
       return;
     }
 
-    updatemutation.mutate(
-      {
-        nickname: finalNickname,
-        profileImageUrl: finalImageUrl,
-      },
-      {
-        onSuccess: () => {
-          alert('프로필 수정이 완료되었습니다!');
-          router.back();
+    if (!selectedFile) {
+      updatemutation.mutate(
+        {
+          nickname: finalNickname,
+          profileImageUrl: finalImageUrl,
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            alert('프로필 수정이 완료되었습니다!');
+            router.back();
+          },
+        }
+      );
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+
+    reader.onloadend = function () {
+      const base64ImageUrl = reader.result;
+
+      updatemutation.mutate(
+        {
+          nickname: finalNickname,
+          profileImageUrl: base64ImageUrl,
+        },
+        {
+          onSuccess: () => {
+            alert('프로필 수정이 완료되었습니다!');
+            router.back();
+          },
+        }
+      );
+    };
   };
 
   if (isLoading)

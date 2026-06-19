@@ -15,7 +15,7 @@ const GallerySearch = ({ onSearch }) => {
         clearTimeout(timer);
       };
     },
-    [inputValue]
+    [inputValue, onSearch]
   );
   return (
     <div>
