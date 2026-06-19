@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+// 🚀 1. TanStack Query에서 useQueryClient 임포트 추가
+import { useQueryClient } from '@tanstack/react-query';
 import FilterBar from '../../../features/marketplace/components/FilterBar';
 import { useMarketplace } from '../../../features/marketplace/hooks/useMarketplace';
 import '../../../styles/market.css';
@@ -12,6 +14,7 @@ import SaleModal from '../../../features/marketplace/components/SaleModal';
 
 export default function MarketplacePage() {
   const router = useRouter();
+  const queryClient = useQueryClient(); // 🚀 2. queryClient 인스턴스 생성
   const [search, setSearch] = useState('');
   const [orderBy, setOrderBy] = useState('latest');
   const [activeFilter, setActiveFilter] = useState({ type: '', value: '' });
@@ -19,6 +22,19 @@ export default function MarketplacePage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   // 판매 등록 모달 상태
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
+
+  // 🚀 3. 상세 페이지를 갔다가 돌아온 경우에만 콕 집어서 새로고침(프리즈마 DB 재요청)하는 로직
+  useEffect(() => {
+    const cameFromDetail = sessionStorage.getItem('visitedDetail');
+
+    if (cameFromDetail === 'true') {
+      // 2분 캐시 타이머를 깨부수고 무조건 최신 데이터를 새로 가져옵니다.
+      queryClient.invalidateQueries({ queryKey: ['marketCards'] });
+
+      // 재방문 무한 루프 방지를 위해 확인된 티켓은 즉시 삭제합니다.
+      sessionStorage.removeItem('visitedDetail');
+    }
+  }, [queryClient]);
 
   // 판매하기 버튼 클릭 핸들러
   const handleSellButtonClick = () => {
@@ -70,7 +86,7 @@ export default function MarketplacePage() {
     };
   });
 
-  // 🎯 [수정] 카드 클릭 핸들러에서 매진 상태 확인 후 이동 방어
+  // 🎯 카드 클릭 핸들러 수정
   const handleCardClick = (card) => {
     // 1. 매진되었거나 SOLD 상태라면 클릭 이벤트를 완전히 무시합니다.
     if (card.isSoldOut) return;
@@ -85,7 +101,8 @@ export default function MarketplacePage() {
       return;
     }
 
-    // 3. 정상 이동
+    // 🚀 4. [수정] 정상 이동 직전에 "나 상세페이지 간다!" 티켓 발급
+    sessionStorage.setItem('visitedDetail', 'true');
     router.push(`/marketplace/${card.id}`);
   };
 
@@ -167,11 +184,9 @@ export default function MarketplacePage() {
               등록된 포토카드가 없습니다.
             </div>
           ) : (
-            /* 🎯 Grid 내부에 클릭 인터셉트 함수와 상태 플래그를 안정적으로 주입합니다. */
             <PhotoCardGrid
               cards={formattedCards.map((card) => ({
                 ...card,
-                // 매진되었으면 마우스 커서 스타일도 비활성화 처리되도록 밸류 조정
                 isClickable: !card.isSoldOut,
                 onClick: () => handleCardClick(card),
               }))}
