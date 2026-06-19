@@ -13,14 +13,6 @@ export async function signupAction(data) {
   const trimmedEmail = email.trim();
   const trimmedNickname = nickname.trim();
 
-  if (!trimmedEmail && !trimmedNickname && !password && !passwordConfirm) {
-    return {
-      success: false,
-      alert: true,
-      message: '모든 항목을 입력해주세요.',
-    };
-  }
-
   if (!trimmedEmail) {
     return {
       success: false,
@@ -34,6 +26,33 @@ export async function signupAction(data) {
       success: false,
       field: 'nickname',
       message: '닉네임을 입력해주세요.',
+    };
+  }
+
+  if (email !== trimmedEmail || /\s/.test(trimmedEmail)) {
+    return {
+      success: false,
+      field: 'email',
+      message: '이메일에는 공백을 사용할 수 없습니다.',
+    };
+  }
+
+  //  이메일 형식 검사
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(trimmedEmail)) {
+    return {
+      success: false,
+      message: '올바른 이메일 형식이 아닙니다.',
+      field: 'email',
+    };
+  }
+
+  //  닉네임 공백 검사
+  if (nickname !== trimmedNickname) {
+    return {
+      success: false,
+      message: '닉네임 앞뒤 공백은 사용할 수 없습니다.',
+      field: 'nickname',
     };
   }
 
@@ -53,40 +72,21 @@ export async function signupAction(data) {
     };
   }
 
-  //  이메일 공백 검사
-  if (/\s/.test(email)) {
-    return {
-      success: false,
-      message: '이메일에는 공백을 사용할 수 없습니다.',
-      field: 'email',
-    };
-  }
-
-  //  이메일 형식 검사
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return {
-      success: false,
-      message: '올바른 이메일 형식이 아닙니다.',
-      field: 'email',
-    };
-  }
-
-  //  닉네임 공백 검사
-  if (nickname !== trimmedNickname) {
-    return {
-      success: false,
-      message: '닉네임 앞뒤 공백은 사용할 수 없습니다.',
-      field: 'nickname',
-    };
-  }
-
   //  비밀번호 공백 검사
   if (/\s/.test(password)) {
     return {
       success: false,
       message: '비밀번호에는 공백을 사용할 수 없습니다.',
       field: 'password',
+    };
+  }
+
+  //  비밀번호 확인 일치 검사
+  if (password !== passwordConfirm) {
+    return {
+      success: false,
+      message: '비밀번호가 일치하지 않습니다.',
+      field: 'passwordConfirm',
     };
   }
 
@@ -99,12 +99,28 @@ export async function signupAction(data) {
     };
   }
 
-  //  비밀번호 확인 일치 검사
-  if (password !== passwordConfirm) {
+  if (!/[A-Za-z]/.test(password)) {
     return {
       success: false,
-      message: '비밀번호가 일치하지 않습니다.',
-      field: 'passwordConfirm',
+      field: 'password',
+      message: '비밀번호에 영문자를 포함해야 합니다.',
+    };
+  }
+
+  if (!/\d/.test(password)) {
+    return {
+      success: false,
+      field: 'password',
+      message: '비밀번호에는 숫자를 포함해야 합니다.',
+    };
+  }
+
+  // 특수문자 포함 검사
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+    return {
+      success: false,
+      field: 'password',
+      message: '비밀번호에 특수문자를 포함해야 합니다.',
     };
   }
 
@@ -144,14 +160,6 @@ export async function signupAction(data) {
 // 2. 로그인 Action
 export async function loginAction(data) {
   const { email, password } = data;
-
-  if (!email && !password) {
-    return {
-      success: false,
-      alert: true,
-      message: '이메일과 비밀번호를 모두 입력해주세요.',
-    };
-  }
 
   if (!email) {
     return {
