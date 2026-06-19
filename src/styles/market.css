@@ -2,11 +2,6 @@
    마켓플레이스 레이아웃 및 폰트 설정
    ========================================== */
 
-@font-face {
-  font-family: 'BR B';
-  src: url('/fonts/배스킨라빈스B.otf') format('opentype');
-}
-
 .marketplace-container {
   min-height: 100vh;
   max-width: 120rem;
@@ -59,7 +54,7 @@
 
 .marketplace-title {
   color: var(--color-white);
-  font-family: 'BR B';
+  font-family: var(--font-baskins);
   font-size: 3.875rem;
   font-style: normal;
   font-weight: 400;
