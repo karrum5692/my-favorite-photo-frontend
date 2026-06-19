@@ -11,7 +11,7 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 const baskinsRobbins = localFont({
-  src: '../../public/fonts/배스킨라빈스B.otf',
+  src: '../../public/fonts/BaskinRobbinsB.otf',
   weight: '700',
   variable: '--font-baskins',
 });

@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function OAuthSuccessPage() {
+function OAuthSuccessInner() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -18,5 +18,23 @@ export default function OAuthSuccessPage() {
     window.location.replace('/login');
   }, [searchParams]);
 
-  return <div>로그인 처리 중...</div>;
+  return (
+    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      로그인 처리 중...
+    </div>
+  );
+}
+
+export default function OAuthSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+          로그인 처리 중...
+        </div>
+      }
+    >
+      <OAuthSuccessInner />
+    </Suspense>
+  );
 }
