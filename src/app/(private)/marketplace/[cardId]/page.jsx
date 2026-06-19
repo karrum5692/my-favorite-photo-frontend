@@ -20,6 +20,7 @@ export default function DetailPage() {
   const { cardId } = useParams();
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isOpenExchange, setIsOpenExchange] = useState(false);
   const [isOpenAlert, setIsOpenAlert] = useState(false);
@@ -171,6 +172,7 @@ export default function DetailPage() {
   const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
 
   async function handlePurchase(cardId) {
+    setIsLoading(true);
     try {
       const token =
         localStorage.getItem('accessToken') || localStorage.getItem('token');
@@ -201,6 +203,7 @@ export default function DetailPage() {
       setIsSuccess(false);
     } finally {
       setIsSubmitted(true);
+      setIsLoading(false);
     }
   }
 
@@ -236,6 +239,7 @@ export default function DetailPage() {
   }
 
   async function handleCancel(cardId) {
+    setIsLoading(true);
     try {
       const token =
         localStorage.getItem('accessToken') || localStorage.getItem('token');
@@ -258,6 +262,8 @@ export default function DetailPage() {
       router.push('/marketplace');
     } catch (error) {
       alert(error.message);
+    } finally {
+      setIsLoading(true);
     }
   }
 
@@ -479,6 +485,7 @@ export default function DetailPage() {
               </Button>
               {isOpenAlert && (
                 <AlertModal
+                  isLoading={isLoading}
                   isOpen={isOpenAlert}
                   onClose={() => setIsOpenAlert(false)}
                   title="포토카드 판매 내리기"
@@ -500,6 +507,7 @@ export default function DetailPage() {
               </Button>
               {isOpenAlert && (
                 <AlertModal
+                  isLoading={isLoading}
                   isOpen={isOpenAlert}
                   onClose={() => setIsOpenAlert(false)}
                   title="포토카드 구매"
