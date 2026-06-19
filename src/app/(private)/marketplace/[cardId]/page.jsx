@@ -548,7 +548,7 @@ export default function DetailPage() {
               handleRejectProposal={handleRejectProposal}
             />
           ) : (
-            <p>교환 제시된 목록이 없습니다.</p>
+            <p className="mb-16">교환 제시된 목록이 없습니다.</p>
           )}
         </div>
       ) : (
