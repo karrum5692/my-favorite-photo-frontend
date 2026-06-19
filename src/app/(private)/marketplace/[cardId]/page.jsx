@@ -20,6 +20,7 @@ export default function DetailPage() {
   const { cardId } = useParams();
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isOpenExchange, setIsOpenExchange] = useState(false);
   const [isOpenAlert, setIsOpenAlert] = useState(false);
@@ -171,6 +172,7 @@ export default function DetailPage() {
   const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
 
   async function handlePurchase(cardId) {
+    setIsLoading(true);
     try {
       const token =
         localStorage.getItem('accessToken') || localStorage.getItem('token');
@@ -201,6 +203,7 @@ export default function DetailPage() {
       setIsSuccess(false);
     } finally {
       setIsSubmitted(true);
+      setIsLoading(false);
     }
   }
 
@@ -236,6 +239,7 @@ export default function DetailPage() {
   }
 
   async function handleCancel(cardId) {
+    setIsLoading(true);
     try {
       const token =
         localStorage.getItem('accessToken') || localStorage.getItem('token');
@@ -258,6 +262,8 @@ export default function DetailPage() {
       router.push('/marketplace');
     } catch (error) {
       alert(error.message);
+    } finally {
+      setIsLoading(true);
     }
   }
 
@@ -317,83 +323,84 @@ export default function DetailPage() {
     }
   }
 
-  //교환 취소-교환 거절?
+  //교환 취소
 
   return (
-    <div className="px-4 md:px-10 xl:px-20 min-[1920px]:px-32">
-      <span className="flex py-[60px] text-gray-300 font-brb text-[24px] font-normal tracking-[-.0.72px] ">
+    <div className="px-4 md:px-5 xl:px-56 max-w-[1920px] w-full mx-auto">
+      <span className="hidden md:block flex text-gray-300 font-brb font-normal tracking-[-.0.72px] md:text-base xl:text-2xl py-15">
         마켓플레이스
       </span>
-      <div className="flex flex-col gap-[20px] mb-[70px]">
-        <p className="flex text-[40px] text-white font-bold">
+      <div className="flex flex-col gap-5 mb-[70px]">
+        <p className="flex text-2xl md:text-3xl xl:text-4xl text-white font-bold">
           {card.photoCard.template.title}
         </p>
         <p className="border border-white"></p>
       </div>
-      <div className="flex justify-between">
-        <div>
+
+      {/* 이미지 */}
+      <div className="gap-5 md:flex md:gap-5 xl:gap-20">
+        <div className="relative w-full aspect-square md:aspect-[4/3]">
           <Image
             src={card.photoCard.template.imageUrl}
             alt={card.photoCard.template.title}
-            width={960}
-            height={720}
+            fill
             loading="eager"
             priority
+            className="object-contain object-top"
           />
         </div>
 
-        <div className="flex flex-col items-center gap-[80px]">
-          <div className="w-[500px]">
+        {/* 카드 판매 정보 */}
+        <div className="flex flex-col items-center w-full gap-20">
+          <div className="w-full">
             <div className="flex items-center justify-between">
-              <div className="flex gap-[10px]">
+              <div className="flex gap-2.5">
                 <span
-                  className={`flex items-center h-[29px] text-[24px] font-bold ${saleColor}`}
+                  className={`flex items-center text-lg xl:text-2xl font-bold ${saleColor}`}
                 >
                   {card.photoCard.template.grade}
                 </span>
-                <span className="flex items-center h-[29px] text-gray-400 text-[24px] font-bold">
+                <span className="flex items-center text-gray-400 text-lg xl:text-2xl font-bold">
                   |
                 </span>
-                <span className="flex items-center h-[29px] text-gray=300 text-[24px] font-bold">
+                <span className="flex items-center text-gray-300 text-lg xl:text-2xl font-bold">
                   {card.photoCard.template.genre}
                 </span>
               </div>
-              <span className="flex items-center h-[29px] text-white text-[18px] font-bold underline [text-decoration-skip-ink:none] [text-underline-position:from-font]">
+              <span className="flex items-center text-white text-lg xl:text-lg font-bold underline [text-decoration-skip-ink:none] [text-underline-position:from-font]">
                 {card.photoCard.owner.nickname}
               </span>
             </div>
-            <div className="border border-gray-400 my-[30px]"></div>
-            <div className="text-white text-[16px] font-normal">
+            <div className="border border-gray-400 my-8"></div>
+            <div className="text-white text-base font-normal">
               {card.photoCard.template.description}
             </div>
-            <div className="border border-gray-400 my-[30px]"></div>
-            <div className="flex justify-between mb-[10px]">
-              <span className="flex items-center text-gray-300 text-[18px] font-normal">
+            <div className="border border-gray-400 my-8"></div>
+            <div className="flex justify-between mb-2.5">
+              <span className="flex items-center text-gray-300 text-lg font-normal">
                 가격
               </span>
-              <span className="flex itmes-center text-white text-[20px] font-bold]">
+              <span className="flex itmes-center text-white text-xl font-bold">
                 {card.price}P
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-300 text-[18px] font-normal">
-                잔여
-              </span>
-              <div className="flex gap-[5px]">
-                <span className="flex items-center text-white text-right text-[20px] font-bold]">
+              <span className="text-gray-300 text-lg font-normal">잔여</span>
+              <div className="flex gap-1.5">
+                <span className="flex items-center text-white text-right text-xl font-bold">
                   {card.remainQuantity}
                 </span>
-                <span className="flex items-center text-gray-300 text-right text-[20px] font-normal">
+                <span className="flex items-center text-gray-300 text-right text-xl font-normal">
                   /{card.quantity}
                 </span>
               </div>
             </div>
-            <div className="border border-gray-400 my-[30px]"></div>
-            <div className="flex items-center justify-between mb-[20px]">
+            <div className="border border-gray-400 my-8"></div>
+            <div className="flex items-center justify-between mb-5">
               <span className="h-[22px] flex text-white text-[18px] font-normal justify-center items-center">
                 구매수량
               </span>
-              <div className="px-[12px] py-[10px] border border-gray-200 rounded-[2px]">
+              <div className="px-3 py-2.5 border border-gray-200 rounded-[2px]">
                 <div className=" flex flex-row justify-between items-center w-[120px] h-[25px]">
                   <button
                     type="button"
@@ -426,14 +433,14 @@ export default function DetailPage() {
               </div>
             </div>
             <div className="flex flex-row items-center justify-between">
-              <span className="flex h-[22px] items-center justify-center text-white text-center text-[18px] font-normal">
+              <span className="flex h-[22px] items-center justify-center text-white text-center text-lg font-normal">
                 총 가격
               </span>
-              <div className="flex flex-row items-center justify-between gap-[10px]">
-                <span className="flex h-[24px] items-center justify-center text-white text-[20px] font-normal">
+              <div className="flex flex-row items-center justify-between gap-2.5">
+                <span className="flex h-6 items-center justify-center text-white text-xl font-normal">
                   {quantity * card.price}P
                 </span>
-                <span className="flex items-center justify-center h-[22px] text-gray-300 text-right text-[18px] font-normal">
+                <span className="flex items-center justify-center h-[22px] text-gray-300 text-right text-lg font-normal">
                   ({quantity})장
                 </span>
               </div>
@@ -478,6 +485,7 @@ export default function DetailPage() {
               </Button>
               {isOpenAlert && (
                 <AlertModal
+                  isLoading={isLoading}
                   isOpen={isOpenAlert}
                   onClose={() => setIsOpenAlert(false)}
                   title="포토카드 판매 내리기"
@@ -499,6 +507,7 @@ export default function DetailPage() {
               </Button>
               {isOpenAlert && (
                 <AlertModal
+                  isLoading={isLoading}
                   isOpen={isOpenAlert}
                   onClose={() => setIsOpenAlert(false)}
                   title="포토카드 구매"
@@ -511,12 +520,14 @@ export default function DetailPage() {
           )}
         </div>
       </div>
+
+      {/* 교환 목록 */}
       {card?.isSeller ? (
         <div>
-          <p className="flex text-[40px] text-white font-bold mt-[120px] mb-[20px]">
+          <p className="flex text-2xl md:text-3xl xl:text-4xl text-white font-bold mt-32 mb-5">
             교환 제시 목록
           </p>
-          <p className="border border-white"></p>
+          <p className="border border-white mb-16"></p>
           {proposalCards?.length > 0 ? (
             <ExchangeGrid
               proposal={proposalCards}
@@ -525,17 +536,17 @@ export default function DetailPage() {
               handleRejectProposal={handleRejectProposal}
             />
           ) : (
-            <p className="my-[70px]">교환 제시된 목록이 없습니다.</p>
+            <p>교환 제시된 목록이 없습니다.</p>
           )}
         </div>
       ) : (
         <div>
-          <div className="flex flex-col gap-[20px]">
-            <div className="flex flex-row gap-[20px] itmes-center justify-between mt-[120px]">
-              <span className="flex text-[40px] text-white font-bold">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-row gap-5 itmes-center justify-between mt-32">
+              <span className="flex text-2xl md:text-3xl xl:text-4xl text-white font-bold">
                 교환 희망 정보
               </span>
-              <div style={{ width: '500px' }}>
+              <div style={{ width: '400px' }}>
                 <Button
                   variant="primary"
                   height="60"
@@ -556,19 +567,19 @@ export default function DetailPage() {
             <p className="border border-white"></p>
           </div>
           <div>
-            <p className="mt-[60px] mb-[20px] text-[24px] text-white font-bold">
+            <p className="mt-14 mb-5 text-2xl text-white font-bold">
               {card.exchangeDescription}
             </p>
-            <div className="flex w-[220px] gap-[15px] mb-[180px]">
+            <div className="flex gap-4 mb-[180px]">
               <span
-                className={`flex items-center justify-center ${tradeColor} text-[24px] font-bold`}
+                className={`flex items-center justify-center ${tradeColor} text-2xl font-bold`}
               >
                 {card.exchangeGrade}
               </span>
-              <span className="fles items-center justify-center text-gray-400 text-[24px] font-bold">
+              <span className="flex items-center justify-center text-gray-400 text-2xl font-bold">
                 |
               </span>
-              <span className="flex items-center justify-center text-[24px] font-bold text-gray-300">
+              <span className="flex items-center justify-center text-2xl font-bold text-gray-300">
                 {card.exchangeGenre}
               </span>
             </div>
@@ -576,7 +587,7 @@ export default function DetailPage() {
           {myProposalCards?.length > 0 &&
           cardId == myProposalCards?.[0]?.saleListing?.id ? (
             <>
-              <p className="flex text-[40px] text-white font-bold mt-[120px]">
+              <p className="flex text-4xl text-white font-bold mt-32">
                 내가 제시한 교환 목록
               </p>
               <p className="border border-white"></p>

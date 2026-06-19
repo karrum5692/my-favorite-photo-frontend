@@ -37,8 +37,10 @@ export default function PhotoCardGrid({ cards = [], onUnauthorizedClick }) {
         <PhotoCardItem
           key={card.id}
           {...card}
-          isClickable={isLoggedIn}
-          onClick={() => handleCardClick(card.id)}
+          isClickable={
+            card.isClickable !== undefined ? card.isClickable : isLoggedIn
+          }
+          onClick={card.onClick ? card.onClick : () => handleCardClick(card.id)}
         />
       ))}
     </div>

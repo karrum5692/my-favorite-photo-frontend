@@ -24,22 +24,24 @@ export default function PhotoCardItem({
 
   const gradeColor = gradeColorMap[grade] || '#fff';
 
+  const isSoldOut = quantity === 0 || status === 'SOLD';
+
   return (
     <article
       onClick={onClick}
       className={`
-      bg-gray-500
-      border border-gray-500
+      bg-[#1E1E1E]
+      border border-gray-800
       rounded-lg
       overflow-hidden
       flex flex-col
       w-full
-      ${isClickable ? 'cursor-pointer hover:border-gray-800' : 'cursor-default'}
+      ${isClickable ? 'cursor-pointer hover:border-gray-500' : 'cursor-default'}
       transition-colors
       h-auto
     `}
     >
-      {/*  IMAGE AREA */}
+      {/* IMAGE AREA */}
       <div className="px-[12px] pt-[12px] md:px-[30px] lg:px-[40px] md:pt-[30px] lg:pt-[40px]">
         <div
           className="
@@ -90,26 +92,26 @@ export default function PhotoCardItem({
           {title}
         </h3>
 
-        {/* GRADE / GENRE / NICKNAME */}
+        {/* 🎯 GRADE / GENRE / NICKNAME 구역 수정 */}
         <div className="flex justify-between items-center mt-[4px] md:mt-[6px] text-[10px] md:text-[14px] leading-none">
-          <div className="flex items-center gap-[4px]">
+          {/* 왼쪽: 등급 | 장르 */}
+          <div className="flex items-center gap-[4px] flex-shrink-0">
             <span style={{ color: gradeColor }} className="font-bold">
               {grade}
             </span>
             <span className="text-[#A4A4A4]">| {genre}</span>
           </div>
-          <span className="text-white underline whitespace-nowrap max-w-[60px] md:max-w-[120px] truncate">
+
+          {/* 오른쪽 끝: 유저 닉네임 (기존 포인트 마크는 삭제) */}
+          <span className="text-white underline whitespace-nowrap text-right max-w-[100px] md:max-w-[180px] truncate ml-2">
             {nickname}
-          </span>
-          <span className="text-white font-semibold">
-            {price?.toLocaleString()} P
           </span>
         </div>
 
-        {/* 얇은 경계선 구분 구역 (반응형 마진 적용) */}
+        {/* 얇은 경계선 구분 구역 */}
         <div className="border-t border-gray-800 my-[10px] md:my-[20px]" />
 
-        {/* PRICE & QUANTITY INFOS */}
+        {/* PRICE & QUANTITY INFOS (하단 포인트 정보는 그대로 보존) */}
         <div className="flex flex-col gap-[4px] md:gap-[8px]">
           {/* PRICE */}
           <div className="flex justify-between text-[11px] md:text-[15px] lg:text-[16px]">
@@ -119,7 +121,7 @@ export default function PhotoCardItem({
             </span>
           </div>
 
-          {/* QUANTITY (시안 규격인 '잔여 / 전체' 매핑 완료) */}
+          {/* QUANTITY */}
           <div className="flex justify-between text-[11px] md:text-[15px] lg:text-[16px]">
             <span className="text-gray-500 font-medium">잔여</span>
             <div className="text-white font-semibold">
@@ -132,7 +134,7 @@ export default function PhotoCardItem({
           </div>
         </div>
 
-        {/*  BOTTOM LOGO (모바일에서는 완전히 숨기고 태블릿/데스크톱 공간 확보 시 노출) */}
+        {/* BOTTOM LOGO */}
         <div className="mt-[16px] md:mt-[24px] lg:mt-auto hidden md:flex justify-center">
           <Image
             src="/images/logo64.png"

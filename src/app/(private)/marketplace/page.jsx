@@ -2,16 +2,19 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+// 🚀 1. TanStack Query에서 useQueryClient 임포트 추가
+import { useQueryClient } from '@tanstack/react-query';
 import FilterBar from '../../../features/marketplace/components/FilterBar';
 import { useMarketplace } from '../../../features/marketplace/hooks/useMarketplace';
 import '../../../styles/market.css';
 import Button from '@/components/ui/Button';
-import PhotoCardGrid from '@/components/ui/PhotoCardGrid';
+import PhotoCardGrid from '../../../features/marketplace/components/PhotoCardGrid';
 import LoginRequiredModal from '../../../features/marketplace/components/LoginRequiredModal';
 import SaleModal from '../../../features/marketplace/components/SaleModal';
 
 export default function MarketplacePage() {
   const router = useRouter();
+  const queryClient = useQueryClient(); // 🚀 2. queryClient 인스턴스 생성
   const [search, setSearch] = useState('');
   const [orderBy, setOrderBy] = useState('latest');
   const [activeFilter, setActiveFilter] = useState({ type: '', value: '' });
@@ -20,13 +23,24 @@ export default function MarketplacePage() {
   // 판매 등록 모달 상태
   const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
 
+  // 🚀 3. 상세 페이지를 갔다가 돌아온 경우에만 콕 집어서 새로고침(프리즈마 DB 재요청)하는 로직
+  useEffect(() => {
+    const cameFromDetail = sessionStorage.getItem('visitedDetail');
+
+    if (cameFromDetail === 'true') {
+      // 2분 캐시 타이머를 깨부수고 무조건 최신 데이터를 새로 가져옵니다.
+      queryClient.invalidateQueries({ queryKey: ['marketCards'] });
+
+      // 재방문 무한 루프 방지를 위해 확인된 티켓은 즉시 삭제합니다.
+      sessionStorage.removeItem('visitedDetail');
+    }
+  }, [queryClient]);
+
   // 판매하기 버튼 클릭 핸들러
   const handleSellButtonClick = () => {
-    // 🌟 accessToken과 token을 모두 조회하여 방어 코드 구축
     const currentToken =
       localStorage.getItem('accessToken') || localStorage.getItem('token');
 
-    // 두 토큰이 모두 없을 때만 로그인 요구 모달을 띄웁니다.
     if (!currentToken) {
       setIsLoginModalOpen(true);
       setIsSaleModalOpen(false);
@@ -34,6 +48,7 @@ export default function MarketplacePage() {
       setIsSaleModalOpen(true);
     }
   };
+
   // 로그인이 안되어있으면 확인 누르면 로그인창 띄우기
   const handleGoToLogin = () => {
     setIsLoginModalOpen(false);
@@ -59,16 +74,40 @@ export default function MarketplacePage() {
 
   const allCards = data?.pages.flatMap((page) => page.list || []) || [];
 
-  const formattedCards = allCards.map((card) => ({
-    ...card,
-    nickname: card.sellerNickname,
-    quantity: card.remainQuantity,
-    totalQuantity: card.totalQuantity,
-  }));
+  // 🎯 카드의 상태를 포맷팅할 때 매진 여부(isSoldOut) 조건식도 미리 정의합니다.
+  const formattedCards = allCards.map((card) => {
+    const isSoldOut = card.remainQuantity === 0 || card.status === 'SOLD';
+    return {
+      ...card,
+      nickname: card.sellerNickname,
+      quantity: card.remainQuantity,
+      totalQuantity: card.totalQuantity,
+      isSoldOut, // Grid 내부로 넘겨줄 플래그 추가
+    };
+  });
 
-  //  [수정] IntersectionObserver 무한 스크롤 트리거 로직 최적화
+  // 🎯 카드 클릭 핸들러 수정
+  const handleCardClick = (card) => {
+    // 1. 매진되었거나 SOLD 상태라면 클릭 이벤트를 완전히 무시합니다.
+    if (card.isSoldOut) return;
+
+    // 2. 비로그인 유저인 경우 로그인 모달 표시
+    const isLoggedIn =
+      typeof window !== 'undefined' &&
+      !!(localStorage.getItem('accessToken') || localStorage.getItem('token'));
+
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+
+    // 🚀 4. [수정] 정상 이동 직전에 "나 상세페이지 간다!" 티켓 발급
+    sessionStorage.setItem('visitedDetail', 'true');
+    router.push(`/marketplace/${card.id}`);
+  };
+
+  // IntersectionObserver 무한 스크롤 트리거 로직
   useEffect(() => {
-    // 다음 페이지가 없거나 이미 로딩 중이면 감지 생략
     if (!hasNextPage || isFetchingNextPage) return;
 
     const currentTarget = loadMoreRef.current;
@@ -76,15 +115,14 @@ export default function MarketplacePage() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // threshold를 넘어서 화면에 트리거가 노출되는 순간 바로 다음 데이터 요청
         if (entries[0].isIntersecting && hasNextPage) {
           fetchNextPage();
         }
       },
       {
-        root: null, // 브라우저 뷰포트 기준
+        root: null,
         threshold: 0.1,
-        rootMargin: '100px', //  스크롤이 바닥에 닿기 100px 전에 미리 다음 장을 로드하여 끊김 현상 방지
+        rootMargin: '100px',
       }
     );
 
@@ -95,22 +133,17 @@ export default function MarketplacePage() {
         observer.unobserve(currentTarget);
       }
     };
-    //  데이터 배열이나 상태가 변경될 때마다 옵저버 위치를 정확하게 리프레시하도록 의존성 주입
   }, [hasNextPage, isFetchingNextPage, fetchNextPage, formattedCards.length]);
 
   return (
     <div className="marketplace-container">
       <main className="marketplace-content">
-        {/*  PC/태블릿 상단 타이틀 구역  */}
+        {/* PC/태블릿 상단 타이틀 구역 */}
         <section className="marketplace-header-section">
-          <h1
-            className="marketplace-title hover:opacity-80 "
-            onClick={handleResetMarketplace}
-          >
+          <h1 className="marketplace-title" onClick={handleResetMarketplace}>
             마켓플레이스
           </h1>
 
-          {/* PC 우측 상단 판매하기 버튼 배치 */}
           <div className="marketplace-sell-btn pc-only-btn">
             <Button
               variant="primary"
@@ -122,7 +155,7 @@ export default function MarketplacePage() {
           </div>
         </section>
 
-        {/* 시안 연동 검색 및 드롭다운 필터 바 (테두리 제거 및 인라인 정렬 구역) */}
+        {/* 검색 및 필터 바 */}
         <section className="marketplace-controls">
           <FilterBar
             activeFilter={activeFilter}
@@ -136,7 +169,7 @@ export default function MarketplacePage() {
           />
         </section>
 
-        {/*  포토카드 그리드 리스트 판 구역 */}
+        {/* 포토카드 그리드 리스트 판 구역 */}
         <section className="photocard-grid-layout mt-6">
           {status === 'pending' ? (
             <div className="text-center py-20 text-gray-500 w-full col-span-full">
@@ -151,7 +184,14 @@ export default function MarketplacePage() {
               등록된 포토카드가 없습니다.
             </div>
           ) : (
-            <PhotoCardGrid cards={formattedCards} />
+            <PhotoCardGrid
+              cards={formattedCards.map((card) => ({
+                ...card,
+                isClickable: !card.isSoldOut,
+                onClick: () => handleCardClick(card),
+              }))}
+              onUnauthorizedClick={() => setIsLoginModalOpen(true)}
+            />
           )}
         </section>
 
@@ -172,7 +212,7 @@ export default function MarketplacePage() {
           )}
         </div>
 
-        {/*  모바일 하단 sticky 고정형 판매 버튼 구역 */}
+        {/* 모바일 하단 sticky 고정형 판매 버튼 구역 */}
         <div className="marketplace-sell-btn mobile-only-sticky-btn">
           <Button variant="primary" height="60" onClick={handleSellButtonClick}>
             나의 포토카드 판매하기
@@ -186,17 +226,13 @@ export default function MarketplacePage() {
           onConfirm={handleGoToLogin}
         />
 
-        {/*  로그인 성공 시 열리는 진짜 판매 등록 모달 */}
+        {/* 로그인 성공 시 열리는 진짜 판매 등록 모달 */}
         {isSaleModalOpen && (
           <SaleModal
             isOpen={isSaleModalOpen}
             onClose={() => setIsSaleModalOpen(false)}
           />
         )}
-        <PhotoCardGrid
-          cards={formattedCards}
-          onUnauthorizedClick={() => setIsLoginModalOpen(true)}
-        />
       </main>
     </div>
   );

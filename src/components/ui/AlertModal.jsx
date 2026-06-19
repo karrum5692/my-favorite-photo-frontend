@@ -6,6 +6,7 @@ import closeIcon from '@/assets/icons/icon-close.png';
 import Image from 'next/image';
 
 export default function AlertModal({
+  isLoading,
   isOpen,
   onClose,
   title,
@@ -22,6 +23,7 @@ export default function AlertModal({
       <div className="relative rounded-[2px] bg-gray-500 w-[350px] h-[290px] md:w-[400px] xl:w-[560px] xl:h-[355px]">
         <button
           onClick={onClose}
+          disabled={isLoading}
           aria-label="닫기"
           className="absolute top-4 right-4 md:top-6 md:right-6 w-7 h-7 md:w-8 md:h-8 cursor-pointer"
         >
@@ -37,9 +39,14 @@ export default function AlertModal({
             </span>
           </div>
           {/* 버튼 */}
-          <div className="flex itmes-center w-[120px] md:w-[140px] xl:w-[170px]">
-            <Button variant="primary" height="55" onClick={onButtonClick}>
-              {buttonText}
+          <div className="flex items-center w-[120px] md:w-[140px] xl:w-[170px]">
+            <Button
+              variant="primary"
+              height="55"
+              onClick={onButtonClick}
+              disabled={isLoading}
+            >
+              {isLoading ? `${buttonText} 중...` : buttonText}
             </Button>
           </div>
         </div>
@@ -47,3 +54,5 @@ export default function AlertModal({
     </div>
   );
 }
+
+// export default function confirmAlertModal (){}

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import MarketModal from '@/components/ui/MarketModal';
-import PhotoCardGrid from '@/components/ui/PhotoCardGrid';
+import PhotoCardGrid from '@/components/ui/SaleTradePhotoCardGrid';
 import DetailModalWrapper from '@/components/ui/DetailModalWrapper';
 import useMarketModal from '@/shared/hooks/useMarketModal';
 import DetailSaleModal from './DetailSaleModal';
