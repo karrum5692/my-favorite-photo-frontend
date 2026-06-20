@@ -10,8 +10,11 @@ if (!BACKEND_URL) {
 export async function signupAction(data) {
   const { email, nickname, password, passwordConfirm } = data;
 
-  const trimmedEmail = email.trim();
-  const trimmedNickname = nickname.trim();
+  const safeEmail = typeof email === 'string' ? email : '';
+  const safeNickname = typeof nickname === 'string' ? nickname : '';
+
+  const trimmedEmail = safeEmail.trim();
+  const trimmedNickname = safeNickname.trim();
 
   if (!trimmedEmail) {
     return {
