@@ -10,16 +10,14 @@ if (!BACKEND_URL) {
 export async function signupAction(data) {
   const { email, nickname, password, passwordConfirm } = data;
 
-  const trimmedEmail = email.trim();
-  const trimmedNickname = nickname.trim();
+  const safeEmail = typeof email === 'string' ? email : '';
+  const safeNickname = typeof nickname === 'string' ? nickname : '';
+  const safePassword = typeof password === 'string' ? password : '';
+  const safePasswordConfirm =
+    typeof passwordConfirm === 'string' ? passwordConfirm : '';
 
-  if (!trimmedEmail && !trimmedNickname && !password && !passwordConfirm) {
-    return {
-      success: false,
-      alert: true,
-      message: '모든 항목을 입력해주세요.',
-    };
-  }
+  const trimmedEmail = safeEmail.trim();
+  const trimmedNickname = safeNickname.trim();
 
   if (!trimmedEmail) {
     return {
@@ -37,34 +35,17 @@ export async function signupAction(data) {
     };
   }
 
-  if (!password) {
+  if (safeEmail !== trimmedEmail || /\s/.test(trimmedEmail)) {
     return {
       success: false,
-      field: 'password',
-      message: '비밀번호를 입력해주세요.',
-    };
-  }
-
-  if (!passwordConfirm) {
-    return {
-      success: false,
-      field: 'passwordConfirm',
-      message: '비밀번호 확인을 입력해주세요.',
-    };
-  }
-
-  //  이메일 공백 검사
-  if (/\s/.test(email)) {
-    return {
-      success: false,
-      message: '이메일에는 공백을 사용할 수 없습니다.',
       field: 'email',
+      message: '이메일에는 공백을 사용할 수 없습니다.',
     };
   }
 
   //  이메일 형식 검사
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  if (!emailRegex.test(trimmedEmail)) {
     return {
       success: false,
       message: '올바른 이메일 형식이 아닙니다.',
@@ -73,7 +54,7 @@ export async function signupAction(data) {
   }
 
   //  닉네임 공백 검사
-  if (nickname !== trimmedNickname) {
+  if (safeNickname !== trimmedNickname) {
     return {
       success: false,
       message: '닉네임 앞뒤 공백은 사용할 수 없습니다.',
@@ -81,8 +62,24 @@ export async function signupAction(data) {
     };
   }
 
+  if (!safePassword) {
+    return {
+      success: false,
+      field: 'password',
+      message: '비밀번호를 입력해주세요.',
+    };
+  }
+
+  if (!safePasswordConfirm) {
+    return {
+      success: false,
+      field: 'passwordConfirm',
+      message: '비밀번호 확인을 입력해주세요.',
+    };
+  }
+
   //  비밀번호 공백 검사
-  if (/\s/.test(password)) {
+  if (/\s/.test(safePassword)) {
     return {
       success: false,
       message: '비밀번호에는 공백을 사용할 수 없습니다.',
@@ -90,8 +87,17 @@ export async function signupAction(data) {
     };
   }
 
+  //  비밀번호 확인 일치 검사
+  if (safePassword !== safePasswordConfirm) {
+    return {
+      success: false,
+      message: '비밀번호가 일치하지 않습니다.',
+      field: 'passwordConfirm',
+    };
+  }
+
   //  비밀번호 길이 검사
-  if (password.length < 8) {
+  if (safePassword.length < 8) {
     return {
       success: false,
       message: '비밀번호는 8자 이상이어야 합니다.',
@@ -99,12 +105,28 @@ export async function signupAction(data) {
     };
   }
 
-  //  비밀번호 확인 일치 검사
-  if (password !== passwordConfirm) {
+  if (!/[A-Za-z]/.test(safePassword)) {
     return {
       success: false,
-      message: '비밀번호가 일치하지 않습니다.',
-      field: 'passwordConfirm',
+      field: 'password',
+      message: '비밀번호에 영문자를 포함해야 합니다.',
+    };
+  }
+
+  if (!/\d/.test(safePassword)) {
+    return {
+      success: false,
+      field: 'password',
+      message: '비밀번호에는 숫자를 포함해야 합니다.',
+    };
+  }
+
+  // 특수문자 포함 검사
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(safePassword)) {
+    return {
+      success: false,
+      field: 'password',
+      message: '비밀번호에 특수문자를 포함해야 합니다.',
     };
   }
 
@@ -117,8 +139,8 @@ export async function signupAction(data) {
       body: JSON.stringify({
         email: trimmedEmail,
         nickname: trimmedNickname,
-        password,
-        passwordConfirm,
+        password: safePassword,
+        passwordConfirm: safePasswordConfirm,
       }),
     });
 
@@ -144,14 +166,6 @@ export async function signupAction(data) {
 // 2. 로그인 Action
 export async function loginAction(data) {
   const { email, password } = data;
-
-  if (!email && !password) {
-    return {
-      success: false,
-      alert: true,
-      message: '이메일과 비밀번호를 모두 입력해주세요.',
-    };
-  }
 
   if (!email) {
     return {
