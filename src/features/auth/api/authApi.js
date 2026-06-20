@@ -12,6 +12,9 @@ export async function signupAction(data) {
 
   const safeEmail = typeof email === 'string' ? email : '';
   const safeNickname = typeof nickname === 'string' ? nickname : '';
+  const safePassword = typeof password === 'string' ? password : '';
+  const safePasswordConfirm =
+    typeof passwordConfirm === 'string' ? passwordConfirm : '';
 
   const trimmedEmail = safeEmail.trim();
   const trimmedNickname = safeNickname.trim();
@@ -32,7 +35,7 @@ export async function signupAction(data) {
     };
   }
 
-  if (email !== trimmedEmail || /\s/.test(trimmedEmail)) {
+  if (safeEmail !== trimmedEmail || /\s/.test(trimmedEmail)) {
     return {
       success: false,
       field: 'email',
@@ -51,7 +54,7 @@ export async function signupAction(data) {
   }
 
   //  닉네임 공백 검사
-  if (nickname !== trimmedNickname) {
+  if (safeNickname !== trimmedNickname) {
     return {
       success: false,
       message: '닉네임 앞뒤 공백은 사용할 수 없습니다.',
@@ -59,7 +62,7 @@ export async function signupAction(data) {
     };
   }
 
-  if (!password) {
+  if (!safePassword) {
     return {
       success: false,
       field: 'password',
@@ -67,7 +70,7 @@ export async function signupAction(data) {
     };
   }
 
-  if (!passwordConfirm) {
+  if (!safePasswordConfirm) {
     return {
       success: false,
       field: 'passwordConfirm',
@@ -76,7 +79,7 @@ export async function signupAction(data) {
   }
 
   //  비밀번호 공백 검사
-  if (/\s/.test(password)) {
+  if (/\s/.test(safePassword)) {
     return {
       success: false,
       message: '비밀번호에는 공백을 사용할 수 없습니다.',
@@ -85,7 +88,7 @@ export async function signupAction(data) {
   }
 
   //  비밀번호 확인 일치 검사
-  if (password !== passwordConfirm) {
+  if (safePassword !== safePasswordConfirm) {
     return {
       success: false,
       message: '비밀번호가 일치하지 않습니다.',
@@ -94,7 +97,7 @@ export async function signupAction(data) {
   }
 
   //  비밀번호 길이 검사
-  if (password.length < 8) {
+  if (safePassword.length < 8) {
     return {
       success: false,
       message: '비밀번호는 8자 이상이어야 합니다.',
@@ -102,7 +105,7 @@ export async function signupAction(data) {
     };
   }
 
-  if (!/[A-Za-z]/.test(password)) {
+  if (!/[A-Za-z]/.test(safePassword)) {
     return {
       success: false,
       field: 'password',
@@ -110,7 +113,7 @@ export async function signupAction(data) {
     };
   }
 
-  if (!/\d/.test(password)) {
+  if (!/\d/.test(safePassword)) {
     return {
       success: false,
       field: 'password',
@@ -119,7 +122,7 @@ export async function signupAction(data) {
   }
 
   // 특수문자 포함 검사
-  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(safePassword)) {
     return {
       success: false,
       field: 'password',
@@ -136,8 +139,8 @@ export async function signupAction(data) {
       body: JSON.stringify({
         email: trimmedEmail,
         nickname: trimmedNickname,
-        password,
-        passwordConfirm,
+        password: safePassword,
+        passwordConfirm: safePasswordConfirm,
       }),
     });
 
