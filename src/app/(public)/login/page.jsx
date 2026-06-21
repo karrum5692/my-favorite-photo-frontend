@@ -80,12 +80,14 @@ export default function LoginPage() {
       <div className="w-full max-w-[520px]">
         {/* 로고 타이틀 */}
         <div className="mb-[60px] flex justify-center">
-          <Image
-            src="/images/logo.png"
-            alt="최애의 포토"
-            width={331}
-            height={60}
-          />
+          <Link href="/">
+            <Image
+              src="/images/logo.png"
+              alt="최애의 포토"
+              width={331}
+              height={60}
+            />
+          </Link>
         </div>
 
         {/* 로그인 폼 */}

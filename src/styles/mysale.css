@@ -2,11 +2,6 @@
    나의 판매 포토카드 페이지
    ========================================== */
 
-@font-face {
-  font-family: 'BR B';
-  src: url('/fonts/배스킨라빈스B.otf') format('opentype');
-}
-
 /* 페이지 레이아웃 */
 .my-sales-container {
   min-height: 100vh;
@@ -42,7 +37,7 @@
 /* 페이지 타이틀 */
 .my-sales-title {
   color: var(--color-white);
-  font-family: 'BR B';
+  font-family: var(--font-baskins);
   font-size: 3.875rem;
   font-style: normal;
   font-weight: 400;
