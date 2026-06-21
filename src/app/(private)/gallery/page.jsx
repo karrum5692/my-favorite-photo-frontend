@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '@/components/ui/Button';
 import { useMyCards } from '@/features/gallery/hooks/useGallery';
 import GalleryGrid from '@/features/gallery/components/GalleryGrid';
@@ -15,13 +15,16 @@ export default function GalleryPage() {
   const [activeFilter, setActiveFilter] = useState({ type: '', value: '' });
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;
-  const filters = {
-    search,
-    grade: activeFilter.type === 'grade' ? activeFilter.value : '',
-    genre: activeFilter.type === 'genre' ? activeFilter.value : '',
-    page,
-    limit: 9,
-  };
+  const filters = useMemo(
+    () => ({
+      search,
+      grade: activeFilter.type === 'grade' ? activeFilter.value : '',
+      genre: activeFilter.type === 'genre' ? activeFilter.value : '',
+      page,
+      limit: 9,
+    }),
+    [search, activeFilter, page]
+  );
 
   const handleSearch = function (value) {
     setSearch(value);

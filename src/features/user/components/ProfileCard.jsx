@@ -14,9 +14,8 @@ export default function ProfileCard() {
 
   const [inputNickname, setInputNickname] = useState('');
   const [confirmedNickname, setConfirmedNickname] = useState('');
-  const [customImageUrl, setCustomImageUrl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const [customImageUrl, setCustomImageUrl] = useState(null);
   const finalNickname = confirmedNickname || profile?.nickname || '';
   const finalImageUrl = customImageUrl || profile?.profileImageUrl || null;
 
@@ -40,46 +39,27 @@ export default function ProfileCard() {
   };
 
   const handleComplete = function () {
+    console.log('finalNickname:', finalNickname); // ← 추가
+    console.log('confirmedNickname:', confirmedNickname); // ← 추가
+    console.log('profile?.nickname:', profile?.nickname);
     if (!finalNickname.trim()) {
       alert('닉네임을 입력해 주세요.');
       return;
     }
 
-    if (!selectedFile) {
-      updatemutation.mutate(
-        {
-          nickname: finalNickname,
-          profileImageUrl: finalImageUrl,
-        },
-        {
-          onSuccess: () => {
-            alert('프로필 수정이 완료되었습니다!');
-            router.back();
-          },
-        }
-      );
-      return;
+    const formData = new FormData();
+    formData.append('nickname', finalNickname);
+    console.log('formData nickname:', formData.get('nickname'));
+    if (selectedFile) {
+      formData.append('image', selectedFile);
     }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedFile);
-
-    reader.onloadend = function () {
-      const base64ImageUrl = reader.result;
-
-      updatemutation.mutate(
-        {
-          nickname: finalNickname,
-          profileImageUrl: base64ImageUrl,
-        },
-        {
-          onSuccess: () => {
-            alert('프로필 수정이 완료되었습니다!');
-            router.back();
-          },
-        }
-      );
-    };
+    updatemutation.mutate(formData, {
+      onSuccess: () => {
+        alert('프로필 수정이 완료되었습니다!');
+        router.back();
+      },
+    });
   };
 
   if (isLoading)
