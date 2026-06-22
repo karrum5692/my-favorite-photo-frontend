@@ -31,16 +31,16 @@ export default function GalleryGrid({ cards }) {
 
           <div className="flex justify-between items-center w-full mt-[10px]">
             <div className="flex items-center gap-[10px]">
-              <span className="text-[16px] font-[600]">{card.grade}</span>
+              <span
+                className="text-[16px] font-[600]"
+                style={{ color: gradeColorMap[card.grade] }}
+              >
+                {card.grade}
+              </span>
               <span className="text-[var(--gray-gray400,#5A5A5A)] font-['Noto_Sans_KR'] text-[16px] font-[400] leading-normal select-none">
                 |
               </span>
-              <span
-                className="text-gray-300 text-[16px]"
-                style={{ color: gradeColorMap[card.grade] }}
-              >
-                {card.genre}
-              </span>
+              <span className="text-gray-300 text-[16px]">{card.genre}</span>
             </div>
 
             <div>
@@ -50,7 +50,7 @@ export default function GalleryGrid({ cards }) {
             </div>
           </div>
 
-          <hr className="border-gray-300 my-[12px] mt-[20px]" />
+          <hr className="border-gray-400 my-[12px] mt-[20px]" />
 
           <div className="flex justify-between text-white text-[14px] mt-[10px]">
             <span className="text-gray-400">가격</span>
@@ -61,8 +61,8 @@ export default function GalleryGrid({ cards }) {
             <span>{card.quantity}</span>
           </div>
 
-          <div className="mt-[16px] md:mt-[24px] lg:mt-auto hidden md:flex justify-center">
-            <Image src="/images/logo64.png" alt="logo" width={99} height={18} />
+          <div className="mt-[40px] hidden md:flex justify-center">
+            <Image src="/images/logo.png" alt="logo" width={99} height={18} />
           </div>
         </div>
       ))}

@@ -17,6 +17,7 @@ export default function CreateCardForm() {
   const [fileName, setFileName] = useState('');
   const [description, setDescription] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -29,18 +30,29 @@ export default function CreateCardForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (
-      !title.trim() ||
-      !grade ||
-      !genre ||
-      !price ||
-      !totalIssued ||
-      !selectedFile
-    ) {
-      alert('모든 필수 항목을 입력하고 사진을 업로드해 주세요.');
+    const newErrors = {};
+    if (!title.trim()) newErrors.title = '포토카드 이름을 입력해 주세요.';
+    if (!grade) newErrors.grade = '등급을 선택해 주세요.';
+    if (!genre) newErrors.genre = '장르를 선택해 주세요.';
+    if (!price) newErrors.price = '가격을 입력해 주세요.';
+    else if (isNaN(Number(price)) || Number(price) < 0) {
+      newErrors.price = '숫자만 입력 가능합니다.';
+    }
+    if (!totalIssued) {
+      newErrors.totalIssued = '총 발행량을 입력해 주세요.';
+    } else if (isNaN(Number(totalIssued)) || Number(totalIssued) < 0) {
+      newErrors.totalIssued = '숫자만 입력 가능합니다.';
+    } else if (Number(totalIssued) > 20) {
+      newErrors.totalIssued = '총 발행량은 20장을 초과할 수 없습니다.';
+    }
+    if (!selectedFile) newErrors.selectedFile = '사진을 업로드해 주세요.';
+    if (!description) newErrors.description = '카드 설명을 입력해 주세요.';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
-
+    setErrors({});
     createCardMutation.mutate(
       {
         image: selectedFile,
@@ -66,7 +78,7 @@ export default function CreateCardForm() {
   return (
     <div className="w-full bg-[#111111] min-h-screen text-white pt-10 pb-20">
       <div className="max-w-[1200px] mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-14 border-b border-gray-800 pb-4">
+        <h1 className="text-white font-['BR_B'] text-[62px] font-normal not-italic tracking-[-1.86px]">
           포토카드 생성
         </h1>
       </div>
@@ -74,24 +86,29 @@ export default function CreateCardForm() {
       <div className="max-w-[716px] mx-auto px-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-300">
+            <label className="text-white font-bold text-[20px] not-italic">
               포토카드 이름
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500"
+              className="w-full bg-[var(--black-black,#0F0F0F)] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none focus:border-[var(--gray-gray200,#DDD)]"
               placeholder="포토카드 이름을 입력해 주세요"
             />
+            {errors.title && (
+              <p className="text-red-500 text-sm">{errors.title}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-300">등급</label>
+            <label className="text-white font-bold text-[20px] not-italic">
+              등급
+            </label>
             <select
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white focus:outline-none focus:border-gray-500 appearance-none"
+              className="w-full bg-[var(--black-black,#0F0F0F)] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none focus:border-[var(--gray-gray200,#DDD)]"
             >
               <option value="" disabled hidden>
                 등급을 선택해 주세요
@@ -101,14 +118,19 @@ export default function CreateCardForm() {
               <option value="SUPER_RARE">SUPER RARE</option>
               <option value="LEGENDARY">LEGENDARY</option>
             </select>
+            {errors.grade && (
+              <p className="text-red-500 text-sm">{errors.grade}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-300">장르</label>
+            <label className="text-white font-bold text-[20px] not-italic">
+              장르
+            </label>
             <select
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white focus:outline-none focus:border-gray-500 appearance-none"
+              className="w-full bg-[var(--black-black,#0F0F0F)] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none focus:border-[var(--gray-gray200,#DDD)]"
             >
               <option value="" disabled hidden>
                 장르를 선택해 주세요
@@ -124,34 +146,45 @@ export default function CreateCardForm() {
               <option value="FAN_CLUB">FAN CLUB</option>
               <option value="OTHER">OTHER</option>
             </select>
+            {errors.genre && (
+              <p className="text-red-500 text-sm">{errors.genre}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-300">가격</label>
+            <label className="text-white font-bold text-[20px] not-italic">
+              가격
+            </label>
             <input
-              type="number"
+              type="text"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500"
+              className="w-full bg-[var(--black-black,#0F0F0F)] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none focus:border-[var(--gray-gray200,#DDD)]"
               placeholder="가격을 입력해 주세요"
             />
+            {errors.price && (
+              <p className="text-red-500 text-sm">{errors.price}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-300">
+            <label className="text-white font-bold text-[20px] not-italic">
               총 발행량
             </label>
             <input
-              type="number"
+              type="text"
               value={totalIssued}
               onChange={(e) => setTotalIssued(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500"
+              className="w-full bg-[var(--black-black,#0F0F0F)] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none focus:border-[var(--gray-gray200,#DDD)]"
               placeholder="20"
             />
+            {errors.totalIssued && (
+              <p className="text-red-500 text-sm">{errors.totalIssued}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-300">
+            <label className="text-white font-bold text-[20px] not-italic">
               사진 업로드
             </label>
             <div className="flex gap-3">
@@ -177,10 +210,13 @@ export default function CreateCardForm() {
                 파일 선택
               </button>
             </div>
+            {errors.selectedFile && (
+              <p className="text-red-500 text-sm">{errors.selectedFile}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-300">
+            <label className="text-white font-bold text-[20px] not-italic">
               포토카드 설명
             </label>
             <textarea
@@ -189,6 +225,9 @@ export default function CreateCardForm() {
               className="w-full bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 h-40 resize-none"
               placeholder="카드 설명을 입력해 주세요"
             />
+            {errors.description && (
+              <p className="text-red-500 text-sm">{errors.description}</p>
+            )}
           </div>
 
           <button
