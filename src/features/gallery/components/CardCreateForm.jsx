@@ -3,11 +3,13 @@
 import React, { useState, useRef } from 'react';
 import { useCreateMyCard } from '../hooks/useGallery';
 import { useRouter } from 'next/navigation';
+import ResultModal from '@/components/ui/ResultModal';
 
 export default function CreateCardForm() {
   const router = useRouter();
-  const fileInputRef = useRef(null);
   const createCardMutation = useCreateMyCard();
+  const fileInputRef = useRef(null);
+  const [isModal, setIsModal] = useState(false);
 
   const [title, setTitle] = useState('');
   const [grade, setGrade] = useState('');
@@ -65,8 +67,7 @@ export default function CreateCardForm() {
       },
       {
         onSuccess: () => {
-          alert('포토카드가 성공적으로 생성되었습니다!');
-          router.push('/gallery');
+          setIsModal(true);
         },
         onError: (error) => {
           alert('생성 실패: ' + error.message);
@@ -77,14 +78,17 @@ export default function CreateCardForm() {
 
   return (
     <div className="w-full bg-[#111111] min-h-screen text-white pt-10 pb-20">
-      <div className="max-w-[1200px] mx-auto px-4">
-        <h1 className="text-white font-['BR_B'] text-[62px] font-normal not-italic tracking-[-1.86px]">
+      <div className="max-w-[1200px] mx-auto px-4 border-b-[2px] border-solid border-[var(--color-white)] pb-[1.5rem] mb-[50px]">
+        <h1
+          style={{ fontFamily: 'var(--font-baskins)' }}
+          className="text-white font-['BR_B'] text-[62px] font-normal not-italic tracking-[-1.86px]"
+        >
           포토카드 생성
         </h1>
       </div>
 
       <div className="max-w-[716px] mx-auto px-4">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-10">
           <div className="flex flex-col gap-2">
             <label className="text-white font-bold text-[20px] not-italic">
               포토카드 이름
@@ -239,6 +243,22 @@ export default function CreateCardForm() {
           </button>
         </form>
       </div>
+      {isModal && (
+        <ResultModal
+          isOpen={true}
+          onClose={() => {
+            setIsModal(false);
+            router.push('/gallery/create');
+          }}
+          title="포토카드 생성"
+          result="success"
+          description={`[${grade}|${title}] 포토카드 생성에 성공했습니다!`}
+          buttonText="마이갤러리에서 확인하기"
+          onButtonClick={() => {
+            router.push('/gallery');
+          }}
+        />
+      )}
     </div>
   );
 }
