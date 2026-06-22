@@ -11,7 +11,7 @@ import minus from '@/assets/icons/icon-minus.png';
 import plus from '@/assets/icons/icon-plus.png';
 import ResultModal from '@/components/ui/ResultModal';
 
-const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
+const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
   const [quantity, setQuantity] = useState(card.quantity);
   const [price, setPrice] = useState(card.price);
   const [grade, setGrade] = useState(card.grade);
@@ -26,6 +26,10 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setIsSubmitted(true);
+
+    if (!description.trim()) return;
+
     try {
       const token =
         localStorage.getItem('accessToken') || localStorage.getItem('token');
@@ -54,10 +58,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
       }
       setIsSuccess(true);
     } catch (error) {
-      alert(error.message);
       setIsSuccess(false);
-    } finally {
-      setIsSubmitted(true);
     }
   }
 
@@ -66,8 +67,13 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
       <ResultModal
         isOpen={true}
         onClose={(e) => {
-          setIsSubmitted(false);
-          router.push('/marketplace');
+          if (isSuccess) {
+            setIsSubmitted(false);
+            router.push('/my-sales');
+          } else {
+            setIsSubmitted(false);
+            setSelectedCard(null);
+          }
         }}
         title="판매 등록"
         result={isSuccess ? 'success' : 'failure'}
@@ -87,7 +93,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
             router.push('/my-sales');
           } else {
             setIsSubmitted(false);
-            router.push('/marketplace');
+            setSelectedCard(null);
           }
         }}
       />
@@ -107,7 +113,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
   const dropdownGr = () => {
     if (toggleGr === true)
       return (
-        <div className="flex flex-col w-full bg-gray-500 absolute z-50 border border-gray-200 rounded-[2px]">
+        <div className="flex flex-col w-full bg-gray-500 absolute z-49 border border-gray-200 rounded-[2px]">
           {grades.map((gr) => (
             <button
               key={gr}
@@ -184,7 +190,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
       onClick={() => {
         handleClose;
       }}
-      className="fixed inset-0 z-50 bg-black/70 overflow-y-auto"
+      className="fixed inset-0 z-40 bg-black/70 overflow-y-auto"
     >
       <div className="py-[30px] md:py-[40px]">
         <div
@@ -251,7 +257,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
                   mt-5
                 "
               >
-                수정하기
+                판매하기
               </div>
 
               {/* MAIN TITLE */}
@@ -279,14 +285,14 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
                 {/* 카드 정보 */}
                 <div className="flex justify-between">
                   {/* 이미지 */}
-                  <div>
+                  <div className="relative w-[440px] h-[330px] flex ">
                     <Image
                       src={currentUrl}
                       alt={card.title}
-                      width={440}
-                      height={330}
+                      fill
                       loading="eager"
                       priority
+                      className="object-contain object"
                     />
                   </div>
 
@@ -454,6 +460,9 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
                   <span className="text-white text-[20px] font-bold mb-[10px]">
                     교환 희망 설명
                   </span>
+                  {isSubmitted && !description.trim() ? (
+                    <p className="text-main mb-2.5">설명을 입력해야 합니다.</p>
+                  ) : null}
                   <input
                     className="w-full border border-gray-200 rounded-[2px] focus:outline-none focus:border-main h-[90px] px-[20px] py-[18px]"
                     type="text"

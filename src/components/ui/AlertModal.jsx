@@ -23,7 +23,6 @@ export default function AlertModal({
       <div className="relative rounded-[2px] bg-gray-500 w-[350px] h-[290px] md:w-[400px] xl:w-[560px] xl:h-[355px]">
         <button
           onClick={onClose}
-          disabled={isLoading}
           aria-label="닫기"
           className="absolute top-4 right-4 md:top-6 md:right-6 w-7 h-7 md:w-8 md:h-8 cursor-pointer"
         >
