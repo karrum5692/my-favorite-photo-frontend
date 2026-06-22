@@ -201,6 +201,7 @@ export default function DetailPage() {
         return;
       }
 
+      //구매 후 포인트 반영하기
       queryClinet.invalidateQueries({ queryKey: ['user'] });
 
       setIsSuccess(true);

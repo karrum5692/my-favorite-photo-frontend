@@ -309,10 +309,10 @@ const EditModal = ({
                         </div>
                         <div className="flex flex-col items-center justify-right h-[41px]">
                           <span className="text-[20px] font-bold text-white">
-                            /{card.quantity}
+                            /{card.photoCard.quantity}
                           </span>
                           <span className="text-[14px] font-light text-gray-200">
-                            최대 {card.quantity}장
+                            최대 {card.photoCard.quantity}장
                           </span>
                         </div>
                       </div>
