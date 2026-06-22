@@ -22,7 +22,7 @@ export const useCreateMyCard = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['myCards'],
-        refetchType: 'all',
+        refetchType: 'active',
       });
     },
   });

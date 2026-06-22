@@ -39,9 +39,6 @@ export default function ProfileCard() {
   };
 
   const handleComplete = function () {
-    console.log('finalNickname:', finalNickname); // ← 추가
-    console.log('confirmedNickname:', confirmedNickname); // ← 추가
-    console.log('profile?.nickname:', profile?.nickname);
     if (!finalNickname.trim()) {
       alert('닉네임을 입력해 주세요.');
       return;
