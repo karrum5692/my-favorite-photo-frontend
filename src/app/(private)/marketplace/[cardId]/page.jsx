@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import Image from 'next/image';
 
@@ -20,6 +20,8 @@ import AlertModal from '@/components/ui/AlertModal';
 export default function DetailPage() {
   const { cardId } = useParams();
   const router = useRouter();
+
+  const queryClinet = useQueryClient();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
@@ -198,6 +200,9 @@ export default function DetailPage() {
         alert(message);
         return;
       }
+
+      queryClinet.invalidateQueries({ queryKey: ['user'] });
+
       setIsSuccess(true);
     } catch (error) {
       alert(error.message);
