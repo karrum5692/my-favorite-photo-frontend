@@ -30,6 +30,7 @@ const fetchUser = async () => {
 
 const useAuth = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: fetchUser,
@@ -39,6 +40,7 @@ const useAuth = () => {
     localStorage.removeItem('accessToken');
     queryClient.setQueryData(['user'], null);
     queryClient.removeQueries({ queryKey: ['notifications'] });
+    router.push('/marketplace');
   };
   return { isLoggedIn: !!user, user, logout };
 };
