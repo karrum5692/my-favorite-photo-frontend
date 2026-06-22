@@ -39,6 +39,6 @@ export function useMarketplace(params) {
       return hasNextPage ? allPages.length + 1 : undefined;
     },
 
-    staleTime: 1000 * 60 * 2, // 2분간 fresh 상태 유지
+    staleTime: 1000 * 2, // 2초 동안만 캐시 유지 (화면 깜빡임 방지용)
   });
 }
