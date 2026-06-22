@@ -172,7 +172,7 @@ export default function DetailPage() {
 
   const minusQuantity = (prev) => Math.max(1, prev - 1);
 
-  const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
+  const plusQuantity = (prev) => Math.min(card?.remainQuantity, prev + 1);
 
   async function handlePurchase(cardId) {
     setIsLoading(true);
@@ -433,6 +433,7 @@ export default function DetailPage() {
                       className="flex w-[22px] h-[22px] justify-center items-center shrink-0"
                     />
                   </button>
+                  {console.log(quantity)}
                   <span className="flex h-[22px] items-center justify-center text-white text-center text-[18px] font-normal">
                     {quantity}
                   </span>
