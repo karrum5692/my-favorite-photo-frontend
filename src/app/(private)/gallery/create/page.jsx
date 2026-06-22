@@ -1,10 +1,10 @@
-import ProfileCard from '@/features/user/components/ProfileCard';
+import CreateCardForm from '@/features/gallery/components/CardCreateForm';
 import React from 'react';
 
 const page = () => {
   return (
     <div>
-      <ProfileCard />
+      <CreateCardForm />
     </div>
   );
 };
