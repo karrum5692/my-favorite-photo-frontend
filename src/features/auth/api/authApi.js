@@ -167,7 +167,11 @@ export async function signupAction(data) {
 export async function loginAction(data) {
   const { email, password } = data;
 
-  if (!email) {
+  const safeEmail = typeof email === 'string' ? email : '';
+  const safePassword = typeof password === 'string' ? password : '';
+  const trimmedEmail = safeEmail.trim();
+
+  if (!trimmedEmail) {
     return {
       success: false,
       field: 'email',
@@ -175,7 +179,7 @@ export async function loginAction(data) {
     };
   }
 
-  if (!password) {
+  if (!safePassword) {
     return {
       success: false,
       field: 'password',
@@ -188,7 +192,7 @@ export async function loginAction(data) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email: trimmedEmail, password: safePassword }),
     });
 
     const result = await response.json();
