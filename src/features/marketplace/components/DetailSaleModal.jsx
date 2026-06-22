@@ -21,14 +21,16 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
   const [toggleGe, setToggleGe] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsSubmitted(true);
 
     if (!description.trim()) return;
+
+    setLoading(true);
 
     try {
       const token =
@@ -59,6 +61,9 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
       setIsSuccess(true);
     } catch (error) {
       setIsSuccess(false);
+    } finally {
+      setLoading(false);
+      setIsSubmitted(true);
     }
   }
 
@@ -491,8 +496,9 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                     variant="primary"
                     height="60"
                     className="cursor-pointer"
+                    disabled={loading}
                   >
-                    판매하기
+                    {loading ? '등록 중...' : '판매하기'}
                   </Button>
                 </div>
               </form>
