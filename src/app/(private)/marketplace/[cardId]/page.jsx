@@ -342,6 +342,10 @@ export default function DetailPage() {
 
   //교환 취소
 
+  const filteredMyProposal = myProposalCards?.filter(
+    (p) => p?.saleListingId == cardId
+  );
+
   return (
     <div className="px-4 md:px-5 xl:px-56 max-w-[1920px] w-full mx-auto">
       <div className="flex flex-row">
@@ -443,7 +447,6 @@ export default function DetailPage() {
                       className="flex w-[22px] h-[22px] justify-center items-center shrink-0"
                     />
                   </button>
-                  {console.log(quantity)}
                   <span className="flex h-[22px] items-center justify-center text-white text-center text-[18px] font-normal">
                     {quantity}
                   </span>
@@ -628,15 +631,14 @@ export default function DetailPage() {
               </span>
             </div>
           </div>
-          {myProposalCards?.length > 0 &&
-          cardId == myProposalCards?.[0]?.saleListing?.id ? (
+          {filteredMyProposal?.length > 0 ? (
             <>
               <p className="flex text-4xl text-white font-bold mt-32">
                 내가 제시한 교환 목록
               </p>
               <p className="border border-white"></p>
               <ExchangeGrid
-                proposal={myProposalCards}
+                proposal={filteredMyProposal}
                 cardIsSeller={card?.isSeller}
               />
             </>
