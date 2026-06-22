@@ -30,10 +30,9 @@ export default function GalleryPage() {
 
   const handleSearch = function (value) {
     setSearch(value);
-    if (value !== '') {
+    if (value !== search) {
       router.push('?page=1');
     }
-    // else 부분 삭제
   };
 
   const handleFilter = function (value) {

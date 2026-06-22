@@ -46,7 +46,7 @@ export default function CreateCardForm() {
       newErrors.totalIssued = '총 발행량은 20장을 초과할 수 없습니다.';
     }
     if (!selectedFile) newErrors.selectedFile = '사진을 업로드해 주세요.';
-    if (!description) newErrors.description = '카드 설명을 입력해 주세요..';
+    if (!description) newErrors.description = '카드 설명을 입력해 주세요.';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
