@@ -21,7 +21,7 @@ export default function DetailPage() {
   const { cardId } = useParams();
   const router = useRouter();
 
-  const queryClinet = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
@@ -29,6 +29,10 @@ export default function DetailPage() {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [confirmAlert, setConfirmAlert] = useState({
+    isOpen: false,
+    message: '',
+  });
 
   const getCard = async (cardId) => {
     const token =
@@ -127,7 +131,7 @@ export default function DetailPage() {
   }
 
   const { data: myProposalCards } = useQuery({
-    queryKey: ['myProposalCards'],
+    queryKey: ['myProposalCards', cardId],
     queryFn: () => getMyProposals(),
     enabled: !card?.isSeller,
   });
@@ -202,7 +206,7 @@ export default function DetailPage() {
       }
 
       //구매 후 포인트 반영하기
-      queryClinet.invalidateQueries({ queryKey: ['user'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
 
       setIsSuccess(true);
     } catch (error) {
@@ -265,8 +269,11 @@ export default function DetailPage() {
         const { message } = await res.json();
         throw new Error(message);
       }
-      alert('판매글이 취소되었습니다.');
-      router.push('/marketplace');
+
+      setConfirmAlert({
+        isOpen: true,
+        message: '판매글 내리기가 완료되었습니다.',
+      });
     } catch (error) {
       alert(error.message);
     } finally {
@@ -296,7 +303,10 @@ export default function DetailPage() {
         throw new Error(errorData.mesage || '서버 응답 오류');
       }
 
-      alert('교환 신청이 완료되었습니다.');
+      setConfirmAlert({
+        isOpen: true,
+        message: '교환 신청을 승인하였습니다.',
+      });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -324,7 +334,7 @@ export default function DetailPage() {
         throw new Error(errorData.mesage || '서버 응답 오류');
       }
 
-      alert('교환 신청을 거절하였습니다.');
+      setConfirmAlert({ isOpen: true, message: '교환 신청을 거절하였습니다.' });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -511,6 +521,21 @@ export default function DetailPage() {
                   description="정말로 판매를 중단하시겠습니까?"
                   onButtonClick={() => handleCancel(cardId)}
                   buttonText="판매 내리기"
+                />
+              )}
+              {confirmAlert && (
+                <AlertModal
+                  isOpen={confirmAlert.isOpen}
+                  onClose={() => {
+                    setConfirmAlert({
+                      isOpen: false,
+                      message: '',
+                    });
+                    router.push('/marketplace');
+                  }}
+                  title={confirmAlert.message}
+                  buttonText="확인"
+                  onButtonClick={() => router.push('/marketplace')}
                 />
               )}
             </>
