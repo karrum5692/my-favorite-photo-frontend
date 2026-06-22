@@ -184,7 +184,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose }) => {
       onClick={() => {
         handleClose;
       }}
-      className="fixed inset-0 z-50 bg-black/70 overflow-y-auto"
+      className="fixed inset-0 z-40 bg-black/70 overflow-y-auto"
     >
       <div className="py-[30px] md:py-[40px]">
         <div

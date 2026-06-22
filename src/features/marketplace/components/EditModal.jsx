@@ -235,14 +235,14 @@ const EditModal = ({
                 {/* 카드 정보 */}
                 <div className="flex justify-between">
                   {/* 이미지 */}
-                  <div>
+                  <div className="relative w-[440px] h-[330px] flex">
                     <Image
                       src={currentUrl}
                       alt={card.photoCard.template.title}
-                      width={440}
-                      height={330}
+                      fill
                       loading="eager"
                       priority
+                      className="object-contain object"
                     />
                   </div>
 
