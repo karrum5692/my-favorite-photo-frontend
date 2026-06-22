@@ -1,12 +1,13 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import Image from 'next/image';
 
 import minus from '@/assets/icons/icon-minus.png';
 import plus from '@/assets/icons/icon-plus.png';
+import back from '@/assets/icons/icon-back.png';
 
 import Button from '@/components/ui/Button';
 import EditModal from '@/features/marketplace/components/EditModal';
@@ -19,6 +20,8 @@ import AlertModal from '@/components/ui/AlertModal';
 export default function DetailPage() {
   const { cardId } = useParams();
   const router = useRouter();
+
+  const queryClinet = useQueryClient();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
@@ -197,6 +200,10 @@ export default function DetailPage() {
         alert(message);
         return;
       }
+
+      //구매 후 포인트 반영하기
+      queryClinet.invalidateQueries({ queryKey: ['user'] });
+
       setIsSuccess(true);
     } catch (error) {
       alert(error.message);
@@ -245,9 +252,9 @@ export default function DetailPage() {
         localStorage.getItem('accessToken') || localStorage.getItem('token');
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/cancel/${cardId}`,
         {
-          method: 'DELETE',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -263,7 +270,7 @@ export default function DetailPage() {
     } catch (error) {
       alert(error.message);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   }
 
@@ -327,9 +334,20 @@ export default function DetailPage() {
 
   return (
     <div className="px-4 md:px-5 xl:px-56 max-w-[1920px] w-full mx-auto">
-      <span className="hidden md:block flex text-gray-300 font-brb font-normal tracking-[-.0.72px] md:text-base xl:text-2xl py-15">
-        마켓플레이스
-      </span>
+      <div className="flex flex-row">
+        <button
+          className="hidden md:block cursor-pointer"
+          onClick={() => {
+            router.push('/marketplace');
+          }}
+        >
+          <Image src={back} alt="뒤로가기" />
+        </button>
+        <span className="hidden md:block flex text-gray-300 font-brb font-normal tracking-[-.0.72px] md:text-base xl:text-2xl py-15">
+          마켓플레이스
+        </span>
+      </div>
+
       <div className="flex flex-col gap-5 mb-[70px]">
         <p className="flex text-2xl md:text-3xl xl:text-4xl text-white font-bold">
           {card.photoCard.template.title}
@@ -536,7 +554,7 @@ export default function DetailPage() {
               handleRejectProposal={handleRejectProposal}
             />
           ) : (
-            <p>교환 제시된 목록이 없습니다.</p>
+            <p className="mb-16">교환 제시된 목록이 없습니다.</p>
           )}
         </div>
       ) : (

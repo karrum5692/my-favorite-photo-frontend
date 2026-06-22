@@ -1,30 +1,38 @@
 'use client';
 import Image from 'next/image';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '@/components/ui/Button';
 import { useMyCards } from '@/features/gallery/hooks/useGallery';
 import GalleryGrid from '@/features/gallery/components/GalleryGrid';
 import GallerySearch from '@/features/gallery/components/GallerySearch';
 import GalleryFilter from '@/features/gallery/components/GalleryFilter';
 import Pagination from '@/components/ui/Pagination';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function GalleryPage() {
+  const router = useRouter();
+
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState({ type: '', value: '' });
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;
-  const filters = {
-    search,
-    grade: activeFilter.type === 'grade' ? activeFilter.value : '',
-    genre: activeFilter.type === 'genre' ? activeFilter.value : '',
-    page,
-    limit: 9,
-  };
+  const filters = useMemo(
+    () => ({
+      search,
+      grade: activeFilter.type === 'grade' ? activeFilter.value : '',
+      genre: activeFilter.type === 'genre' ? activeFilter.value : '',
+      page,
+      limit: 9,
+    }),
+    [search, activeFilter, page]
+  );
 
   const handleSearch = function (value) {
     setSearch(value);
+    if (value !== search) {
+      router.push('?page=1');
+    }
   };
 
   const handleFilter = function (value) {
@@ -67,16 +75,16 @@ export default function GalleryPage() {
           </div>
 
           <div className="flex items-start gap-[20px]">
-            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[var(--main-main,#EFFF04)] bg-[var(--black-black,#0F0F0F)] text-[var(--main-main,#EFFF04)] font-['Noto_Sans_KR'] text-[16px] font-[300] whitespace-nowrap">
+            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[var(--main-main,#EFFF04)] bg-[var(--black-black,#0F0F0F)] text-[var(--main-main,#EFFF04)] font-['Noto_Sans_KR'] text-[15px] font-[300] whitespace-nowrap">
               COMMON {data?.gradeCount?.COMMON}장
             </div>
-            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#29C9F9] bg-[var(--black-black,#0F0F0F)] text-[#29C9F9] font-['Noto_Sans_KR'] text-[16px] font-[300] whitespace-nowrap">
+            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#29C9F9] bg-[var(--black-black,#0F0F0F)] text-[#29C9F9] font-['Noto_Sans_KR'] text-[15px] font-[300] whitespace-nowrap">
               RARE {data?.gradeCount?.RARE}장
             </div>
-            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#A77EFF] bg-[var(--black-black,#0F0F0F)] text-[#A77EFF] font-['Noto_Sans_KR'] text-[16px] font-[300] whitespace-nowrap">
+            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#A77EFF] bg-[var(--black-black,#0F0F0F)] text-[#A77EFF] font-['Noto_Sans_KR'] text-[15px] font-[300] whitespace-nowrap">
               SUPER RARE {data?.gradeCount?.SUPER_RARE}장
             </div>
-            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#FF2A6A] bg-[var(--black-black,#0F0F0F)] text-[#FF2A6A] font-['Noto_Sans_KR'] text-[16px] font-[300] whitespace-nowrap">
+            <div className="inline-flex flex-col items-start gap-[20px] h-[40px] px-[20px] py-[8px] border border-solid border-[#FF2A6A] bg-[var(--black-black,#0F0F0F)] text-[#FF2A6A] font-['Noto_Sans_KR'] text-[15px] font-[300] whitespace-nowrap">
               LEGENDARY {data?.gradeCount?.LEGENDARY}장
             </div>
           </div>
@@ -84,7 +92,7 @@ export default function GalleryPage() {
 
         <hr className="border-t border-solid border-gray-700 w-full mt-[1.5rem] mb-[2rem]" />
         <section>
-          <div className="flex flex-col md:flex-row md:items-center gap-[12px] mb-[1.5rem] md:mb-[2.5rem] w-full">
+          <div className="flex flex-col md:flex-row md:items-center gap-[32px] mb-[1.5rem] md:mb-[2.5rem] w-full">
             <div className="relative shrink-0 w-full pb-[15px] border-b border-solid border-[var(--color-white)] md:w-[320px] md:pb-0 md:border-b-0">
               <GallerySearch onSearch={handleSearch} />
               <div className="absolute top-[22px] md:top-1/2 right-[14px] -translate-y-1/2 flex items-center justify-center pointer-events-none">
@@ -109,7 +117,7 @@ export default function GalleryPage() {
           <GalleryGrid cards={data?.card} />
         </section>
       </main>
-      <div className="flex justify-center">
+      <div className="flex justify-center mt-10">
         <Pagination totalPages={data?.totalPages} />
       </div>
     </div>

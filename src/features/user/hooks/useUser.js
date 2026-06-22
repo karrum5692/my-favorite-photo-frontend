@@ -14,8 +14,8 @@ export function useProfile() {
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: function ({ nickname, profileImageUrl }) {
-      return patchProfile(nickname, profileImageUrl);
+    mutationFn: function (formData) {
+      return patchProfile(formData);
     },
     onSuccess: function () {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
