@@ -251,9 +251,9 @@ export default function DetailPage() {
         localStorage.getItem('accessToken') || localStorage.getItem('token');
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/${cardId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/cards/cancel/${cardId}`,
         {
-          method: 'DELETE',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -269,7 +269,7 @@ export default function DetailPage() {
     } catch (error) {
       alert(error.message);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   }
 
