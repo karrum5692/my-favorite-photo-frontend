@@ -235,14 +235,14 @@ const EditModal = ({
                 {/* 카드 정보 */}
                 <div className="flex justify-between">
                   {/* 이미지 */}
-                  <div>
+                  <div className="relative w-[440px] h-[330px] flex">
                     <Image
                       src={currentUrl}
                       alt={card.photoCard.template.title}
-                      width={440}
-                      height={330}
+                      fill
                       loading="eager"
                       priority
+                      className="object-contain object"
                     />
                   </div>
 
@@ -309,10 +309,10 @@ const EditModal = ({
                         </div>
                         <div className="flex flex-col items-center justify-right h-[41px]">
                           <span className="text-[20px] font-bold text-white">
-                            /{card.quantity}
+                            /{card.photoCard.quantity}
                           </span>
                           <span className="text-[14px] font-light text-gray-200">
-                            최대 {card.quantity}장
+                            최대 {card.photoCard.quantity}장
                           </span>
                         </div>
                       </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 
 import MarketModal from '@/components/ui/MarketModal';
 import PhotoCardGrid from '@/components/ui/SaleTradePhotoCardGrid';
@@ -78,6 +77,7 @@ const SaleModal = ({ isOpen, onClose }) => {
             card={selectedCard}
             cardId={selectedCard.id}
             onClose={() => setSelectedCard(null)}
+            setSelectedCard={setSelectedCard}
           />
         )}
       </DetailModalWrapper>
