@@ -149,8 +149,9 @@
 
 @media (min-width: 768px) {
   .filter-actions-row {
-    flex-direction: row-reverse;
-    justify-content: space-between;
+    flex: 1;
+    justify-content: flex-start;
+    flex-direction: row;
   }
 }
 
@@ -169,6 +170,25 @@
 @media (min-width: 768px) {
   .mobile-filter-toggle-btn {
     display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .filter-actions-row {
+    display: flex;
+    flex-direction: row-reverse !important; /* 모바일은 무조건 역순 배치 */
+    justify-content: space-between !important; /* 양 끝 정렬 */
+  }
+
+  /* ⚠️ 중요: 모바일 새로고침 시 튕기는 주범인 마진을 완벽 차단 */
+  .order-dropdown-wrapper {
+    margin-left: 0;
+    margin-right: 0;
+    width: auto;
+  }
+
+  .mobile-filter-toggle-btn {
+    margin: 0;
   }
 }
 
@@ -229,7 +249,7 @@
   left: 0;
   z-index: 99;
   margin-top: 6px;
-  width: 160px;
+  width: 140px;
   background-color: var(--color-black);
   border: 1px solid var(--color-gray-200);
   border-radius: 6px;
