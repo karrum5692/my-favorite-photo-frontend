@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import MarketModal from '@/components/ui/MarketModal';
-import PhotoCardGrid from '@/components/ui/PhotoCardGrid';
+import PhotoCardGrid from '@/components/ui/SaleTradePhotoCardGrid';
 import PhotoCardItem from '@/components/ui/PhotoCardItem';
 import DetailModalWrapper from '@/components/ui/DetailModalWrapper';
 import useMarketModal from '@/shared/hooks/useMarketModal';

@@ -1,16 +1,16 @@
 'use client';
 
 import ExchangeItem from './ExchangeItem';
-import { useState } from 'react';
 
 export default function ExchangeGrid({
   proposal,
   cardIsSeller,
   handleAcceptProposal,
   handleRejectProposal,
+  handleCancelProposal,
   confirmAlert,
   setConfirmAlert,
-  cardId,
+  onCardClick,
 }) {
   return (
     <div
@@ -35,9 +35,10 @@ export default function ExchangeGrid({
           cardIsSeller={cardIsSeller}
           handleAcceptProposal={() => handleAcceptProposal(c.id)}
           handleRejectProposal={() => handleRejectProposal(c.id)}
+          handleCancelProposal={() => handleCancelProposal(c.id)}
           confirmAlert={confirmAlert}
           setConfirmAlert={setConfirmAlert}
-          cardId={cardId}
+          onClick={() => onCardClick?.(c)}
         />
       ))}
     </div>
