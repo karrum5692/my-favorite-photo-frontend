@@ -29,6 +29,7 @@ export default function ExchangeItem({
   const [isOpenAcceptAlert, setIsOpenAcceptAlert] = useState(false);
   const [isOpenRejectAlert, setIsOpenRejectAlert] = useState(false);
   const [isOpenCancelAlert, setIsOpenCancelAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (!offeredCard?.template) {
     return null;
@@ -123,15 +124,19 @@ export default function ExchangeItem({
                   </Button>
                   {isOpenRejectAlert && (
                     <AlertModal
+                      isLoading={loading}
                       isOpen={isOpenRejectAlert}
                       onClose={() => setIsOpenRejectAlert(false)}
                       title="교환 제시 거절"
                       description={`[${grade} | ${title}]\n카드와의 교환을 거절하시겠습니까?`}
                       onButtonClick={async () => {
                         try {
+                          setLoading(true);
                           await handleRejectProposal();
                         } catch (error) {
                           //실패 시 항목 숨김 상태 변경 x
+                        } finally {
+                          setLoading(false);
                         }
                       }}
                       buttonText="거절하기"
@@ -164,15 +169,19 @@ export default function ExchangeItem({
                   </Button>
                   {isOpenAcceptAlert && (
                     <AlertModal
+                      isLoading={loading}
                       isOpen={isOpenAcceptAlert}
                       onClose={() => setIsOpenAcceptAlert(false)}
                       title="교환 제시 승인"
                       description={`[${grade} | ${title}]\n카드와의 교환을 승인하시겠습니까?`}
                       onButtonClick={async () => {
                         try {
+                          setLoading(true);
                           await handleAcceptProposal();
                         } catch (error) {
                           //실패 시 항목 숨김 상태 변경 x
+                        } finally {
+                          setLoading(false);
                         }
                       }}
                       buttonText="승인하기"
