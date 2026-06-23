@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import minus from '@/assets/icons/icon-minus.png';
@@ -33,6 +33,9 @@ export default function DetailPage() {
     isOpen: false,
     message: '',
   });
+
+  const [quantity, setQuantity] = useState(1);
+  const [hiddenProposals, setHiddenProposals] = useState([]);
 
   const getCard = async (cardId) => {
     const token =
@@ -135,8 +138,6 @@ export default function DetailPage() {
     queryFn: () => getMyProposals(),
     enabled: !card?.isSeller,
   });
-
-  const [quantity, setQuantity] = useState(1);
 
   if (isPending) {
     return <div>로딩중입니다....</div>;
@@ -300,8 +301,10 @@ export default function DetailPage() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.mesage || '서버 응답 오류');
+        throw new Error(errorData.message || '서버 응답 오류');
       }
+
+      setHiddenProposals((prev) => [...prev, proposalId]);
 
       setConfirmAlert({
         isOpen: true,
@@ -331,8 +334,10 @@ export default function DetailPage() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.mesage || '서버 응답 오류');
+        throw new Error(errorData.message || '서버 응답 오류');
       }
+
+      setHiddenProposals((prev) => [...prev, proposalId]);
 
       setConfirmAlert({ isOpen: true, message: '교환 신청을 거절하였습니다.' });
     } catch (error) {
@@ -342,8 +347,14 @@ export default function DetailPage() {
 
   //교환 취소
 
+  const filteredProposal =
+    proposalCards?.filter(
+      (i) => i?.status === 'PENDING' && !hiddenProposals.includes(i.id)
+    ) || [];
+
   const filteredMyProposal = myProposalCards?.filter(
-    (p) => p?.saleListingId == cardId
+    (p) =>
+      String(p?.saleListingId) === String(cardId) && p?.status === 'PENDING'
   );
 
   return (
@@ -575,12 +586,15 @@ export default function DetailPage() {
             교환 제시 목록
           </p>
           <p className="border border-white mb-16"></p>
-          {proposalCards?.length > 0 ? (
+          {filteredProposal?.length > 0 ? (
             <ExchangeGrid
-              proposal={proposalCards}
+              proposal={filteredProposal}
               cardIsSeller={card?.isSeller}
               handleAcceptProposal={handleAcceptProposal}
               handleRejectProposal={handleRejectProposal}
+              confirmAlert={confirmAlert}
+              setConfirmAlert={setConfirmAlert}
+              cardId={cardId}
             />
           ) : (
             <p className="mb-16">교환 제시된 목록이 없습니다.</p>
@@ -633,13 +647,15 @@ export default function DetailPage() {
           </div>
           {filteredMyProposal?.length > 0 ? (
             <>
-              <p className="flex text-4xl text-white font-bold mt-32">
+              <p className="flex text-2xl md:text-3xl xl:text-4xl text-white font-bold mt-32 mb-5">
                 내가 제시한 교환 목록
               </p>
-              <p className="border border-white"></p>
+              <p className="border border-white mb-16"></p>
               <ExchangeGrid
                 proposal={filteredMyProposal}
                 cardIsSeller={card?.isSeller}
+                confirmAlert={confirmAlert}
+                setConfirmAlert={setConfirmAlert}
               />
             </>
           ) : null}

@@ -55,5 +55,3 @@ export default function AlertModal({
     </div>
   );
 }
-
-// export default function confirmAlertModal (){}
