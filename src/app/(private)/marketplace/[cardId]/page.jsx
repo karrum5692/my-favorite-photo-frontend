@@ -615,7 +615,6 @@ export default function DetailPage() {
               handleCancelProposal={handleCancelProposal}
               confirmAlert={confirmAlert}
               setConfirmAlert={setConfirmAlert}
-              cardId={cardId}
             />
           ) : (
             <p className="mb-16">교환 제시된 목록이 없습니다.</p>

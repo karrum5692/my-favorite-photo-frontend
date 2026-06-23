@@ -14,7 +14,6 @@ export default function ExchangeItem({
   handleAcceptProposal,
   handleRejectProposal,
   handleCancelProposal,
-  cardId,
   confirmAlert,
   setConfirmAlert,
 }) {

@@ -10,7 +10,7 @@ export default function ExchangeGrid({
   handleCancelProposal,
   confirmAlert,
   setConfirmAlert,
-  cardId,
+  onCardClick,
 }) {
   return (
     <div
@@ -38,7 +38,7 @@ export default function ExchangeGrid({
           handleCancelProposal={() => handleCancelProposal(c.id)}
           confirmAlert={confirmAlert}
           setConfirmAlert={setConfirmAlert}
-          cardId={cardId}
+          onClick={() => onCardClick?.(c)}
         />
       ))}
     </div>
