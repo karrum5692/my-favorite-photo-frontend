@@ -8,18 +8,10 @@ export default function ExchangeGrid({
   cardIsSeller,
   handleAcceptProposal,
   handleRejectProposal,
+  confirmAlert,
+  setConfirmAlert,
+  cardId,
 }) {
-  const prevData = JSON.parse(localStorage.getItem('hiddenCardId'));
-  const [hiddenCardId, setHiddenCardId] = useState(prevData ? prevData : []);
-
-  const allHidden = proposal?.every((c) =>
-    hiddenCardId.includes(c.offeredCard?.id)
-  );
-
-  if (allHidden && proposal?.length > 0) {
-    return <p className="my-[70px]">교환 제시된 목록이 없습니다.</p>;
-  }
-
   return (
     <div
       className="
@@ -33,6 +25,7 @@ export default function ExchangeGrid({
         w-full
         max-w-[1480px]
         mx-auto
+        mb-16
       "
     >
       {proposal.map((c) => (
@@ -42,8 +35,9 @@ export default function ExchangeGrid({
           cardIsSeller={cardIsSeller}
           handleAcceptProposal={() => handleAcceptProposal(c.id)}
           handleRejectProposal={() => handleRejectProposal(c.id)}
-          hiddenCardId={hiddenCardId}
-          setHiddenCardId={setHiddenCardId}
+          confirmAlert={confirmAlert}
+          setConfirmAlert={setConfirmAlert}
+          cardId={cardId}
         />
       ))}
     </div>

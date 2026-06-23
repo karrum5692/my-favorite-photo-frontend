@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import minus from '@/assets/icons/icon-minus.png';
@@ -21,7 +21,7 @@ export default function DetailPage() {
   const { cardId } = useParams();
   const router = useRouter();
 
-  const queryClinet = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
@@ -29,6 +29,13 @@ export default function DetailPage() {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [confirmAlert, setConfirmAlert] = useState({
+    isOpen: false,
+    message: '',
+  });
+
+  const [quantity, setQuantity] = useState(1);
+  const [hiddenProposals, setHiddenProposals] = useState([]);
 
   const getCard = async (cardId) => {
     const token =
@@ -127,12 +134,10 @@ export default function DetailPage() {
   }
 
   const { data: myProposalCards } = useQuery({
-    queryKey: ['myProposalCards'],
+    queryKey: ['myProposalCards', cardId],
     queryFn: () => getMyProposals(),
     enabled: !card?.isSeller,
   });
-
-  const [quantity, setQuantity] = useState(1);
 
   if (isPending) {
     return <div>로딩중입니다....</div>;
@@ -172,7 +177,7 @@ export default function DetailPage() {
 
   const minusQuantity = (prev) => Math.max(1, prev - 1);
 
-  const plusQuantity = (prev) => Math.min(card?.quantity, prev + 1);
+  const plusQuantity = (prev) => Math.min(card?.remainQuantity, prev + 1);
 
   async function handlePurchase(cardId) {
     setIsLoading(true);
@@ -202,7 +207,7 @@ export default function DetailPage() {
       }
 
       //구매 후 포인트 반영하기
-      queryClinet.invalidateQueries({ queryKey: ['user'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
 
       setIsSuccess(true);
     } catch (error) {
@@ -265,8 +270,11 @@ export default function DetailPage() {
         const { message } = await res.json();
         throw new Error(message);
       }
-      alert('판매글이 취소되었습니다.');
-      router.push('/marketplace');
+
+      setConfirmAlert({
+        isOpen: true,
+        message: '판매글 내리기가 완료되었습니다.',
+      });
     } catch (error) {
       alert(error.message);
     } finally {
@@ -293,10 +301,15 @@ export default function DetailPage() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.mesage || '서버 응답 오류');
+        throw new Error(errorData.message || '서버 응답 오류');
       }
 
-      alert('교환 신청이 완료되었습니다.');
+      setHiddenProposals((prev) => [...prev, proposalId]);
+
+      setConfirmAlert({
+        isOpen: true,
+        message: '교환 신청을 승인하였습니다.',
+      });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -321,16 +334,28 @@ export default function DetailPage() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.mesage || '서버 응답 오류');
+        throw new Error(errorData.message || '서버 응답 오류');
       }
 
-      alert('교환 신청을 거절하였습니다.');
+      setHiddenProposals((prev) => [...prev, proposalId]);
+
+      setConfirmAlert({ isOpen: true, message: '교환 신청을 거절하였습니다.' });
     } catch (error) {
       throw new Error(error.message);
     }
   }
 
   //교환 취소
+
+  const filteredProposal =
+    proposalCards?.filter(
+      (i) => i?.status === 'PENDING' && !hiddenProposals.includes(i.id)
+    ) || [];
+
+  const filteredMyProposal = myProposalCards?.filter(
+    (p) =>
+      String(p?.saleListingId) === String(cardId) && p?.status === 'PENDING'
+  );
 
   return (
     <div className="px-4 md:px-5 xl:px-56 max-w-[1920px] w-full mx-auto">
@@ -512,6 +537,21 @@ export default function DetailPage() {
                   buttonText="판매 내리기"
                 />
               )}
+              {confirmAlert && (
+                <AlertModal
+                  isOpen={confirmAlert.isOpen}
+                  onClose={() => {
+                    setConfirmAlert({
+                      isOpen: false,
+                      message: '',
+                    });
+                    router.push('/marketplace');
+                  }}
+                  title={confirmAlert.message}
+                  buttonText="확인"
+                  onButtonClick={() => router.push('/marketplace')}
+                />
+              )}
             </>
           ) : (
             <>
@@ -546,12 +586,15 @@ export default function DetailPage() {
             교환 제시 목록
           </p>
           <p className="border border-white mb-16"></p>
-          {proposalCards?.length > 0 ? (
+          {filteredProposal?.length > 0 ? (
             <ExchangeGrid
-              proposal={proposalCards}
+              proposal={filteredProposal}
               cardIsSeller={card?.isSeller}
               handleAcceptProposal={handleAcceptProposal}
               handleRejectProposal={handleRejectProposal}
+              confirmAlert={confirmAlert}
+              setConfirmAlert={setConfirmAlert}
+              cardId={cardId}
             />
           ) : (
             <p className="mb-16">교환 제시된 목록이 없습니다.</p>
@@ -602,16 +645,17 @@ export default function DetailPage() {
               </span>
             </div>
           </div>
-          {myProposalCards?.length > 0 &&
-          cardId == myProposalCards?.[0]?.saleListing?.id ? (
+          {filteredMyProposal?.length > 0 ? (
             <>
-              <p className="flex text-4xl text-white font-bold mt-32">
+              <p className="flex text-2xl md:text-3xl xl:text-4xl text-white font-bold mt-32 mb-5">
                 내가 제시한 교환 목록
               </p>
-              <p className="border border-white"></p>
+              <p className="border border-white mb-16"></p>
               <ExchangeGrid
-                proposal={myProposalCards}
+                proposal={filteredMyProposal}
                 cardIsSeller={card?.isSeller}
+                confirmAlert={confirmAlert}
+                setConfirmAlert={setConfirmAlert}
               />
             </>
           ) : null}
