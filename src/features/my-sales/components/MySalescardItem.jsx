@@ -7,7 +7,7 @@ export default function MySalesCardItem({ salesCard, onClick }) {
   const seller = salesCard?.seller ?? {};
 
   const isSold = salesCard?.status === 'SOLD';
-  const hasExchange = !!salesCard?.exchangeGrade;
+  const hasExchange = (salesCard?.tradeProposals?.length ?? 0) > 0;
 
   const badgeText = hasExchange
     ? '교환 제시 대기 중'
@@ -15,8 +15,8 @@ export default function MySalesCardItem({ salesCard, onClick }) {
       ? null
       : '판매 중';
 
-  const displayStatus = hasExchange ? 'SELLING' : salesCard?.status;
-  const displayQuantity = hasExchange ? 1 : salesCard?.remainQuantity;
+  const displayStatus = salesCard?.status;
+  const displayQuantity = salesCard?.remainQuantity;
   const isSoldOut = displayStatus === 'SOLD' || displayQuantity === 0;
 
   const gradeColorMap = {
