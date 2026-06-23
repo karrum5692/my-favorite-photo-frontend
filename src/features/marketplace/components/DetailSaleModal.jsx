@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import minus from '@/assets/icons/icon-minus.png';
 import plus from '@/assets/icons/icon-plus.png';
 import ResultModal from '@/components/ui/ResultModal';
+import { is } from 'date-fns/locale';
 
 const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
   const [quantity, setQuantity] = useState(card.quantity);
@@ -21,14 +22,19 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
   const [toggleGe, setToggleGe] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isAttempted, setIsAttempted] = useState(false);
 
   const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsSubmitted(true);
+
+    setIsAttempted(true);
 
     if (!description.trim()) return;
+
+    setLoading(true);
 
     try {
       const token =
@@ -59,6 +65,9 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
       setIsSuccess(true);
     } catch (error) {
       setIsSuccess(false);
+    } finally {
+      setLoading(false);
+      setIsSubmitted(true);
     }
   }
 
@@ -460,7 +469,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                   <span className="text-white text-[20px] font-bold mb-[10px]">
                     교환 희망 설명
                   </span>
-                  {isSubmitted && !description.trim() ? (
+                  {isAttempted && !description.trim() ? (
                     <p className="text-main mb-2.5">설명을 입력해야 합니다.</p>
                   ) : null}
                   <input
@@ -491,8 +500,9 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                     variant="primary"
                     height="60"
                     className="cursor-pointer"
+                    disabled={loading}
                   >
-                    판매하기
+                    {loading ? '등록 중...' : '판매하기'}
                   </Button>
                 </div>
               </form>

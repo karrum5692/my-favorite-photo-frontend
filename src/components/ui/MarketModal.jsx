@@ -62,7 +62,7 @@ export default function MarketModal({
 
           <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#5A5A5A] [&::-webkit-scrollbar-thumb]:rounded-[2px]">
             <div className="mx-auto w-[345px] md:w-[704px] xl:w-[920px] py-8">
-              <div className="text-gray-300 text-[14px] md:text-[16px] xl:text-[24px] mb-5 mt-5">
+              <div className="font-display text-gray-300 text-[14px] md:text-[16px] xl:text-[24px] mb-5 mt-5">
                 {titleTop}
               </div>
 

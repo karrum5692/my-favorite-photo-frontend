@@ -38,20 +38,20 @@ export default function AlertModal({
             </span>
           </div>
           {/* 버튼 */}
-          <div className="flex items-center w-[120px] md:w-[140px] xl:w-[170px]">
-            <Button
-              variant="primary"
-              height="55"
-              onClick={onButtonClick}
-              disabled={isLoading}
-            >
-              {isLoading ? `${buttonText} 중...` : buttonText}
-            </Button>
-          </div>
+          {buttonText && (
+            <div className="flex items-center w-[120px] md:w-[140px] xl:w-[170px]">
+              <Button
+                variant="primary"
+                height="55"
+                onClick={onButtonClick}
+                disabled={isLoading}
+              >
+                {isLoading ? `${buttonText} 중...` : buttonText}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
-
-// export default function confirmAlertModal (){}
