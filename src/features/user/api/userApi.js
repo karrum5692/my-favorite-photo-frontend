@@ -13,19 +13,15 @@ export const getProfile = async function () {
   return res.json();
 };
 
-export const patchProfile = async function (nickname, profileImageUrl) {
+export const patchProfile = async function (formData) {
   const token = localStorage.getItem('accessToken');
 
   const res = await fetch(`${BACKEND_URL}/users/me`, {
     method: 'PATCH',
     headers: {
-      'Content-Type': 'application/json', // ✅ 무조건 작성!
       ...(token && { Authorization: `Bearer ${token}` }),
     },
-    body: JSON.stringify({
-      nickname,
-      profileImageUrl,
-    }),
+    body: formData,
   });
   if (!res.ok) throw new Error('수정에 실패하였습니다.');
   return res.json();

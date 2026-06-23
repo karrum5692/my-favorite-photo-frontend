@@ -3,23 +3,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../../../styles/market.css';
 
 const GRADES = [
-  { value: 'COMMON', label: 'COMMON', className: 'grade-common' },
-  { value: 'RARE', label: 'RARE', className: 'grade-rare' },
-  { value: 'SUPER_RARE', label: 'SUPER RARE', className: 'grade-super-rare' },
-  { value: 'LEGENDARY', label: 'LEGENDARY', className: 'grade-legendary' },
+  { value: 'COMMON', label: 'COMMON' },
+  { value: 'RARE', label: 'RARE' },
+  { value: 'SUPER_RARE', label: 'SUPER RARE' },
+  { value: 'LEGENDARY', label: 'LEGENDARY' },
 ];
 
 const GENRES = [
-  { value: 'ALBUM', label: '앨범' },
-  { value: 'SPECIAL', label: '특전' },
-  { value: 'FAN_SIGN', label: '팬싸' },
-  { value: 'SEASON_GREETING', label: '시즌그리팅' },
-  { value: 'FAN_MEETING', label: '팬미팅' },
-  { value: 'CONCERT', label: '콘서트' },
+  { value: 'ALBUM', label: 'ALBUM' },
+  { value: 'SPECIAL', label: 'SPECIAL' },
+  { value: 'FAN_SIGN', label: 'FAN_SIGN' },
+  { value: 'SEASON_GREETING', label: 'SEASON_GREETING' },
+  { value: 'FAN_MEETING', label: 'FAN_MEETING' },
+  { value: 'CONCERT', label: 'CONCERT' },
   { value: 'MD', label: 'MD' },
-  { value: 'COLLABORATION', label: '콜라보' },
-  { value: 'FAN_CLUB', label: '팬클럽' },
-  { value: 'OTHER', label: '기타' },
+  { value: 'COLLABORATION', label: 'COLLABORATION' },
+  { value: 'FAN_CLUB', label: 'FAN_CLUB' },
+  { value: 'OTHER', label: 'OTHER' },
 ];
 
 const GalleryFilter = ({ grade, genre, onGradeChange, onGenreChange }) => {

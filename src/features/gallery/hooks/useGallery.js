@@ -20,7 +20,10 @@ export const useCreateMyCard = () => {
       return createMyCard(cardData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['myCards'] });
+      queryClient.invalidateQueries({
+        queryKey: ['myCards'],
+        refetchType: 'active',
+      });
     },
   });
 };
