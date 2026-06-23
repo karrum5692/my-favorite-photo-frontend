@@ -349,7 +349,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
 
                             <input
                               readOnly
-                              className="flex w-[15px] h-[24px] items-center justify-center text-white text-center text-[20px] font-normal"
+                              className="flex w-[28px] h-[24px] items-center justify-center text-white text-center text-[20px] font-normal"
                               value={quantity}
                             />
 
