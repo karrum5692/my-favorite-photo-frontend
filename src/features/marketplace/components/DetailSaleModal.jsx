@@ -292,22 +292,22 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                 }
               >
                 {/* 카드 정보 */}
-                <div className="flex justify-between">
+                <div className="gap-5 md:flex md:gap-5 xl:gap-20">
                   {/* 이미지 */}
-                  <div className="relative w-[440px] h-[330px] flex ">
+                  <div className="relative relative w-full aspect-square md:aspect-[4/3] ">
                     <Image
                       src={currentUrl}
                       alt={card.title}
                       fill
                       loading="eager"
                       priority
-                      className="object-contain object"
+                      className="object-contain object-top"
                     />
                   </div>
 
                   {/* 설명 */}
-                  <div className="flex flex-col items-center">
-                    <div className="w-[440px]">
+                  <div className="flex flex-col items-center w-full">
+                    <div className="w-full">
                       <div className="flex items-center justify-between">
                         <div className="flex gap-[10px]">
                           <span
