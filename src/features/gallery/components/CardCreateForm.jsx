@@ -20,6 +20,14 @@ export default function CreateCardForm() {
   const [description, setDescription] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [errors, setErrors] = useState({});
+  const isFormFilled =
+    title &&
+    grade &&
+    genre &&
+    price &&
+    totalIssued &&
+    selectedFile &&
+    description;
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -196,7 +204,7 @@ export default function CreateCardForm() {
                 type="text"
                 readOnly
                 value={fileName}
-                className="flex-1 bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white placeholder-gray-600 focus:outline-none"
+                className="flex-1 bg-[#1a1a1a] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none"
                 placeholder="사진 업로드"
               />
               <input
@@ -226,7 +234,7 @@ export default function CreateCardForm() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 h-40 resize-none"
+              className="w-full bg-[var(--black-black,#0F0F0F)] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none focus:border-[var(--gray-gray200,#DDD)] h-40 resize-none"
               placeholder="카드 설명을 입력해 주세요"
             />
             {errors.description && (
@@ -237,7 +245,11 @@ export default function CreateCardForm() {
           <button
             type="submit"
             disabled={createCardMutation.isPending}
-            className="w-full bg-gray-600 text-white font-bold py-4 rounded-md mt-6 hover:bg-gray-500 disabled:opacity-50 transition-colors text-center text-lg"
+            className={`w-full font-bold py-4 rounded-md mt-6 disabled:opacity-50 transition-colors text-center text-lg ${
+              isFormFilled
+                ? 'bg-[#EFFF04] text-black hover:opacity-90'
+                : 'bg-[#5A5A5A] text-[#A4A4A4] hover:bg-[#8a8a8a]'
+            }`}
           >
             {createCardMutation.isPending ? '생성 중...' : '생성하기'}
           </button>
