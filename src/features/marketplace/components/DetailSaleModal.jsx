@@ -165,7 +165,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
             <button
               key={g}
               type="button"
-              className="text-gray-200 border-b border-gray-200 text-left cursor-pointer h-[60px] w-full px-[20px] py-[18px]"
+              className="text-gray-200 text-[12px] border-b border-gray-200 text-left cursor-pointer h-[60px] w-full px-[20px] py-[18px]"
               onClick={() => {
                 setGenre(g);
                 setToggleGe(false);
@@ -292,22 +292,22 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                 }
               >
                 {/* 카드 정보 */}
-                <div className="flex justify-between">
+                <div className="gap-5 md:flex md:gap-5 xl:gap-20">
                   {/* 이미지 */}
-                  <div className="relative w-[440px] h-[330px] flex ">
+                  <div className="relative relative w-full aspect-square md:aspect-[4/3] ">
                     <Image
                       src={currentUrl}
                       alt={card.title}
                       fill
                       loading="eager"
                       priority
-                      className="object-contain object"
+                      className="object-contain object-top"
                     />
                   </div>
 
                   {/* 설명 */}
-                  <div className="flex flex-col items-center">
-                    <div className="w-[440px]">
+                  <div className="flex flex-col items-center w-full">
+                    <div className="w-full">
                       <div className="flex items-center justify-between">
                         <div className="flex gap-[10px]">
                           <span
@@ -349,7 +349,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
 
                             <input
                               readOnly
-                              className="flex w-[15px] h-[24px] items-center justify-center text-white text-center text-[20px] font-normal"
+                              className="flex w-[28px] h-[24px] items-center justify-center text-white text-center text-[20px] font-normal"
                               value={quantity}
                             />
 
@@ -416,7 +416,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                     <div className="relative z-50">
                       <button
                         type="button"
-                        className="text-gray-200 text-left cursor-pointer border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
+                        className="text-gray-200 text-[15px] text-left cursor-pointer border border-gray-200 rounded-[2px] h-[60px] w-full px-[15px] py-[15px]"
                         onClick={() => {
                           setToggleGr(!toggleGr);
                         }}
@@ -429,7 +429,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
 
                       <button
                         type="button"
-                        className="absolute right-[20px] top-1/2 -translate-y-1/2 cursor-pointer"
+                        className="absolute right-[3px] top-1/2 -translate-y-1/2 cursor-pointer"
                         onClick={handleToggleGr}
                       >
                         <Image src={filterIcon} alt="dropdown" />
@@ -445,7 +445,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                     <div className="relative">
                       <button
                         type="button"
-                        className="cursor-pointer text-left border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
+                        className="text-gray-200 text-[15px] cursor-pointer text-left border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
                         onClick={() => {
                           setToggleGe(!toggleGe);
                         }}
@@ -455,7 +455,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                       {toggleGe && dropdownGe()}
                       <button
                         type="button"
-                        className="absolute right-[20px] top-1/2 -translate-y-1/2 cursor-pointer"
+                        className="absolute right-[3px] top-1/2 -translate-y-1/2 cursor-pointer"
                         onClick={handleToggleGe}
                       >
                         <Image src={filterIcon} alt="dropdown" />

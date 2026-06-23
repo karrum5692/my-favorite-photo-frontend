@@ -3,11 +3,13 @@
 import React, { useState, useRef } from 'react';
 import { useCreateMyCard } from '../hooks/useGallery';
 import { useRouter } from 'next/navigation';
+import ResultModal from '@/components/ui/ResultModal';
 
 export default function CreateCardForm() {
   const router = useRouter();
-  const fileInputRef = useRef(null);
   const createCardMutation = useCreateMyCard();
+  const fileInputRef = useRef(null);
+  const [isModal, setIsModal] = useState(false);
 
   const [title, setTitle] = useState('');
   const [grade, setGrade] = useState('');
@@ -18,6 +20,14 @@ export default function CreateCardForm() {
   const [description, setDescription] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [errors, setErrors] = useState({});
+  const isFormFilled =
+    title &&
+    grade &&
+    genre &&
+    price &&
+    totalIssued &&
+    selectedFile &&
+    description;
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -65,8 +75,7 @@ export default function CreateCardForm() {
       },
       {
         onSuccess: () => {
-          alert('포토카드가 성공적으로 생성되었습니다!');
-          router.push('/gallery');
+          setIsModal(true);
         },
         onError: (error) => {
           alert('생성 실패: ' + error.message);
@@ -77,14 +86,17 @@ export default function CreateCardForm() {
 
   return (
     <div className="w-full bg-[#111111] min-h-screen text-white pt-10 pb-20">
-      <div className="max-w-[1200px] mx-auto px-4">
-        <h1 className="text-white font-['BR_B'] text-[62px] font-normal not-italic tracking-[-1.86px]">
+      <div className="max-w-[1200px] mx-auto px-4 border-b-[2px] border-solid border-[var(--color-white)] pb-[1.5rem] mb-[50px]">
+        <h1
+          style={{ fontFamily: 'var(--font-baskins)' }}
+          className="text-white font-['BR_B'] text-[62px] font-normal not-italic tracking-[-1.86px]"
+        >
           포토카드 생성
         </h1>
       </div>
 
       <div className="max-w-[716px] mx-auto px-4">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-10">
           <div className="flex flex-col gap-2">
             <label className="text-white font-bold text-[20px] not-italic">
               포토카드 이름
@@ -192,7 +204,7 @@ export default function CreateCardForm() {
                 type="text"
                 readOnly
                 value={fileName}
-                className="flex-1 bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white placeholder-gray-600 focus:outline-none"
+                className="flex-1 bg-[#1a1a1a] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none"
                 placeholder="사진 업로드"
               />
               <input
@@ -222,7 +234,7 @@ export default function CreateCardForm() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-gray-700 rounded-md p-4 text-white placeholder-gray-600 focus:outline-none focus:border-gray-500 h-40 resize-none"
+              className="w-full bg-[var(--black-black,#0F0F0F)] border border-[var(--gray-gray200,#DDD)] rounded-[2px] p-4 text-white placeholder-gray-600 focus:outline-none focus:border-[var(--gray-gray200,#DDD)] h-40 resize-none"
               placeholder="카드 설명을 입력해 주세요"
             />
             {errors.description && (
@@ -233,12 +245,32 @@ export default function CreateCardForm() {
           <button
             type="submit"
             disabled={createCardMutation.isPending}
-            className="w-full bg-gray-600 text-white font-bold py-4 rounded-md mt-6 hover:bg-gray-500 disabled:opacity-50 transition-colors text-center text-lg"
+            className={`w-full font-bold py-4 rounded-md mt-6 disabled:opacity-50 transition-colors text-center text-lg ${
+              isFormFilled
+                ? 'bg-[#EFFF04] text-black hover:opacity-90'
+                : 'bg-[#5A5A5A] text-[#A4A4A4] hover:bg-[#8a8a8a]'
+            }`}
           >
             {createCardMutation.isPending ? '생성 중...' : '생성하기'}
           </button>
         </form>
       </div>
+      {isModal && (
+        <ResultModal
+          isOpen={true}
+          onClose={() => {
+            setIsModal(false);
+            router.push('/gallery/create');
+          }}
+          title="포토카드 생성"
+          result="success"
+          description={`[${grade}|${title}] 포토카드 생성에 성공했습니다!`}
+          buttonText="마이갤러리에서 확인하기"
+          onButtonClick={() => {
+            router.push('/gallery');
+          }}
+        />
+      )}
     </div>
   );
 }

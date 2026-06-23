@@ -98,7 +98,7 @@ export default function DetailPage() {
     }
   }
 
-  const { data: proposalCards } = useQuery({
+  const { data: proposalCards, isPending: pendingProposedCards } = useQuery({
     queryKey: ['proposedCards', cardId],
     queryFn: () => getProposals(cardId),
     enabled: !!card?.isSeller,
@@ -140,7 +140,11 @@ export default function DetailPage() {
   });
 
   if (isPending) {
-    return <div>로딩중입니다....</div>;
+    return (
+      <div className="flex text-gray-300 text-[20px] items-center justify-center mt-36">
+        로딩중입니다....
+      </div>
+    );
   }
 
   if (error) {
@@ -347,12 +351,21 @@ export default function DetailPage() {
 
   //교환 취소
 
-  async function handleCancelProposal() {
+  async function handleCancelProposal(proposalId) {
     try {
       const token =
         localStorage.getItem('accessToken') || localStorage.getItem('token');
 
-      const res = await fetch();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/${proposalId}/cancel`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -606,13 +619,14 @@ export default function DetailPage() {
             교환 제시 목록
           </p>
           <p className="border border-white mb-16"></p>
-          {filteredProposal?.length > 0 ? (
+          {pendingProposedCards ? (
+            <p className="mb-16">교환 카드 데이터 로딩 중입니다...</p>
+          ) : filteredProposal?.length > 0 ? (
             <ExchangeGrid
               proposal={filteredProposal}
               cardIsSeller={card?.isSeller}
               handleAcceptProposal={handleAcceptProposal}
               handleRejectProposal={handleRejectProposal}
-              handleCancelProposal={handleCancelProposal}
               confirmAlert={confirmAlert}
               setConfirmAlert={setConfirmAlert}
             />
@@ -674,6 +688,7 @@ export default function DetailPage() {
               <ExchangeGrid
                 proposal={filteredMyProposal}
                 cardIsSeller={card?.isSeller}
+                handleCancelProposal={handleCancelProposal}
                 confirmAlert={confirmAlert}
                 setConfirmAlert={setConfirmAlert}
               />

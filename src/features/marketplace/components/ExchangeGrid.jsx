@@ -12,6 +12,7 @@ export default function ExchangeGrid({
   setConfirmAlert,
   onCardClick,
 }) {
+  // console.log(handleAcceptProposal);
   return (
     <div
       className="
