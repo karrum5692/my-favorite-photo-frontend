@@ -165,7 +165,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
             <button
               key={g}
               type="button"
-              className="text-gray-200 border-b border-gray-200 text-left cursor-pointer h-[60px] w-full px-[20px] py-[18px]"
+              className="text-gray-200 text-[12px] border-b border-gray-200 text-left cursor-pointer h-[60px] w-full px-[20px] py-[18px]"
               onClick={() => {
                 setGenre(g);
                 setToggleGe(false);
@@ -416,7 +416,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                     <div className="relative z-50">
                       <button
                         type="button"
-                        className="text-gray-200 text-left cursor-pointer border border-gray-200 rounded-[2px] h-[60px] w-full px-[15px] py-[15px]"
+                        className="text-gray-200 text-[15px] text-left cursor-pointer border border-gray-200 rounded-[2px] h-[60px] w-full px-[15px] py-[15px]"
                         onClick={() => {
                           setToggleGr(!toggleGr);
                         }}
@@ -445,7 +445,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                     <div className="relative">
                       <button
                         type="button"
-                        className="cursor-pointer text-left border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
+                        className="text-gray-200 text-[15px] cursor-pointer text-left border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
                         onClick={() => {
                           setToggleGe(!toggleGe);
                         }}
