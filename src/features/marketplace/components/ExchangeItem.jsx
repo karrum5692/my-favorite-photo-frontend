@@ -13,6 +13,7 @@ export default function ExchangeItem({
   cardIsSeller,
   handleAcceptProposal,
   handleRejectProposal,
+  handleCancelProposal,
   cardId,
   confirmAlert,
   setConfirmAlert,
@@ -28,6 +29,7 @@ export default function ExchangeItem({
 
   const [isOpenAcceptAlert, setIsOpenAcceptAlert] = useState(false);
   const [isOpenRejectAlert, setIsOpenRejectAlert] = useState(false);
+  const [isOpenCancelAlert, setIsOpenCancelAlert] = useState(false);
 
   if (!offeredCard?.template) {
     return null;
@@ -144,13 +146,11 @@ export default function ExchangeItem({
                           isOpen: false,
                           message: '',
                         });
-                        router.push(`/marketplace/${cardId}`);
+                        router.push(`/marketplace`);
                       }}
                       title={confirmAlert.message}
                       buttonText="확인"
-                      onButtonClick={() =>
-                        router.push(`/marketplace/${cardId}`)
-                      }
+                      onButtonClick={() => router.push(`/marketplace`)}
                     />
                   )}
                 </>
@@ -187,22 +187,57 @@ export default function ExchangeItem({
                           isOpen: false,
                           message: '',
                         });
-                        router.push(`/marketplace/${cardId}`);
+                        router.push(`/gallery`);
                       }}
                       title={confirmAlert.message}
                       buttonText="확인"
-                      onButtonClick={() =>
-                        router.push(`/marketplace/${cardId}`)
-                      }
+                      onButtonClick={() => router.push(`/gallery`)}
                     />
                   )}
                 </>
               </div>
             ) : (
               <div className="mt-[40px]">
-                <Button variant="secondary" height="60">
-                  취소하기
-                </Button>
+                <>
+                  <Button
+                    variant="secondary"
+                    height="60"
+                    onClick={() => setIsOpenCancelAlert(true)}
+                  >
+                    취소하기
+                  </Button>
+                  {isOpenCancelAlert && (
+                    <AlertModal
+                      isOpen={isOpenCancelAlert}
+                      onClose={() => setIsOpenCancelAlert(false)}
+                      title="교환 제시 승인"
+                      description="카드 교환을 정말 취소하시겠습니까?"
+                      onButtonClick={async () => {
+                        try {
+                          await handleCancelProposal();
+                        } catch (error) {
+                          //실패 시 항목 숨김 상태 변경 x
+                        }
+                      }}
+                      buttonText="취소하기"
+                    />
+                  )}
+                  {confirmAlert && (
+                    <AlertModal
+                      isOpen={confirmAlert.isOpen}
+                      onClose={() => {
+                        setConfirmAlert({
+                          isOpen: false,
+                          message: '',
+                        });
+                        router.push(`/marketplace`);
+                      }}
+                      title={confirmAlert.message}
+                      buttonText="확인"
+                      onButtonClick={() => router.push(`/marketplace`)}
+                    />
+                  )}
+                </>
               </div>
             )}
           </div>

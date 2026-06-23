@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 
 import minus from '@/assets/icons/icon-minus.png';
@@ -347,6 +347,26 @@ export default function DetailPage() {
 
   //교환 취소
 
+  async function handleCancelProposal() {
+    try {
+      const token =
+        localStorage.getItem('accessToken') || localStorage.getItem('token');
+
+      const res = await fetch();
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || '서버 응답 오류');
+      }
+
+      setHiddenProposals((prev) => [...prev, proposalId]);
+
+      setConfirmAlert({ isOpen: true, message: '교환 신청을 취소하였습니다.' });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   const filteredProposal =
     proposalCards?.filter(
       (i) => i?.status === 'PENDING' && !hiddenProposals.includes(i.id)
@@ -592,6 +612,7 @@ export default function DetailPage() {
               cardIsSeller={card?.isSeller}
               handleAcceptProposal={handleAcceptProposal}
               handleRejectProposal={handleRejectProposal}
+              handleCancelProposal={handleCancelProposal}
               confirmAlert={confirmAlert}
               setConfirmAlert={setConfirmAlert}
               cardId={cardId}
