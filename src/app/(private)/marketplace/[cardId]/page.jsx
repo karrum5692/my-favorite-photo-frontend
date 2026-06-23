@@ -104,6 +104,8 @@ export default function DetailPage() {
     enabled: !!card?.isSeller,
   });
 
+  console.log(proposalCards);
+
   //구매자 상세페이지 - 나의 교환 신청 정보 가져오기
   async function getMyProposals() {
     try {
@@ -284,6 +286,7 @@ export default function DetailPage() {
 
   //교환 수락
   async function handleAcceptProposal(proposalId) {
+    console.log('porposalID', proposalId);
     try {
       const token =
         localStorage.getItem('accessToken') || localStorage.getItem('token');
@@ -347,12 +350,21 @@ export default function DetailPage() {
 
   //교환 취소
 
-  async function handleCancelProposal() {
+  async function handleCancelProposal(proposalId) {
     try {
       const token =
         localStorage.getItem('accessToken') || localStorage.getItem('token');
 
-      const res = await fetch();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/market/proposals/${proposalId}/cancel`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -612,7 +624,6 @@ export default function DetailPage() {
               cardIsSeller={card?.isSeller}
               handleAcceptProposal={handleAcceptProposal}
               handleRejectProposal={handleRejectProposal}
-              handleCancelProposal={handleCancelProposal}
               confirmAlert={confirmAlert}
               setConfirmAlert={setConfirmAlert}
             />
@@ -674,6 +685,7 @@ export default function DetailPage() {
               <ExchangeGrid
                 proposal={filteredMyProposal}
                 cardIsSeller={card?.isSeller}
+                handleCancelProposal={handleCancelProposal}
                 confirmAlert={confirmAlert}
                 setConfirmAlert={setConfirmAlert}
               />
