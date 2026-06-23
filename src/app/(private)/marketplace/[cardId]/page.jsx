@@ -388,7 +388,7 @@ export default function DetailPage() {
         >
           <Image src={back} alt="뒤로가기" />
         </button>
-        <span className="hidden md:block flex text-gray-300 font-brb font-normal tracking-[-.0.72px] md:text-base xl:text-2xl py-15">
+        <span className="font-display hidden md:block flex text-gray-300 font-brb font-normal tracking-[-.0.72px] md:text-base xl:text-2xl py-15">
           마켓플레이스
         </span>
       </div>
