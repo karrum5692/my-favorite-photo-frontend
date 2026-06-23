@@ -416,7 +416,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                     <div className="relative z-50">
                       <button
                         type="button"
-                        className="text-gray-200 text-left cursor-pointer border border-gray-200 rounded-[2px] h-[60px] w-full px-[20px] py-[18px]"
+                        className="text-gray-200 text-left cursor-pointer border border-gray-200 rounded-[2px] h-[60px] w-full px-[15px] py-[15px]"
                         onClick={() => {
                           setToggleGr(!toggleGr);
                         }}
@@ -429,7 +429,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
 
                       <button
                         type="button"
-                        className="absolute right-[20px] top-1/2 -translate-y-1/2 cursor-pointer"
+                        className="absolute right-[3px] top-1/2 -translate-y-1/2 cursor-pointer"
                         onClick={handleToggleGr}
                       >
                         <Image src={filterIcon} alt="dropdown" />
@@ -455,7 +455,7 @@ const DetailSale = ({ currentUrl, card, cardId, onClose, setSelectedCard }) => {
                       {toggleGe && dropdownGe()}
                       <button
                         type="button"
-                        className="absolute right-[20px] top-1/2 -translate-y-1/2 cursor-pointer"
+                        className="absolute right-[3px] top-1/2 -translate-y-1/2 cursor-pointer"
                         onClick={handleToggleGe}
                       >
                         <Image src={filterIcon} alt="dropdown" />
