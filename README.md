@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🎴 최애의 포토 — Frontend
+
+포토카드를 등록·판매하고 포인트로 교환하는 웹 서비스
+
+**🔗 [서비스 바로가기](https://my-favorite-photo-frontend.vercel.app)** · [Backend Repository](https://github.com/karrum5692/my-favorite-photo-backend)
+
+---
+
+## Tech Stack
+
+**Core**
+
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+
+**Styling**
+
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+
+**Deployment**
+
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
+
+**Convention**
+
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat-square&logo=eslint&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=flat-square&logo=prettier&logoColor=black)
+![Husky](https://img.shields.io/badge/Husky-42B983?style=flat-square)
+![CodeRabbit](https://img.shields.io/badge/CodeRabbit-FF570A?style=flat-square)
+
+---
+
+## 주요 기능
+
+| 기능 | 설명 |
+|---|---|
+| 유저/인증 | 회원가입, 로그인, 인증 세션 관리 |
+| 마켓플레이스 | 포토카드 검색·조회·상세·판매 등록 |
+| 포토카드 거래 | 구매 및 판매 |
+| 포토카드 교환 | 양측 수락 기반 교환 로직 |
+| 마이갤러리 | 유저 프로필, 보유 포토카드 목록 |
+| 포인트 | 랜덤 포인트 지급, 포인트 관리 |
+| 알림 | 거래·교환 이벤트 알림 |
+
+---
+
+## 팀 구성
+
+| 팀원 | 역할 | 담당 기능 |
+|---|---|---|
+| 김상우 | 유저/인증 | 회원가입, 로그인, 인증 세션 구성 |
+| 정다희 | 마켓플레이스 | 검색, 조회, 상세, 생성 |
+| 임주연 | 포토카드 거래 | 구매/판매 기능 |
+| 최광헌 | 포토카드 교환 | 양측 수락 로직 및 상태 관리 |
+| 윤이준 | 마이갤러리, 포토카드 생성 | 유저 프로필, 포토 목록, 포인트 관리 |
+| 심현수 | PM, 공통 기반 | 공통 모달, 헤더, 랜딩 페이지, 랜덤 포인트, 알림 |
+
+---
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+`.env.local`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+NEXT_PUBLIC_API_URL=
+NEXT_PUBLIC_BACKEND_URL=
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Branch Strategy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+feature/* → dev → main
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Commit Convention
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Type | Description |
+|---|---|
+| feat | 기능 추가 |
+| fix | 버그 수정 |
+| style | 스타일 수정 |
+| docs | 문서 수정 |
+| refactor | 리팩토링 |
+| chore | 설정 변경 |
